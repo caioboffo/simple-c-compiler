@@ -7,21 +7,35 @@
  */
 %{
 
-#include <stdio.h>
-#include <string.h>
+#include <iostream>
+#include <string>
 #include "parser.hpp"
 
+void yyerror(char const *, ...);
+  
+%}
+
+%{
+
+int yycolumn = 1;
+ 
+#define YY_USER_ACTION                              \
+   yylloc.first_line = yylloc.last_line = yylineno; \
+   yylloc.first_column = yycolumn;                  \
+   yylloc.last_column = yycolumn+yyleng-1;          \
+   yycolumn += yyleng;                              
+   
 int  comment_nesting;
  
 %}
 
-%option noyywrap
+%option noyywrap yylineno
 
 ichar [A-Za-z_]
 digit [0-9]
 integer {digit}+
 identifier {ichar}({digit}|{ichar})*
-whitespace [ \t\n\v\f]+
+whitespace [ \t\v\f]+
 float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 
 %x string
@@ -30,26 +44,28 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 %%
 
 "/*"              { BEGIN(comment); ++comment_nesting;           }
-<comment>[^*/]*   { /* match non-comment delimiters */           }
+<comment>[^*/\n]* { /* match non-comment delimiters */           }
+<comment>\n       { yycolumn = 1;                                }
 <comment>"/*"     { ++comment_nesting;                           }
 <comment>"*/"     { if (--comment_nesting == 0) BEGIN(INITIAL);  }
 <comment>[*/]     { /* match a / or * */                         }
-<comment><<EOF>>  { printf("UNTERMINATED_COMMENT");
+<comment><<EOF>>  { yyerror("UNTERMINATED_COMMENT\n");
                     BEGIN(INITIAL); }
 
 "//"[^\n]*        { /* single-line comments */                   }
 
 \"                { BEGIN string;                                }
 <string>[^\n\\"]+ { yymore();                                    }
-<string>\n        { printf("MISSING_TERMINATING_STRING\n");      }
-<string><<EOF>>   { printf("MISSING_TERMINATING_STRING\n");
+<string>\n        { yyerror("MISSING_TERMINATING_STRING\n");  
+                    BEGIN(INITIAL); }
+<string><<EOF>>   { yyerror("MISSING_TERMINATING_STRING\n");
                     BEGIN(INITIAL); }
 <string>\"        { yytext[yyleng-1] = '\0';
                     yylval.sval = strdup(yytext); BEGIN INITIAL;
                     return STRING_LITERAL; }
 
 [\[\]\{\}\(\)\.;,:?%!=\+\-\*\/] { return *yytext; }
-
+\n      { yycolumn = 1;             }
 "+="    { return PLUS_ASSIGN;       }
 "-="    { return MINUS_ASSIGN;      }
 "*="    { return TIMES_ASSIGN;      }
@@ -67,7 +83,6 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 "bool"   { return BOOL;             }
 "string" { return STRING;           }
 "int"    { return INT;              }
-"void"   { return VOID;             }
 true     { return TRUE;             }
 false    { return FALSE;            }
 
@@ -85,8 +100,12 @@ write    { return WRITE;            }
 
 {whitespace}     { /* ignore whitespace */         }
 
-.        { printf("UNKNOWN TOKEN: %s\n", yytext);  }
+.        { std::cout << "UNKNOWN TOKEN: " << yytext << std::endl;   }
 
+<<EOF>>  { yypop_buffer_state();
+           /* Make sure we stop if the EOF is the original input. */
+           if (!YY_CURRENT_BUFFER) { yyterminate(); }
+         }
 
 %%
 

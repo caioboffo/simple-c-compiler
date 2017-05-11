@@ -11,9 +11,11 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
+#include <cstdarg>
 
 extern int yylex(void);
-void yyerror(char const *); 
+extern int yylineno;
+void yyerror(char const *, ...); 
 
 void usage() {
   std::cout << "simple-c-compiler: fatal error: no input files" << std::endl;
@@ -22,7 +24,8 @@ void usage() {
  
 %}
 
-%expect 0
+
+%locations
 
 %union {
   int    ival;
@@ -35,7 +38,7 @@ void usage() {
 %token <sval> IDENTIFIER
 
 %token IF ELSE WHILE FOR BREAK RETURN READ WRITE
-       INT VOID BOOL STRING TRUE FALSE
+       INT BOOL STRING TRUE FALSE
        
 %token PLUS_ASSIGN "+="
        MINUS_ASSIGN "-="
@@ -56,8 +59,9 @@ void usage() {
 
 /* Generate the parser description file.  */
 %verbose
-/* Enable run-time traces (yydebug).  */
+/* Enable run-time traces (YYDEBUG, YYERROR_VERBOSE).  */
 %define parse.trace
+%define parse.error verbose
 
 %%
 
@@ -67,7 +71,7 @@ translation_unit
         ;
 
 external_declaration
-        : declaration subprogram_definition
+        : declaration_list subprogram_definition
         | subprogram_definition 
         ;
 
@@ -77,7 +81,7 @@ subprogram_definition
         ;
 
 function_definition
-        : declaration_specifiers declarator compound_statement
+        : declaration_specifiers declarator compound_statement 
         ;
 
 procedure_definition
@@ -112,7 +116,7 @@ statement
         ;
 
 input_output_statement
-        : READ IDENTIFIER ';'
+        : READ declarator ';'
         | WRITE argument_expression_list ';'
         ;
 
@@ -146,8 +150,7 @@ declaration_specifiers
         ;
 
 type_specifier 
-        : VOID
-        | BOOL
+        : BOOL
         | STRING
         | INT
         ;
@@ -306,14 +309,20 @@ assignment_operator
         | "%="
         ;
 
-
-
 %%
 
-void yyerror (char const *s) {
-  fprintf(stderr, "syntar error: %s\n", s);
+void yyerror(char const *s, ...) {
+  va_list ap;
+  va_start(ap, s);
+
+  if (yylloc.first_line)
+     fprintf(stderr, "\033[1;31merro:\033[0m %d.%d-%d:  ",
+             yylloc.first_line, yylloc.first_column, yylloc.last_column);
+  vfprintf(stderr, s, ap);
+  fprintf(stderr, "\n");
 }
 
 int main(int argc, char* argv[]) {
+  yylineno = 0;
   return yyparse();
 }

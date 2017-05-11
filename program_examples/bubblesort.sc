@@ -6,7 +6,7 @@ int v[10];
         Observe como um parâmetro de arranjo é declarado.
 */
 
-void bubblesort(int v[], int n) {
+bubblesort(int v[], int n) {
     int i=0, j;
     bool trocou = true;
     while (i < n-1 && trocou) {
