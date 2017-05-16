@@ -1,4 +1,4 @@
-all: simple_c_compiler
+all: cmm
 
 
 CC       = g++
@@ -9,7 +9,7 @@ LDFLAGS  = -lm
 CPPFLAGS = -std=c++11
 
 clean:
-	@$(RM) -rf parser.cpp parser.hpp simple_c_compiler scanner.cpp parser.output $(OBJS)
+	@$(RM) -rf parser.cpp parser.hpp cmm scanner.cpp parser.output $(OBJS)
 
 parser.cpp: simple_c_compiler.y
 	@bison -d -o $@ $^
@@ -22,7 +22,7 @@ scanner.cpp: simple_c_compiler.l parser.hpp
 %.o: %.cpp
 	@$(CC) -c $(CPPFLAGS) -o $@ $<
 
-simple_c_compiler : $(OBJS)
+cmm: $(OBJS)
 	@$(CC) -o $@ $(OBJS) $(LDFLAGS)
 
 
