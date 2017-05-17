@@ -61,7 +61,7 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 <string><<EOF>>   { yyerror("MISSING_TERMINATING_STRING\n");
                     BEGIN(INITIAL); }
 <string>\"        { yytext[yyleng-1] = '\0';
-                    yylval.sval = strdup(yytext); BEGIN INITIAL;
+                    yylval.str = strdup(yytext); BEGIN INITIAL;
                     return STRING_LITERAL; }
 
 [\[\]\{\}\(\)\.;,:?%!=\+\-\*\/] { return *yytext; }
@@ -95,8 +95,8 @@ return   { return RETURN;           }
 read     { return READ;             }
 write    { return WRITE;            }
 
-{integer}        { yylval.ival = atoi(yytext);   return CONSTANT;   } 
-{identifier}     { yylval.sval = strdup(yytext); return IDENTIFIER; }
+{integer}        { yylval.num = atoi(yytext);   return CONSTANT;   } 
+{identifier}     { yylval.str = strdup(yytext); return IDENTIFIER; }
 
 {whitespace}     { /* ignore whitespace */         }
 

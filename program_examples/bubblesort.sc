@@ -24,7 +24,7 @@ bubblesort(int v[], int n) {
     }
 }
 
-void main() {
+int main() {
     int i;
     for (i=0; i < 10; i+=1) {
         read v[i];
@@ -33,4 +33,5 @@ void main() {
     for (i=0; i < 10; i+=1) {
         write v[i], " ";
     }
+    return 0;
 }

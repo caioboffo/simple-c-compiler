@@ -24,13 +24,11 @@ void usage() {
  
 %}
 
-
 %locations
 
 %union {
-  int    ival;
-  double dval;
-  char*  sval;
+  int    num;
+  char   *str;
 }
 
 %token <ival> CONSTANT
@@ -57,6 +55,17 @@ void usage() {
 %nonassoc THEN
 %nonassoc ELSE
 
+%left '='
+%right '?' ':'
+%left "||"
+%left "&&"
+%left "==" "!="
+%left "<" "<=" ">" ">="
+%left '+' '-'
+%left '*' '/' '%'
+%precedence NOT
+%precedence NEG
+
 /* Generate the parser description file.  */
 %verbose
 /* Enable run-time traces (YYDEBUG, YYERROR_VERBOSE).  */
@@ -65,248 +74,171 @@ void usage() {
 
 %%
 
-translation_unit
-        : external_declaration
-        | translation_unit external_declaration 
+program : declaration_sequence
         ;
-
-external_declaration
-        : declaration_list subprogram_definition
-        | subprogram_definition 
-        ;
-
-subprogram_definition
-        : function_definition
-        | procedure_definition
-        ;
-
-function_definition
-        : declaration_specifiers declarator compound_statement 
-        ;
-
-procedure_definition
-        : declarator compound_statement
-        ;
-
-compound_statement
-        : '{' '}'
-        | '{' statement_list '}'
-        | '{' declaration_list '}'
-        | '{' declaration_list statement_list '}'
-        ;
-
-
-statement_list
-        : statement
-        | statement_list statement
-        ;
-
-declaration_list
+        
+declaration_sequence
         : declaration
-        | declaration_list declaration
+        | declaration declaration_sequence
         ;
-
-statement
-        : compound_statement
-        | input_output_statement
-        | expression_statement
-        | selection_statement
-        | iteration_statement
-        | jump_statement
-        ;
-
-input_output_statement
-        : READ declarator ';'
-        | WRITE argument_expression_list ';'
-        ;
-
-expression_statement
-        : ';'
-        | expression ';'
-        ;
-        
-selection_statement
-        : IF '(' expression ')' statement  %prec THEN
-        | IF '(' expression ')' statement ELSE statement
-        ;
-        
-iteration_statement
-        : WHILE '(' expression ')' statement
-        | FOR '(' expression_statement expression_statement ')' statement
-        | FOR '(' expression_statement expression_statement expression ')' statement
-        ;
-        
-jump_statement
-        : BREAK ';'
-        | RETURN ';'
-        | RETURN expression ';'
 
 declaration
-        : declaration_specifiers init_declarator_list ';'
-        ;
-
-declaration_specifiers
-        : type_specifier
-        ;
-
-type_specifier 
-        : BOOL
-        | STRING
-        | INT
-        ;
-
-init_declarator_list
-        : init_declarator
-        | init_declarator_list ',' init_declarator
-        ;
-
-init_declarator
-        : declarator
-        | declarator '=' initializer
-        ;
-
-declarator
-        : direct_declarator
-        ;
-
-direct_declarator
-        : IDENTIFIER
-        | '(' declarator ')'
-        | direct_declarator '[' constant_expression ']'
-        | direct_declarator '[' ']'
-        | direct_declarator '(' parameter_type_list ')'
-        | direct_declarator '(' identifier_list ')'
-        | direct_declarator '(' ')'
-        ;
-
-constant_expression
-        : conditional_expression
-        ;
-
-
-parameter_type_list
-        : parameter_list
-        ;
-
-parameter_list
-        : parameter_declaration
-        | parameter_list ',' parameter_declaration
-        ;
-
-parameter_declaration
-        : declaration_specifiers declarator
-        | declaration_specifiers
-        ;
-
-identifier_list
-        : IDENTIFIER
-        | identifier_list ',' IDENTIFIER
+        : var_dec
+        | IDENTIFIER '(' param_list ')' compound_stmt
+        | type_specifier IDENTIFIER '(' param_list ')' compound_stmt
         ;
         
+param_list
+        : param_seq
+        | %empty
+        ;
+
+param_seq
+        : param ',' param_seq
+        | param
+        ;
+
+param
+        : type_specifier IDENTIFIER
+        | type_specifier IDENTIFIER '[' ']'
+        ;
+        
+var_dec : type_specifier var_spec_seq ';'
+        ;
+
+var_spec_seq
+        : var_spec ',' var_spec_seq
+        | var_spec
+        ;
+        
+var_spec
+        : declarator '=' initializer
+        | declarator
+        ;
+        
+declarator
+        : IDENTIFIER
+        | IDENTIFIER '[' CONSTANT ']'
+        ;
 
 initializer
-        : assignment_expression
-        | '{' initializer_list '}'
-        | '{' initializer_list ',' '}'
-        ;
-
-initializer_list
-        : initializer
-        | initializer_list ',' initializer
-        ;
-
-expression
-        : assignment_expression
-        | expression ',' assignment_expression
+        : '{' literal_seq '}'
+        | exp
+        | assign
         ;
         
-assignment_expression
-        : conditional_expression
-        | unary_expression assignment_operator assignment_expression
+literal_seq
+        : literal ',' literal_seq
+        | literal
+        ;
+        
+type_specifier
+        : INT | BOOL | STRING ;
+
+var_dec_list
+        : var_dec var_dec_list
+        | var_dec
         ;
 
-primary_expression
-        : IDENTIFIER
-        | CONSTANT
+stmt_list
+        : stmt stmt_list
+        | stmt
+        ;
+        
+compound_stmt
+        : '{' '}'
+        | '{' var_dec_list stmt_list '}'
+        | '{' var_dec_list '}'
+        | '{' stmt_list '}'
+        ;
+
+stmt
+        : selection_stmt
+        | loop_stmt
+        | jump_stmt
+        | in_out_stmt
+        | assign ';'
+        | subprogram_call ';' 
+        ;
+
+selection_stmt
+        : IF '(' exp ')' compound_stmt
+        | IF '(' exp ')' compound_stmt ELSE compound_stmt
+        ;
+
+loop_stmt
+        : WHILE '(' exp ')' compound_stmt
+        | FOR '(' assign ';' exp ';' assign ')' compound_stmt
+        ;
+
+jump_stmt
+        : RETURN ';'
+        | RETURN exp ';' 
+        | BREAK ';'  /* verificar se está dentro de um loop_stmt */
+        ;
+
+in_out_stmt
+        : READ var ';'
+        | WRITE expression_list ';'
+        ;
+        
+subprogram_call
+        : IDENTIFIER '(' expression_list ')' 
+        ;
+        
+expression_list
+        : expression_seq
+        | %empty
+        ;
+
+expression_seq
+        : initializer ',' expression_seq
+        | initializer
+        ;
+
+assign  : var assign_operator exp 
+        ;
+        
+assign_operator
+        : '='
+        | "+="
+        | "-="
+        | "*="
+        | "/="
+        | "%="
+        ;
+        
+var     : IDENTIFIER
+        | IDENTIFIER '[' exp ']'
+        ;
+
+literal : CONSTANT
         | STRING_LITERAL
-        | '(' expression ')'
-        ;
-
-postfix_expression
-        : primary_expression
-        | postfix_expression '[' expression ']'
-        | postfix_expression '(' ')'
-        | postfix_expression '(' argument_expression_list ')'
-        ;
-
-argument_expression_list
-        : assignment_expression
-        | argument_expression_list ',' assignment_expression
-        ;
-
-
-unary_operator
-        : '-'
-        | '!'
-        ;
-        
-unary_expression
-        : postfix_expression
-        | unary_operator postfix_expression
-        ;
-        
-multiplicative_expression
-        : unary_expression
-        | multiplicative_expression '*' unary_expression
-        | multiplicative_expression '/' unary_expression
-        | multiplicative_expression '%' unary_expression
-        ;
-
-additive_expression
-        : multiplicative_expression
-        | additive_expression '+' multiplicative_expression
-        | additive_expression '-' multiplicative_expression
-        ;
-        
-relational_expression
-        : additive_expression
-        | relational_expression "<" additive_expression
-        | relational_expression ">" additive_expression
-        | relational_expression "<=" additive_expression
-        | relational_expression ">=" additive_expression
-        ;
-
-equality_expression
-        : relational_expression
-        | equality_expression "==" relational_expression
-        | equality_expression "!=" relational_expression
-        ;
-
-
-logical_and_expression
-        : equality_expression
-        | logical_and_expression "&&" equality_expression
-        ;
-
-logical_or_expression
-        : logical_and_expression
-        | logical_or_expression "||" logical_and_expression
-        ;
-
-conditional_expression
-        : logical_or_expression
-        | logical_or_expression '?' expression ':' conditional_expression
         | TRUE
         | FALSE
         ;
-        
-assignment_operator
-        : '='
-        | "+=" 
-        | "-="
-        | "*=" 
-        | "/=" 
-        | "%="
+
+exp
+        : exp '+' exp
+        | exp '-' exp
+        | exp '*' exp
+        | exp '/' exp
+        | exp '%' exp
+        | exp "<" exp
+        | exp ">" exp
+        | exp "<=" exp
+        | exp ">=" exp
+        | exp "&&" exp
+        | exp "||" exp
+        | exp "==" exp
+        | exp "!=" exp
+        | '!' exp %prec NOT
+        | '-' exp %prec NEG
+        | exp '?' exp ':' exp
+        | var
+        | literal
+        | subprogram_call
+        | '(' exp ')'
         ;
 
 %%
