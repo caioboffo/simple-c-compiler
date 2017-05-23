@@ -1,9 +1,11 @@
 all: cmm
 
-
 CC       = g++
-OBJS     = parser.o  \
-           scanner.o \
+OBJS     = parser.o     \
+           scanner.o    \
+           program.o    \
+           identifier.o \
+           variable_declaration.o \
 
 LDFLAGS  = -lm
 CPPFLAGS = -std=c++11

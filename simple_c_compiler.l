@@ -12,21 +12,21 @@
 #include "parser.hpp"
 
 void yyerror(char const *, ...);
-  
+
 %}
 
 %{
 
-int yycolumn = 1;
+int yycolumn = 1, comment_nesting;
  
-#define YY_USER_ACTION                              \
-   yylloc.first_line = yylloc.last_line = yylineno; \
-   yylloc.first_column = yycolumn;                  \
-   yylloc.last_column = yycolumn+yyleng-1;          \
-   yycolumn += yyleng;                              
-   
-int  comment_nesting;
- 
+#define YY_USER_ACTION                               \
+  if (YY_START != 1 ) {                              \
+    yylloc.first_line = yylloc.last_line = yylineno; \
+    yylloc.first_column = yycolumn;                  \
+    yylloc.last_column = yycolumn+yyleng-1;          \
+    yycolumn += yyleng;                              \
+  }
+
 %}
 
 %option noyywrap yylineno
@@ -54,14 +54,17 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 
 "//"[^\n]*        { /* single-line comments */                   }
 
-\"                { BEGIN string;                                }
-<string>[^\n\\"]+ { yymore();                                    }
+\"                { BEGIN(string);                               }
+<string>[^\n\\"]+ { yymore();                            }
 <string>\n        { yyerror("MISSING_TERMINATING_STRING\n");  
                     BEGIN(INITIAL); }
 <string><<EOF>>   { yyerror("MISSING_TERMINATING_STRING\n");
                     BEGIN(INITIAL); }
 <string>\"        { yytext[yyleng-1] = '\0';
-                    yylval.str = strdup(yytext); BEGIN INITIAL;
+                    yylval.str = strdup(yytext);
+                    BEGIN(INITIAL);
+                    YY_USER_ACTION;
+                    yylloc.first_column -=1;
                     return STRING_LITERAL; }
 
 [\[\]\{\}\(\)\.;,:?%!=\+\-\*\/] { return *yytext; }
