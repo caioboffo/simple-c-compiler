@@ -4,15 +4,14 @@
 #include <iostream>
 #include <list>
 #include "statement.hpp"
-#include "expression.hpp"
 
 class identifier;
 
 class variable_declaration : public statement {
   int type;
-  std::list<expression*> *id_list;
+  std::list<identifier*> *id_list;
 public:
-  variable_declaration(int type, std::list<expression*> *id_list);
+  variable_declaration(int type, std::list<identifier*> *id_list);
   void print();
   void evaluate();
 };

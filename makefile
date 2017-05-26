@@ -1,11 +1,18 @@
 all: cmm
 
 CC       = g++
-OBJS     = parser.o     \
-           scanner.o    \
-           program.o    \
-           identifier.o \
-           variable_declaration.o \
+
+OBJS = parser.o                             \
+       scanner.o                            \
+       program.o                            \
+       expression.o                         \
+       identifier.o                         \
+       variable_declaration.o               \
+       number.o                             \
+       string_literal.o                     \
+       boolean.o                            \
+       assigment.o                          \
+       plus_operation.o                     \
 
 LDFLAGS  = -lm
 CPPFLAGS = -std=c++11

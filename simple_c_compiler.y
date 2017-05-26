@@ -13,11 +13,7 @@
 #include <cstdlib>
 #include <cstdarg>
 #include <list>
-#include "identifier.hpp"
-#include "statement.hpp"
-#include "expression.hpp"
-#include "program.hpp"
-#include "variable_declaration.hpp"
+#include "ast.hpp"
 
 }
 
@@ -50,8 +46,10 @@ program *root;
   std::list<statement*>            *stmt_list;
   statement                        *stmt;
   program                          *prog;
+  identifier                       *id;
   expression                       *exp;
   std::list<expression*>           *exp_list;
+  std::list<identifier*>           *id_list;
 }
 
 %token <num> CONSTANT
@@ -97,11 +95,23 @@ program *root;
 %define parse.error verbose
 
 %type <prog> program
+
 %type <stmt_list> declaration_stmt_list
+
 %type <stmt> declaration_stmt var_dec
-%type <exp> var var_spec
-%type <exp_list> var_spec_list
+
+%type <exp> var
+            literal
+            exp
+            assign
+            literal_list
+            initializer
+
+%type <id> var_spec            
+%type <id_list> var_spec_list
+
 %type <num> type_specifier INT BOOL STRING
+
 
 %%
 
@@ -127,27 +137,34 @@ var_dec : type_specifier var_spec_list ';'
         ;
 
 type_specifier
-        : INT
-        | BOOL
-        | STRING ;
+        : INT    { $$ = 10; }
+        | BOOL   { $$ = 20; }
+        | STRING { $$ = 30; }
+        ;
 
 var_spec_list
-        : var_spec ',' var_spec_list
+        : var_spec_list ',' var_spec
         {
-          $$ = $3;
-          $3->push_back($1);
+          $$ = $1;
+          $1->push_back($3);
         }
         | var_spec
         {
-          $$ = new std::list<expression*>({$1});
+          $$ = new std::list<identifier*>({$1});
         }
         ;
         
 var_spec
         : var
-        /* | var '=' initializer */
+        | var '=' initializer { $$ = new identifier((identifier*)$1, $3); } 
         ;
-     
+
+initializer
+        : exp
+        | assign
+        | '{' literal_list '}' { $$ = $2; }
+        ;
+
 
 /*
 declaration_stmt
@@ -170,19 +187,13 @@ param
         : type_specifier IDENTIFIER
         | type_specifier IDENTIFIER '[' ']'
         ;
-
-initializer
-        : exp
-        | assign
-        | '{' literal_list '}'
-        ;
-        
+*/        
 literal_list
-        : literal ',' literal_list
+        : literal_list ',' literal
         | literal
         ;
         
-
+/*
 var_dec_list
         : var_dec var_dec_list
         | var_dec
@@ -244,31 +255,28 @@ expression_seq
         | initializer
         ;
 
-assign  : var assign_operator exp
-        ;
-        
-assign_operator
-        : '='
-        | "+="
-        | "-="
-        | "*="
-        | "/="
-        | "%="
-        ;
 */
+
+assign  : var '=' exp
+        | var "+=" exp
+        | var "-=" exp
+        | var "*=" exp
+        | var "/=" exp
+        | var "%=" exp
+        ;
         
 var     : IDENTIFIER  { $$ = new identifier($1); }
-/*        | IDENTIFIER '[' exp ']'  { $$ = new identifier($1); } */
+        | IDENTIFIER '[' exp ']'  { $$ = new identifier($1, $3); } 
         ;
-/*
-literal : CONSTANT 
-        | STRING_LITERAL
-        | TRUE
-        | FALSE
+
+literal : CONSTANT       { $$ = new number($1); }
+        | STRING_LITERAL { $$ = new string_literal($1); }
+        | TRUE           { $$ = new boolean(1); }
+        | FALSE          { $$ = new boolean(0); }
         ;
 
 exp
-        : exp '+' exp
+        : exp '+' exp { $$ = new plus_operation($1, $3); }
         | exp '-' exp
         | exp '*' exp
         | exp '/' exp
@@ -286,10 +294,10 @@ exp
         | exp '?' exp ':' exp
         | var
         | literal
-        | subprogram_call 
+          //       | subprogram_call 
         | '(' exp ')'
         ;
-*/
+
 %%
 
 void yyerror(char const *s, ...) {
