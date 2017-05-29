@@ -1,0 +1,7 @@
+*.o
+cmm
+parser.hpp
+parser.cpp
+parser.output
+scanner.hpp
+scanner.cpp
