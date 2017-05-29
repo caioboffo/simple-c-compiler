@@ -6,7 +6,7 @@
 
 class boolean : public expression {
 public:
-  boolean(int v) : expression(v) {}
+  boolean(int v) : expression(v, 20) {}
   void print();
   int evaluate();
 };

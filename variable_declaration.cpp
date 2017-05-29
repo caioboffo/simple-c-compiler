@@ -8,6 +8,7 @@ variable_declaration::variable_declaration (int type,
   this->type = type;
   this->id_list = id_list;
   std::list<identifier*>::iterator id_iter;
+  // set the type of each identifier
   for (id_iter = id_list->begin(); id_iter != id_list->end();
         id_iter++) {
     (*id_iter)->set_type(type);
@@ -42,7 +43,7 @@ void variable_declaration::print() {
 
 void variable_declaration::evaluate() {
   std::cout << "evaluating a variable declaration ...\n";
-    std::list<identifier*>::iterator id_iter;
+  std::list<identifier*>::iterator id_iter;
   for (id_iter = id_list->begin(); id_iter != id_list->end();
         id_iter++) {
     (*id_iter)->evaluate();

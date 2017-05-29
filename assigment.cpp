@@ -1,11 +1,14 @@
 #include "expression.hpp"
 #include "assigment.hpp"
+#include "identifier.hpp"
 
 void assigment::print() {
-  std::cout << id << " = ";
+  id->print();
+  std::cout << " = ";
   exp->print();
   std::cout << std::endl;
 }
 
 void assigment::evaluate() {
+  // lookup the identifier in the tableId and change its value
 }

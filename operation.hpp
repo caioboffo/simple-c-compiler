@@ -7,6 +7,7 @@ class operation : public expression {
 public:
   expression *left;
   expression *right;
+  operation() {}
   operation(expression *left, expression *right) : left(left), right(right) {}
 };
 

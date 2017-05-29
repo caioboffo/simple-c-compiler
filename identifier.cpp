@@ -3,6 +3,14 @@
 #include "boolean.hpp"
 #include "number.hpp"
 
+
+identifier::identifier(identifier* var, expression *init) {
+  this->id = var->id;
+  if (var->size) this->size = var->size;
+  initializer = init;
+}
+
+
 void identifier::set_type(int t) {
   this->type = t;
 
@@ -30,7 +38,10 @@ void identifier::set_type(int t) {
 
 void identifier::print() {
   std::cout << id << " = ";
-  initializer->print();
+  if (initializer) 
+    initializer->print();
+  else
+    std::cout << value;
   std::cout << std::endl;
 }
 

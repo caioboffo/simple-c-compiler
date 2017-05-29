@@ -77,8 +77,8 @@ program *root;
 %nonassoc ELSE
 
 %left '='
-%left ':'
-%left '?' 
+%right ':'
+%right '?' 
 %left "||"
 %left "&&"
 %left "==" "!="
@@ -106,7 +106,7 @@ program *root;
             assign
             literal_list
             initializer
-
+ 
 %type <id> var_spec            
 %type <id_list> var_spec_list
 
@@ -155,8 +155,11 @@ var_spec_list
         ;
         
 var_spec
-        : var
-        | var '=' initializer { $$ = new identifier((identifier*)$1, $3); } 
+        : var                 { $$ = (identifier*) $1; }
+        | var '=' initializer
+        {
+          $$ = new identifier((identifier*)$1, $3);
+        } 
         ;
 
 initializer
@@ -257,7 +260,7 @@ expression_seq
 
 */
 
-assign  : var '=' exp
+assign  : var '=' exp  
         | var "+=" exp
         | var "-=" exp
         | var "*=" exp
@@ -276,26 +279,29 @@ literal : CONSTANT       { $$ = new number($1); }
         ;
 
 exp
-        : exp '+' exp { $$ = new plus_operation($1, $3); }
-        | exp '-' exp
-        | exp '*' exp
-        | exp '/' exp
-        | exp '%' exp
-        | exp "<" exp
-        | exp ">" exp
-        | exp "<=" exp
-        | exp ">=" exp
-        | exp "&&" exp
-        | exp "||" exp
-        | exp "==" exp
-        | exp "!=" exp
-        | '!' exp %prec NOT
-        | '-' exp %prec NEG
+        : exp '+' exp         { $$ = new plus_operation($1, $3);              }
+        | exp '-' exp         { $$ = new minus_operation($1, $3);             }
+        | exp '*' exp         { $$ = new times_operation($1, $3);             }
+        | exp '/' exp         { $$ = new over_operation($1, $3);              }
+        | exp '%' exp         { $$ = new module_operation($1, $3);            }
+        | exp "<" exp         { $$ = new less_operation($1, $3);              }
+        | exp ">" exp         { $$ = new greater_operation($1, $3);           }
+        | exp "<=" exp        { $$ = new less_or_equal_operation($1, $3);     }
+        | exp ">=" exp        { $$ = new greater_or_equal_operation($1, $3);  }
+        | exp "&&" exp        { $$ = new and_operation($1, $3);               }
+        | exp "||" exp        { $$ = new or_operation($1, $3);                }
+        | exp "==" exp        { $$ = new equal_operation($1, $3);             }
+        | exp "!=" exp        { $$ = new not_equal_operation($1, $3);         }
+        | '!' exp %prec NOT   { $$ = new unary_not_operation($2);             }
+        | '-' exp %prec NEG   { $$ = new unary_minus_operation($2);           }
         | exp '?' exp ':' exp
+        {
+          $$ = new ternary_if_operation($1, $3, $5);
+        }
         | var
         | literal
           //       | subprogram_call 
-        | '(' exp ')'
+        | '(' exp ')' { $$ = $2; }
         ;
 
 %%

@@ -13,9 +13,25 @@ OBJS = parser.o                             \
        boolean.o                            \
        assigment.o                          \
        plus_operation.o                     \
+       minus_operation.o                    \
+       times_operation.o                    \
+       over_operation.o                     \
+       module_operation.o                   \
+       less_operation.o                     \
+       greater_operation.o                  \
+       less_or_equal_operation.o            \
+       greater_or_equal_operation.o         \
+       and_operation.o                      \
+       or_operation.o                       \
+       equal_operation.o                    \
+       not_equal_operation.o                \
+       unary_not_operation.o                \
+       unary_minus_operation.o              \
+       ternary_if_operation.o               \
+
 
 LDFLAGS  = -lm
-CPPFLAGS = -std=c++11
+CPPFLAGS = -g -std=c++11
 
 clean:
 	@$(RM) -rf parser.cpp parser.hpp cmm scanner.cpp parser.output $(OBJS)

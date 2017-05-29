@@ -6,13 +6,14 @@
 #include "statement.hpp"
 
 class expression;
+class identifier;
 
 class assigment : public statement {
 protected:
-  std::string id;
+  identifier *id;
   expression *exp;
 public:
-  assigment(std::string name, expression *exp) : id(name), exp(exp) {}
+  assigment(identifier *var, expression *exp) : id(var), exp(exp) {}
   void print();
   void evaluate();
 };
