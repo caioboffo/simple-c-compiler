@@ -2,17 +2,17 @@
 #define EXPRESSION_H
 
 #include <cstring>
+#include "tree_node.hpp"
 
-class expression {
+class expression : public tree_node {
 public:
   int value;
   int type;
-  expression();
+  expression() {}
   expression(int v) : value(v) {}
   expression(int v, int t) : value(v), type(t) {}
   virtual void set_type(int t);
-  virtual void print() = 0;
-  virtual int evaluate() = 0;
+
 };
 
 #endif /* EXPRESSION_H */

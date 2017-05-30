@@ -6,10 +6,12 @@
 #include "statement.hpp"
 
 class identifier;
+class expression;
 
 class variable_declaration : public statement {
-  int type;
+  int type, evaluated_size;
   std::list<identifier*> *id_list;
+  expression *size, *initializer;
 public:
   variable_declaration(int type, std::list<identifier*> *id_list);
   void print();

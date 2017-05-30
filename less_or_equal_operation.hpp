@@ -8,7 +8,7 @@ class less_or_equal_operation : public operation {
 public:
   less_or_equal_operation(expression *l, expression *r) : operation(l, r) {} 
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 

@@ -7,8 +7,7 @@ void boolean::print() {
     std::cout << "false" ;
 }
 
-int boolean::evaluate() {
+void boolean::evaluate() {
   std::cout << "evaluating a boolean type ...\n";
-  return value;
 }
 

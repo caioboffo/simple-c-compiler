@@ -6,7 +6,6 @@ void unary_not_operation::print() {
   exp->print();
 }
 
-int unary_not_operation::evaluate() {
+void unary_not_operation::evaluate() {
   std::cout << "evaluating a unary not operation ...\n";
-  value = !(exp->evaluate());
 }

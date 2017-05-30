@@ -18,7 +18,7 @@ public:
   identifier(identifier *var, expression *init);
   void set_type(int t);
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 

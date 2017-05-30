@@ -8,7 +8,7 @@ class number : public expression {
 public:
   number(int v) : expression(v, 10)  {}
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 #endif /* NUMBER_H */

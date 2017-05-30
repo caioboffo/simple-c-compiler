@@ -9,7 +9,7 @@ class not_equal_operation : public operation {
 public:
   not_equal_operation(expression *l, expression *r) : operation(l, r) {} 
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 

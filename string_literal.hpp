@@ -10,7 +10,7 @@ class string_literal : public expression {
 public:
   string_literal(std::string str);
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 #endif /* STRING_LITERAL_H */

@@ -13,7 +13,6 @@ void string_literal::print() {
     std::cout << "NULL";
 }
 
-int string_literal::evaluate() {
+void string_literal::evaluate() {
   std::cout << "evaluating a string literal...\n";
-  return 1;
 }

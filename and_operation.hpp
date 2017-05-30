@@ -8,7 +8,7 @@ class and_operation : public operation {
 public:
   and_operation(expression *l, expression *r) : operation(l, r) {} 
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 #endif /* AND_OPERATION_H */

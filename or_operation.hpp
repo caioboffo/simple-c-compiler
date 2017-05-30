@@ -8,7 +8,7 @@ class or_operation : public operation {
 public:
   or_operation(expression *l, expression *r) : operation(l, r) {} 
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 #endif /* OR_OPERATION_H */

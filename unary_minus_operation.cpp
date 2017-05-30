@@ -6,7 +6,6 @@ void unary_minus_operation::print() {
   exp->print();
 }
 
-int unary_minus_operation::evaluate() {
+void unary_minus_operation::evaluate() {
   std::cout << "evaluating a unary minus operation...\n";
-  value = -(exp->evaluate());
 }

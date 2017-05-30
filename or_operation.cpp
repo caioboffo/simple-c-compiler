@@ -8,13 +8,6 @@ void or_operation::print() {
   std::cout << ")";
 }
 
-int or_operation::evaluate() {
+void or_operation::evaluate() {
   std::cout << "evaluating a || operation ...\n";
-  int left_num, right_num;
-  
-  left_num = left->evaluate();
-  right_num = right->evaluate();
-  value = left_num || right_num;
-  
-  return value;
 }

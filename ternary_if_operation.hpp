@@ -16,7 +16,7 @@ public:
                        expression *e) : condition(c), then_branch(t),
                                         else_branch(e) {}
   void print();
-  int evaluate();
+  void evaluate();
   
 };
 

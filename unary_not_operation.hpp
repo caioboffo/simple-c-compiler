@@ -12,7 +12,7 @@ protected:
 public:
   unary_not_operation(expression *exp) : exp(exp) {}
   void print();
-  int evaluate();
+  void evaluate();
 
 };
 

@@ -45,10 +45,7 @@ void identifier::print() {
   std::cout << std::endl;
 }
 
-int identifier::evaluate() {
+void identifier::evaluate() {
   std::cout << "evaluating identifier ...\n" ;
-  if (size) evaluated_size = size->evaluate();
-  if (initializer) value = initializer->evaluate();
-  return value;
 }
 

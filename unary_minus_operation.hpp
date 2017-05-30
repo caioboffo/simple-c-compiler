@@ -12,7 +12,7 @@ protected:
 public:
   unary_minus_operation(expression *exp) : exp(exp) {}
   void print();
-  int evaluate();
+  void evaluate();
   
 };
 

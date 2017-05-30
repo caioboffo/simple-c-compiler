@@ -8,7 +8,7 @@ class greater_or_equal_operation : public operation {
 public:
   greater_or_equal_operation(expression *l, expression *r) : operation(l, r) {} 
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 #endif /* GREATER_OR_EQUAL_OPERATION_H */

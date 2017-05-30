@@ -8,13 +8,7 @@ void and_operation::print() {
   std::cout << ")";
 }
 
-int and_operation::evaluate() {
+void and_operation::evaluate() {
   std::cout << "evaluating a && operation ...\n";
-  int left_num, right_num;
-  
-  left_num = left->evaluate();
-  right_num = right->evaluate();
-  value = left_num && right_num;
-  
-  return value;
+
 }

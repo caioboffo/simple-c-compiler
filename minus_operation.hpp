@@ -8,7 +8,7 @@ class minus_operation : public operation {
 public:
   minus_operation(expression *l, expression *r) : operation(l, r) {} 
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 

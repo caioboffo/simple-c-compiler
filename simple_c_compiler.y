@@ -32,9 +32,9 @@ void usage() {
         << std::endl;
 }
 
-#include "program.hpp"
+#include "abstract_syntax_tree.hpp"
  
-program *root;
+abstract_syntax_tree *root;
  
 }
 
@@ -43,9 +43,9 @@ program *root;
 %union {
   int                               num;
   char                             *str;
-  std::list<statement*>            *stmt_list;
-  statement                        *stmt;
-  program                          *prog;
+  std::list<tree_node*>            *stmt_list;
+  tree_node                        *stmt;
+  abstract_syntax_tree             *prog;
   identifier                       *id;
   expression                       *exp;
   std::list<expression*>           *exp_list;
@@ -115,7 +115,11 @@ program *root;
 
 %%
 
-program : declaration_stmt_list { $$ = new program($1); root = $$; }
+program : declaration_stmt_list
+        {
+          $$ = new abstract_syntax_tree($1);
+          root = $$;
+        };
 
 declaration_stmt_list
         : declaration_stmt_list declaration_stmt
@@ -123,7 +127,7 @@ declaration_stmt_list
           $$ = $1;
           $1->push_back($2);
         }
-        | %empty { $$ = new std::list<statement*>(); }
+        | %empty { $$ = new std::list<tree_node*>(); }
         ;
 
 declaration_stmt 

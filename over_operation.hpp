@@ -8,7 +8,7 @@ class over_operation : public operation {
 public:
   over_operation(expression *l, expression *r) : operation(l, r) {} 
   void print();
-  int evaluate();
+  void evaluate();
 };
 
 #endif /* OVER_OPERATION_H */
