@@ -11,13 +11,18 @@
 #include <string>
 #include "parser.hpp"
 
-void yyerror(char const *, ...);
+extern void yyusage();
+extern void yyevaluate();
+extern void yyerror(char const *, ...);
 
+ 
 %}
 
 %{
 
 int yycolumn = 1, comment_nesting;
+
+#define YY_BUF_SIZE 16384
  
 #define YY_USER_ACTION                               \
   if (YY_START != 1 ) {                              \
@@ -49,16 +54,16 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 <comment>"/*"     { ++comment_nesting;                           }
 <comment>"*/"     { if (--comment_nesting == 0) BEGIN(INITIAL);  }
 <comment>[*/]     { /* match a / or * */                         }
-<comment><<EOF>>  { yyerror("UNTERMINATED_COMMENT\n");
+<comment><<EOF>>  { yyerror("unterminated comment\n");
                     BEGIN(INITIAL); }
 
 "//"[^\n]*        { /* single-line comments */                   }
 
 \"                { BEGIN(string);                               }
-<string>[^\n\\"]+ { yymore();                            }
-<string>\n        { yyerror("MISSING_TERMINATING_STRING\n");  
+<string>[^\n\\"]+ { yymore();                                    }
+<string>\n        { yyerror("unterminated string\n");  
                     BEGIN(INITIAL); }
-<string><<EOF>>   { yyerror("MISSING_TERMINATING_STRING\n");
+<string><<EOF>>   { yyerror("found EOF while expecting string delimiters\n");
                     BEGIN(INITIAL); }
 <string>\"        { yytext[yyleng-1] = '\0';
                     yylval.str = strdup(yytext);
@@ -105,12 +110,33 @@ write    { return WRITE;            }
 
 .        { std::cout << "UNKNOWN TOKEN: " << yytext << std::endl;   }
 
-<<EOF>>  { yypop_buffer_state();
+<<EOF>>  { 
+           yypop_buffer_state();
            /* Make sure we stop if the EOF is the original input. */
            if (!YY_CURRENT_BUFFER) { yyterminate(); }
          }
 
 %%
 
+int main(int argc, char* argv[]) {
+  FILE *fh;
+  
+  if (argc == 2 && (fh = fopen(argv[1], "r"))) {
+    yyin = fh;
+    if (!yyin)
+      yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
+  } else {
+    yyusage();
+    exit(EXIT_FAILURE);
+  }
+  
+  yylineno = 1;
+  
+  yyparse();
+  yyevaluate();
+  fclose(yyin);
+  
+  exit(EXIT_SUCCESS);
+}
 
 

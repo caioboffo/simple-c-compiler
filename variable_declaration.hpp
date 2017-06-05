@@ -5,15 +5,14 @@
 #include <list>
 #include "statement.hpp"
 
-class identifier;
 class expression;
+class identifier;
 
 class variable_declaration : public statement {
-  int type, evaluated_size;
+  int type;
   std::list<identifier*> *id_list;
-  expression *size, *initializer;
 public:
-  variable_declaration(int type, std::list<identifier*> *id_list);
+  variable_declaration(int type, std::list<tree_node*> *id_list);
   void print();
   void evaluate();
 };

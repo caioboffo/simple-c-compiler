@@ -7,7 +7,7 @@
 
 class not_equal_operation : public operation {
 public:
-  not_equal_operation(expression *l, expression *r) : operation(l, r) {} 
+  not_equal_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
   void print();
   void evaluate();
 };

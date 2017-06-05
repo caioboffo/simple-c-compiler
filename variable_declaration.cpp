@@ -1,25 +1,27 @@
 #include "variable_declaration.hpp"
+#include "tree_node.hpp"
 #include "identifier.hpp"
 
 variable_declaration::variable_declaration (int type,
-                                            std::list<identifier*> *id_list) {
+                                            std::list<tree_node*> *id_list) {
   // list<identifier*> is a list<identifier*>
   // deal with scope
   this->type = type;
-  this->id_list = id_list;
-  std::list<identifier*>::iterator id_iter;
+  this->id_list = new std::list<identifier*>();
+
   // set the type of each identifier
-  for (id_iter = id_list->begin(); id_iter != id_list->end();
-        id_iter++) {
-    (*id_iter)->set_type(type);
+  for (auto it = id_list->begin(); it != id_list->end();
+        it++) {
+    static_cast<identifier*>(*it)->set_type(type);
+    this->id_list->push_back(static_cast<identifier*>(*it));
   }
   
 }
 
 void variable_declaration::print() {
-  std::list<identifier*>::iterator id_iter;
-  for (id_iter = id_list->begin(); id_iter != id_list->end();
-        id_iter++) {
+  
+  for (auto it = id_list->begin(); it != id_list->end();
+        it++) {
     switch (type) {
     case 10: {
       std::cout << "int ";
@@ -37,16 +39,15 @@ void variable_declaration::print() {
       std::cout << "unkown ";
       break;
     }
-    (*id_iter)->print();
+    (*it)->print();
    }  
 }
 
 void variable_declaration::evaluate() {
   std::cout << "evaluating a variable declaration ...\n";
-  std::list<identifier*>::iterator id_iter;
-  for (id_iter = id_list->begin(); id_iter != id_list->end();
-        id_iter++) {
-    (*id_iter)->evaluate();
+  for (auto it = id_list->begin(); it != id_list->end();
+        it++) {
+    (*it)->evaluate();
   }
 }
 

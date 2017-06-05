@@ -11,10 +11,14 @@ protected:
   expression *condition, *then_branch, *else_branch;
 
 public:
-  ternary_if_operation(expression *c,
-                       expression *t,
-                       expression *e) : condition(c), then_branch(t),
-                                        else_branch(e) {}
+  ternary_if_operation(tree_node *c,
+                       tree_node *t,
+                       tree_node *e) {
+    condition = static_cast<expression*>(c);
+    then_branch = static_cast<expression*>(t);
+    else_branch = static_cast<expression*>(e);
+  }
+  
   void print();
   void evaluate();
   

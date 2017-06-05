@@ -10,7 +10,9 @@ class unary_minus_operation : public operation {
 protected:
   expression *exp;
 public:
-  unary_minus_operation(expression *exp) : exp(exp) {}
+  unary_minus_operation(tree_node *exp) {
+    this->exp = static_cast<expression*>(exp);
+  }
   void print();
   void evaluate();
   

@@ -6,7 +6,7 @@
 
 class minus_operation : public operation {
 public:
-  minus_operation(expression *l, expression *r) : operation(l, r) {} 
+  minus_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
   void print();
   void evaluate();
 };

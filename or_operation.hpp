@@ -6,7 +6,7 @@
 
 class or_operation : public operation {
 public:
-  or_operation(expression *l, expression *r) : operation(l, r) {} 
+  or_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
   void print();
   void evaluate();
 };

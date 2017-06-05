@@ -6,7 +6,7 @@
 
 class over_operation : public operation {
 public:
-  over_operation(expression *l, expression *r) : operation(l, r) {} 
+  over_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
   void print();
   void evaluate();
 };

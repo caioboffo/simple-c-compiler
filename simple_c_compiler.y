@@ -23,9 +23,11 @@
   
 extern int yylex(void);
 extern int yylineno;
-void yyerror(char const *, ...); 
+extern FILE *yyin;
 
-void usage() {
+void yyerror(char const *, ...);
+
+void yyusage() {
   std::cout
         <<  "cmm: fatal error: no input files\n"
         <<  "compilation terminated."
@@ -43,13 +45,9 @@ abstract_syntax_tree *root;
 %union {
   int                               num;
   char                             *str;
-  std::list<tree_node*>            *stmt_list;
-  tree_node                        *stmt;
+  std::list<tree_node*>            *node_list;
+  tree_node                        *node;
   abstract_syntax_tree             *prog;
-  identifier                       *id;
-  expression                       *exp;
-  std::list<expression*>           *exp_list;
-  std::list<identifier*>           *id_list;
 }
 
 %token <num> CONSTANT
@@ -96,19 +94,17 @@ abstract_syntax_tree *root;
 
 %type <prog> program
 
-%type <stmt_list> declaration_stmt_list
+%type <node_list> declaration_stmt_list var_spec_list
 
-%type <stmt> declaration_stmt var_dec
-
-%type <exp> var
-            literal
-            exp
-            assign
-            literal_list
-            initializer
- 
-%type <id> var_spec            
-%type <id_list> var_spec_list
+%type <node> declaration_stmt
+             var_dec
+             var_spec
+             var
+             literal
+             literal_list
+             initializer
+             assign
+             exp
 
 %type <num> type_specifier INT BOOL STRING
 
@@ -154,15 +150,15 @@ var_spec_list
         }
         | var_spec
         {
-          $$ = new std::list<identifier*>({$1});
+          $$ = new std::list<tree_node*>({$1});
         }
         ;
         
 var_spec
-        : var                 { $$ = (identifier*) $1; }
-        | var '=' initializer
+        : var                 { $$ = $1; } 
+        | var '=' initializer 
         {
-          $$ = new identifier((identifier*)$1, $3);
+          $$ = new identifier($1, $3);
         } 
         ;
 
@@ -322,8 +318,6 @@ void yyerror(char const *s, ...) {
   fprintf(stderr, "\n");
 }
 
-main(int argc, char* argv[]) {
-  yylineno = 1;
-  yyparse();
+void yyevaluate() {
   root->evaluate();
 }

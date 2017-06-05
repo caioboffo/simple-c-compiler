@@ -6,7 +6,7 @@
 
 class equal_operation : public operation {
 public:
-  equal_operation(expression *l, expression *r) : operation(l, r) {} 
+  equal_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
   void print();
   void evaluate();
 };

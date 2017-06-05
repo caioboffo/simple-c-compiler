@@ -6,7 +6,7 @@
 
 class times_operation : public operation {
 public:
-  times_operation(expression *l, expression *r) : operation(l, r) {} 
+  times_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
   void print();
   void evaluate();
 };

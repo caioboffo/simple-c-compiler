@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstring>
+#include "tree_node.hpp"
 #include "expression.hpp"
 
 class identifier : public expression {
@@ -13,9 +14,8 @@ class identifier : public expression {
 public:
   identifier(std::string id) : id(id) {}
   identifier(std::string id,
-             expression *size) : id(id),
-                                 size(size) {}
-  identifier(identifier *var, expression *init);
+             tree_node *size);
+  identifier(tree_node *var, tree_node *init);
   void set_type(int t);
   void print();
   void evaluate();

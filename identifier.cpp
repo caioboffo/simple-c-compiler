@@ -3,11 +3,16 @@
 #include "boolean.hpp"
 #include "number.hpp"
 
+identifier::identifier(std::string id, tree_node *size) {
+  this->id = id;
+  this->size = static_cast<expression*>(size);
+}
 
-identifier::identifier(identifier* var, expression *init) {
-  this->id = var->id;
-  if (var->size) this->size = var->size;
-  initializer = init;
+identifier::identifier(tree_node *var, tree_node *init) {
+  this->id = static_cast<identifier*>(var)->id;
+  if (static_cast<identifier*>(var)->size)
+    this->size = static_cast<identifier*>(var)->size;
+  initializer = static_cast<expression*>(init);
 }
 
 
@@ -38,7 +43,7 @@ void identifier::set_type(int t) {
 
 void identifier::print() {
   std::cout << id << " = ";
-  if (initializer) 
+  if (initializer)
     initializer->print();
   else
     std::cout << value;
