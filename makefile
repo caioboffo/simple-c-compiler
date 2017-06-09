@@ -11,7 +11,7 @@ OBJS = parser.o                             \
        number.o                             \
        string_literal.o                     \
        boolean.o                            \
-       assigment.o                          \
+       assignment.o                         \
        plus_operation.o                     \
        minus_operation.o                    \
        times_operation.o                    \

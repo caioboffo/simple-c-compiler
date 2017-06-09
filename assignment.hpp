@@ -10,12 +10,12 @@ class identifier;
 class tree_node;
 
 
-class assigment : public statement {
+class assignment : public statement {
 protected:
   identifier *id;
   expression *exp;
 public:
-  assigment(identifier *var, tree_node *exp) {
+  assignment(identifier *var, tree_node *exp) {
     this->id = var;
     this->exp = static_cast<expression*>(exp);
   }

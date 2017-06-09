@@ -8,7 +8,7 @@
 #include "string_literal.hpp"
 #include "boolean.hpp"
 #include "operation.hpp"
-#include "assigment.hpp"
+#include "assignment.hpp"
 #include "plus_operation.hpp"
 #include "minus_operation.hpp"
 #include "times_operation.hpp"

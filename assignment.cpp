@@ -1,15 +1,15 @@
 #include "expression.hpp"
-#include "assigment.hpp"
+#include "assignment.hpp"
 #include "identifier.hpp"
 #include "tree_node.hpp"
 
-void assigment::print() {
+void assignment::print() {
   id->print();
   std::cout << " = ";
   exp->print();
   std::cout << std::endl;
 }
 
-void assigment::evaluate() {
+void assignment::evaluate() {
   // lookup the identifier in the tableId and change its value
 }
