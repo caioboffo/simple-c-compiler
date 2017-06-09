@@ -10,6 +10,8 @@
 #include <iostream>
 #include <string>
 #include "parser.hpp"
+#include "symbol_table.hpp"
+
 
 extern void yyusage();
 extern void yyevaluate();
@@ -23,7 +25,8 @@ extern void yyerror(char const *, ...);
 int yycolumn = 0, comment_nesting;
 bool any_errors;
 char *filename;
- 
+symbol_table *sym_table;
+
 #define YY_BUF_SIZE 16384
  
 #define YY_USER_ACTION                               \
@@ -105,7 +108,11 @@ read     { return READ;             }
 write    { return WRITE;            }
 
 {integer}        { yylval.num = atoi(yytext);   return CONSTANT;   } 
-{identifier}     { yylval.str = strdup(yytext); return IDENTIFIER; }
+{identifier}     { 
+                   sym_table->insert(yytext);
+                   yylval.str = strdup(yytext); 
+                   return IDENTIFIER; 
+                 }
 
 {whitespace}     { /* ignore whitespace */         }
 
@@ -131,9 +138,13 @@ int main(int argc, char* argv[]) {
     yyusage();
     exit(EXIT_FAILURE);
   }
-  
+
   yylineno = 1;
-  
+
+  sym_table = new symbol_table();
+  sym_table->insert("read");
+  sym_table->insert("write");
+
   yyparse();
   if (!any_errors)
     yyevaluate();

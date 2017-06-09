@@ -5,6 +5,7 @@ CC       = g++
 OBJS = parser.o                             \
        scanner.o                            \
        abstract_syntax_tree.o               \
+       symbol_table.o                       \
        expression.o                         \
        identifier.o                         \
        variable_declaration.o               \
