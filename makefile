@@ -31,7 +31,7 @@ OBJS = parser.o                             \
 
 
 LDFLAGS  = -lm
-CPPFLAGS = -g -std=c++11
+CPPFLAGS = -g -std=c++11 ${DEFINE}
 
 clean:
 	@$(RM) -rf parser.cpp parser.hpp cmm scanner.cpp parser.output $(OBJS)
