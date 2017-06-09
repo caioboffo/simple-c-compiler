@@ -52,5 +52,9 @@ void identifier::print() {
 
 void identifier::evaluate() {
   std::cout << "evaluating identifier ...\n" ;
+  if (size)
+    size->evaluate();
+  if (initializer)
+    initializer->evaluate();
 }
 
