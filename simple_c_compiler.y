@@ -24,7 +24,9 @@
 extern int yylex(void);
 extern int yylineno;
 extern FILE *yyin;
-
+extern char *filename;
+extern bool any_errors;
+ 
 void yyerror(char const *, ...);
 
 void yyusage() {
@@ -307,13 +309,17 @@ exp
 %%
 
 void yyerror(char const *s, ...) {
+  if (!any_errors)
+    any_errors = true;
   va_list ap;
   va_start(ap, s);
 
   if (yylloc.first_line)
-     fprintf(stderr, "arquivo.cpp:%d:%d: \033[1;31merror:\033[0m ",
+     fprintf(stderr, "%s:%d:%d-%d: \033[1;31merror:\033[0m ",
+             filename,
              yylloc.first_line,
-             yylloc.first_column);
+             yylloc.first_column,
+             yylloc.last_column);
   vfprintf(stderr, s, ap);
   fprintf(stderr, "\n");
 }

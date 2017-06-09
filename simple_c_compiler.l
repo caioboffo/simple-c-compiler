@@ -20,17 +20,17 @@ extern void yyerror(char const *, ...);
 
 %{
 
-int yycolumn = 1, comment_nesting;
-
+int yycolumn = 0, comment_nesting;
+bool any_errors;
+char *filename;
+ 
 #define YY_BUF_SIZE 16384
  
 #define YY_USER_ACTION                               \
-  if (YY_START != 1 ) {                              \
     yylloc.first_line = yylloc.last_line = yylineno; \
     yylloc.first_column = yycolumn;                  \
     yylloc.last_column = yycolumn+yyleng-1;          \
     yycolumn += yyleng;                              \
-  }
 
 %}
 
@@ -43,37 +43,38 @@ identifier {ichar}({digit}|{ichar})*
 whitespace [ \t\v\f]+
 float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 
-%x string
 %x comment
 
 %%
 
 "/*"              { BEGIN(comment); ++comment_nesting;           }
 <comment>[^*/\n]* { /* match non-comment delimiters */           }
-<comment>\n       { yycolumn = 1;                                }
+<comment>\n       { yycolumn = 0;                                }
 <comment>"/*"     { ++comment_nesting;                           }
 <comment>"*/"     { if (--comment_nesting == 0) BEGIN(INITIAL);  }
 <comment>[*/]     { /* match a / or * */                         }
-<comment><<EOF>>  { yyerror("unterminated comment\n");
-                    BEGIN(INITIAL); }
+<comment><<EOF>>  {
+                    yyerror("unterminated comment");
+                    yyterminate();
+                  }
 
 "//"[^\n]*        { /* single-line comments */                   }
 
-\"                { BEGIN(string);                               }
-<string>[^\n\\"]+ { yymore();                                    }
-<string>\n        { yyerror("unterminated string\n");  
-                    BEGIN(INITIAL); }
-<string><<EOF>>   { yyerror("found EOF while expecting string delimiters\n");
-                    BEGIN(INITIAL); }
-<string>\"        { yytext[yyleng-1] = '\0';
+
+\"(\\.|[^"\n])*   {
+                    yyerror("missing closing quotes");
+                  }
+
+
+\"(\\.|[^"\n])*\" { 
                     yylval.str = strdup(yytext);
-                    BEGIN(INITIAL);
-                    YY_USER_ACTION;
-                    yylloc.first_column -=1;
-                    return STRING_LITERAL; }
+                    return STRING_LITERAL;
+                  }
+
+
 
 [\[\]\{\}\(\)\.;,:?%!=\+\-\*\/] { return *yytext; }
-\n      { yycolumn = 1;             }
+\n      { yycolumn = 0;             }
 "+="    { return PLUS_ASSIGN;       }
 "-="    { return MINUS_ASSIGN;      }
 "*="    { return TIMES_ASSIGN;      }
@@ -112,7 +113,7 @@ write    { return WRITE;            }
 
 <<EOF>>  { 
            yypop_buffer_state();
-           /* Make sure we stop if the EOF is the original input. */
+           
            if (!YY_CURRENT_BUFFER) { yyterminate(); }
          }
 
@@ -122,6 +123,7 @@ int main(int argc, char* argv[]) {
   FILE *fh;
   
   if (argc == 2 && (fh = fopen(argv[1], "r"))) {
+    filename = argv[1];
     yyin = fh;
     if (!yyin)
       yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
@@ -133,7 +135,8 @@ int main(int argc, char* argv[]) {
   yylineno = 1;
   
   yyparse();
-  yyevaluate();
+  if (!any_errors)
+    yyevaluate();
   fclose(yyin);
   
   exit(EXIT_SUCCESS);

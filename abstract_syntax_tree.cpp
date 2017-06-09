@@ -6,6 +6,8 @@ void abstract_syntax_tree::evaluate() {
        nodelist_iterator != nodes->end();
        nodelist_iterator++) {
     (*nodelist_iterator)->evaluate();
+    #if defined YYDEBUG
     (*nodelist_iterator)->print();
+    #endif
   }
 }
