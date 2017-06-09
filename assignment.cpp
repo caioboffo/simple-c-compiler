@@ -11,5 +11,5 @@ void assignment::print() {
 }
 
 void assignment::evaluate() {
-  // lookup the identifier in the tableId and change its value
+  std::cout << "evaluating an assignment\n";
 }

@@ -262,7 +262,7 @@ expression_seq
 
 */
 
-assign  : var '=' exp  
+assign  : var '=' exp  { $$ = new assignment( static_cast<identifier*>($1), $3); }
         | var "+=" exp
         | var "-=" exp
         | var "*=" exp

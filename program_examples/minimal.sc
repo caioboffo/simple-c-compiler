@@ -7,3 +7,4 @@ int e = 4;
 int k = 10;
 bool sunny = true;
 string name = "Michael Jackson";
+int l = k = 1;
