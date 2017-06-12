@@ -8,4 +8,4 @@ int k = 10, p;
 bool sunny = true, rainy;
 string name
 = "Michael", lastname = "Jackson";
-int m = e;
+int m = e %= 2;

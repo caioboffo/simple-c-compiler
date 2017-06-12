@@ -267,10 +267,30 @@ assign  : var '=' exp
           $$ = new assignment( static_cast<identifier*>($1), $3);
         }
         | var "+=" exp
+        {
+          $$ = new assignment( static_cast<identifier*>($1),
+                               new plus_operation($1, $3) );
+        }
         | var "-=" exp
+        {
+          $$ = new assignment( static_cast<identifier*>($1),
+                               new minus_operation($1, $3) );
+        }
         | var "*=" exp
+        {
+          $$ = new assignment( static_cast<identifier*>($1),
+                               new times_operation($1, $3) );
+        }
         | var "/=" exp
+        {
+          $$ = new assignment( static_cast<identifier*>($1),
+                               new over_operation($1, $3) );
+        }
         | var "%=" exp
+        {
+          $$ = new assignment( static_cast<identifier*>($1),
+                               new module_operation($1, $3) );
+        }
         ;
         
 var     : IDENTIFIER  { $$ = new identifier($1); }
