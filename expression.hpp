@@ -1,7 +1,7 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
-#include <cstring>
+#include <string>
 #include "tree_node.hpp"
 
 class expression : public tree_node {

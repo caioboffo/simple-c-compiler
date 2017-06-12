@@ -1,6 +1,5 @@
 #include "string_literal.hpp"
 
-
 string_literal::string_literal(std::string str) {
   string_value = str;
   set_type(30);

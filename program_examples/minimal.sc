@@ -4,7 +4,8 @@ int e = 4;
 /* multi
    line
    comment */
-int k = 10;
-bool sunny = true;
-string name = "Michael Jackson";
-int l = k = 1;
+int k = 10, p;
+bool sunny = true, rainy;
+string name
+= "Michael", lastname = "Jackson";
+int m = e;

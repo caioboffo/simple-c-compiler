@@ -63,16 +63,15 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 
 "//"[^\n]*        { /* single-line comments */                   }
 
-
-\"(\\.|[^"\n])*   {
-                    yyerror("missing closing quotes");
-                  }
-
-
 \"(\\.|[^"\n])*\" { 
                     yylval.str = strdup(yytext);
                     return STRING_LITERAL;
                   }
+
+\"(\\.|[^"\n])*   { 
+                    yyerror("missing closing quotes");
+                  }
+
 
 
 
@@ -148,7 +147,8 @@ int main(int argc, char* argv[]) {
   yyparse();
   if (!any_errors)
     yyevaluate();
-  fclose(yyin);
+
+  fclose(fh);
   
   exit(EXIT_SUCCESS);
 }

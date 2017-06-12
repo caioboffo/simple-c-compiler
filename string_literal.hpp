@@ -2,7 +2,7 @@
 #define STRING_LITERAL_H
 
 #include <iostream>
-#include <cstring>
+#include <string>
 #include "expression.hpp"
 
 class string_literal : public expression {

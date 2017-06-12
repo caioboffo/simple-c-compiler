@@ -2,7 +2,7 @@
 #define ASSIGMENT_H
 
 #include <iostream>
-#include <cstring>
+#include <string>
 #include "statement.hpp"
 
 class expression;

@@ -12,4 +12,5 @@ void assignment::print() {
 
 void assignment::evaluate() {
   std::cout << "evaluating an assignment\n";
+  exp->evaluate();
 }

@@ -1,7 +1,7 @@
 #ifndef TREE_NODE_H
 #define TREE_NODE_H
 
-#include <cstring>
+#include <string>
 
 class tree_node {
 public:
