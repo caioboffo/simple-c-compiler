@@ -115,7 +115,7 @@ write    { return WRITE;            }
 
 {whitespace}     { /* ignore whitespace */         }
 
-.        { std::cout << "UNKNOWN TOKEN: " << yytext << std::endl;   }
+.        { yyerror("unkonw token"); }
 
 <<EOF>>  { 
            yypop_buffer_state();
