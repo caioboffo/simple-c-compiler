@@ -9,3 +9,4 @@ bool sunny = true, rainy;
 string name
 = "Michael", lastname = "Jackson";
 int m = e %= 2;
+int array_of_int[2] = { 2, 3 };

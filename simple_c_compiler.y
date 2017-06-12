@@ -96,14 +96,15 @@ abstract_syntax_tree *root;
 
 %type <prog> program
 
-%type <node_list> declaration_stmt_list var_spec_list
+%type <node_list> declaration_stmt_list
+                  var_spec_list
+                  literal_list
 
 %type <node> declaration_stmt
              var_dec
              var_spec
              var
              literal
-             literal_list
              initializer
              assign
              exp
@@ -161,15 +162,17 @@ var_spec
         | var '=' initializer 
         {
           $$ = new identifier($1, $3);
-        } 
+        }
+        | var '=' '{' literal_list '}'
+        {
+          $$ = new identifier($1, $4);
+        }
         ;
 
 initializer
         : exp
         | assign
-        | '{' literal_list '}' { $$ = $2; }
         ;
-
 
 /*
 declaration_stmt
@@ -195,7 +198,14 @@ param
 */        
 literal_list
         : literal_list ',' literal
+        {
+          $$ = $1;
+          $1->push_back($3);
+        }
         | literal
+        {
+          $$ = new std::list<tree_node*>({$1});
+        }
         ;
         
 /*

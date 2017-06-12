@@ -15,6 +15,10 @@ identifier::identifier(tree_node *var, tree_node *init) {
   initializer = static_cast<expression*>(init);
 }
 
+identifier::identifier(tree_node *var, std::list<tree_node*> *init_list) {
+  this->id = static_cast<identifier*>(var)->id;
+  this->initializer_list = init_list;
+}
 
 void identifier::set_type(int t) {
   this->type = t;
@@ -52,9 +56,22 @@ void identifier::print() {
 
 void identifier::evaluate() {
   std::cout << "evaluating identifier ...\n" ;
-  if (size)
+  if (size) {
+    std::cout << "eval id size ...\n";
     size->evaluate();
-  if (initializer)
+  }
+  if (initializer) {
+    std::cout <<  "eval init ...\n";
     initializer->evaluate();
+  }
+  if (initializer_list) {
+    std::cout << "eval init_list ...\n";
+    for (auto it = initializer_list->begin();
+         it != initializer_list->end();
+         it ++) {
+      // evaluate each one of the literals in the list
+      (*it)->evaluate();
+    }
+  }
 }
 
