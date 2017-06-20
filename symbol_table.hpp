@@ -24,12 +24,12 @@ typedef struct scope_t
 } scope ;
 
 typedef std::map<std::string, std::list<scope>* > symbol_table_t;
-typedef symbol_table_t::iterator symbol;
+typedef symbol_table_t::iterator symbol_ref;
 
 typedef struct symbol_status_t
 {
   bool already_exists;
-  symbol reference;
+  symbol_ref reference;
 } *sym_status;
 
 class symbol_table {

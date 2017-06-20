@@ -99,6 +99,8 @@ abstract_syntax_tree *root;
 %type <node_list> declaration_stmt_list
                   var_spec_list
                   literal_list
+                  param_seq
+                  param_list
 
 %type <node> declaration_stmt
              var_dec
@@ -108,9 +110,9 @@ abstract_syntax_tree *root;
              initializer
              assign
              exp
+             param
 
 %type <num> type_specifier INT BOOL STRING
-
 
 %%
 
@@ -129,8 +131,10 @@ declaration_stmt_list
         | %empty { $$ = new std::list<tree_node*>(); }
         ;
 
-declaration_stmt 
+declaration_stmt
         : var_dec
+        | IDENTIFIER '(' param_list ')' compound_stmt
+        | type_specifier IDENTIFIER '(' param_list ')' compound_stmt
         ;
 
 var_dec : type_specifier var_spec_list ';'
@@ -161,11 +165,11 @@ var_spec
         : var                 { $$ = $1; } 
         | var '=' initializer 
         {
-          $$ = new identifier($1, $3);
+          $$ = new symbol($1, $3);
         }
         | var '=' '{' literal_list '}'
         {
-          $$ = new identifier($1, $4);
+          $$ = new symbol($1, $4);
         }
         ;
 
@@ -173,14 +177,7 @@ initializer
         : exp
         | assign
         ;
-
-/*
-declaration_stmt
-        : var_dec
-        | IDENTIFIER '(' param_list ')' compound_stmt
-        | type_specifier IDENTIFIER '(' param_list ')' compound_stmt
-        ;
-        
+      
 param_list
         : param_seq
         | %empty
@@ -188,19 +185,32 @@ param_list
 
 param_seq
         : param ',' param_seq
-        | param
+        {
+          $$ = $3;
+          $3->push_back($1);
+        }
+        | param 
+        {
+          $$ = new std::list<tree_node*>({$1});
+        }
         ;
 
 param
         : type_specifier IDENTIFIER
+        {
+          //$$ = new param_declaration($1, $2);
+        }
         | type_specifier IDENTIFIER '[' ']'
+        {
+          //$$ = new param_declaration($1, $2, "ptr");
+        }
         ;
-*/        
+        
 literal_list
         : literal_list ',' literal
         {
           $$ = $1;
-          $1->push_back($3);
+          $$ = new std::list<tree_node*>({$3});
         }
         | literal
         {
@@ -208,7 +218,7 @@ literal_list
         }
         ;
         
-/*
+
 var_dec_list
         : var_dec var_dec_list
         | var_dec
@@ -270,41 +280,39 @@ expression_seq
         | initializer
         ;
 
-*/
-
 assign  : var '=' exp
         {
-          $$ = new assignment( static_cast<identifier*>($1), $3);
+          $$ = new assignment( static_cast<symbol*>($1), $3);
         }
         | var "+=" exp
         {
-          $$ = new assignment( static_cast<identifier*>($1),
+          $$ = new assignment( static_cast<symbol*>($1),
                                new plus_operation($1, $3) );
         }
         | var "-=" exp
         {
-          $$ = new assignment( static_cast<identifier*>($1),
+          $$ = new assignment( static_cast<symbol*>($1),
                                new minus_operation($1, $3) );
         }
         | var "*=" exp
         {
-          $$ = new assignment( static_cast<identifier*>($1),
+          $$ = new assignment( static_cast<symbol*>($1),
                                new times_operation($1, $3) );
         }
         | var "/=" exp
         {
-          $$ = new assignment( static_cast<identifier*>($1),
+          $$ = new assignment( static_cast<symbol*>($1),
                                new over_operation($1, $3) );
         }
         | var "%=" exp
         {
-          $$ = new assignment( static_cast<identifier*>($1),
+          $$ = new assignment( static_cast<symbol*>($1),
                                new module_operation($1, $3) );
         }
         ;
         
-var     : IDENTIFIER  { $$ = new identifier($1); }
-        | IDENTIFIER '[' exp ']'  { $$ = new identifier($1, $3); } 
+var     : IDENTIFIER  { $$ = new symbol($1); }
+        | IDENTIFIER '[' exp ']'  { $$ = new symbol($1, $3); } 
         ;
 
 literal : CONSTANT       { $$ = new number($1); }

@@ -1,26 +1,26 @@
-#include "identifier.hpp"
+#include "symbol.hpp"
 #include "string_literal.hpp"
 #include "boolean.hpp"
 #include "number.hpp"
 
-identifier::identifier(std::string id, tree_node *size) {
+symbol::symbol(std::string id, tree_node *size) {
   this->id = id;
   this->size = static_cast<expression*>(size);
 }
 
-identifier::identifier(tree_node *var, tree_node *init) {
-  this->id = static_cast<identifier*>(var)->id;
-  if (static_cast<identifier*>(var)->size)
-    this->size = static_cast<identifier*>(var)->size;
+symbol::symbol(tree_node *var, tree_node *init) {
+  this->id = static_cast<symbol*>(var)->id;
+  if (static_cast<symbol*>(var)->size)
+    this->size = static_cast<symbol*>(var)->size;
   initializer = static_cast<expression*>(init);
 }
 
-identifier::identifier(tree_node *var, std::list<tree_node*> *init_list) {
-  this->id = static_cast<identifier*>(var)->id;
+symbol::symbol(tree_node *var, std::list<tree_node*> *init_list) {
+  this->id = static_cast<symbol*>(var)->id;
   this->initializer_list = init_list;
 }
 
-void identifier::set_type(int t) {
+void symbol::set_type(int t) {
   this->type = t;
 
   // use this code only when debug_output is enabled
@@ -45,7 +45,7 @@ void identifier::set_type(int t) {
   
 }
 
-void identifier::print() {
+void symbol::print() {
   std::cout << id << " = ";
   if (initializer)
     initializer->print();
@@ -54,8 +54,8 @@ void identifier::print() {
   std::cout << std::endl;
 }
 
-void identifier::evaluate() {
-  std::cout << "evaluating identifier ...\n" ;
+void symbol::evaluate() {
+  std::cout << "evaluating symbol ...\n" ;
   if (size) {
     std::cout << "eval id size ...\n";
     size->evaluate();

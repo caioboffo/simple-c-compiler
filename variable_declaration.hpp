@@ -6,11 +6,11 @@
 #include "statement.hpp"
 
 class expression;
-class identifier;
+class symbol;
 
 class variable_declaration : public statement {
   int type;
-  std::list<identifier*> *id_list;
+  std::list<symbol*> *id_list;
 public:
   variable_declaration(int type, std::list<tree_node*> *id_list);
   void print();

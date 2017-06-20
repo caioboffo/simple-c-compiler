@@ -1,6 +1,6 @@
 #include "expression.hpp"
 #include "assignment.hpp"
-#include "identifier.hpp"
+#include "symbol.hpp"
 #include "tree_node.hpp"
 
 void assignment::print() {

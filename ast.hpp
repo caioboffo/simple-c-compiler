@@ -1,6 +1,6 @@
 #include "abstract_syntax_tree.hpp"
 #include "tree_node.hpp"
-#include "identifier.hpp"
+#include "symbol.hpp"
 #include "statement.hpp"
 #include "expression.hpp"
 #include "variable_declaration.hpp"

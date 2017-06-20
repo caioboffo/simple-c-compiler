@@ -1,19 +1,19 @@
 #include "variable_declaration.hpp"
 #include "tree_node.hpp"
-#include "identifier.hpp"
+#include "symbol.hpp"
 
 variable_declaration::variable_declaration (int type,
                                             std::list<tree_node*> *id_list) {
-  // list<identifier*> is a list<identifier*>
+  // list<symbol*> is a list<symbol*>
   // deal with scope
   this->type = type;
-  this->id_list = new std::list<identifier*>();
+  this->id_list = new std::list<symbol*>();
 
-  // set the type of each identifier
+  // set the type of each symbol
   for (auto it = id_list->begin(); it != id_list->end();
         it++) {
-    static_cast<identifier*>(*it)->set_type(type);
-    this->id_list->push_back(static_cast<identifier*>(*it));
+    static_cast<symbol*>(*it)->set_type(type);
+    this->id_list->push_back(static_cast<symbol*>(*it));
   }
   
 }

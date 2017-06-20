@@ -6,16 +6,16 @@
 #include "statement.hpp"
 
 class expression;
-class identifier;
+class symbol;
 class tree_node;
 
 
 class assignment : public statement {
 protected:
-  identifier *id;
+  symbol *id;
   expression *exp;
 public:
-  assignment(identifier *var, tree_node *exp) {
+  assignment(symbol *var, tree_node *exp) {
     this->id = var;
     this->exp = static_cast<expression*>(exp);
   }

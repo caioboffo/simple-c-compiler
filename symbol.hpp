@@ -1,5 +1,5 @@
-#ifndef IDENTIFIER_H
-#define IDENTIFIER_H
+#ifndef SYMBOL_H
+#define SYMBOL_H
 
 #include <iostream>
 #include <string>
@@ -7,21 +7,21 @@
 #include "tree_node.hpp"
 #include "expression.hpp"
 
-class identifier : public expression {
+class symbol : public expression {
   std::string id;
   int         evaluated_size;
   expression *size, *initializer;
   std::list<tree_node*> *initializer_list; 
 public:
-  identifier(std::string id) : id(id), size(NULL), initializer(NULL) {}
-  identifier(std::string id,
+  symbol(std::string id) : id(id), size(NULL), initializer(NULL) {}
+  symbol(std::string id,
              tree_node *size);
-  identifier(tree_node *var, tree_node *init);
-  identifier(tree_node *var, std::list<tree_node*> *init_list);
+  symbol(tree_node *var, tree_node *init);
+  symbol(tree_node *var, std::list<tree_node*> *init_list);
   void set_type(int t);
   void print();
   void evaluate();
 };
 
 
-#endif /* IDENTIFIER_H */
+#endif /* SYMBOL_H */

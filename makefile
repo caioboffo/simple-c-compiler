@@ -7,7 +7,7 @@ OBJS = parser.o                             \
        abstract_syntax_tree.o               \
        symbol_table.o                       \
        expression.o                         \
-       identifier.o                         \
+       symbol.o                         \
        variable_declaration.o               \
        number.o                             \
        string_literal.o                     \
