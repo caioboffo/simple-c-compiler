@@ -3,7 +3,7 @@
 #include "symbol.hpp"
 #include "statement.hpp"
 #include "expression.hpp"
-#include "variable_declaration.hpp"
+#include "symbol_declaration.hpp"
 #include "number.hpp"
 #include "string_literal.hpp"
 #include "boolean.hpp"

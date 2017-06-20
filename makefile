@@ -8,7 +8,7 @@ OBJS = parser.o                             \
        symbol_table.o                       \
        expression.o                         \
        symbol.o                         \
-       variable_declaration.o               \
+       symbol_declaration.o               \
        number.o                             \
        string_literal.o                     \
        boolean.o                            \

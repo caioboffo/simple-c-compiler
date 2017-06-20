@@ -1,8 +1,8 @@
-#include "variable_declaration.hpp"
+#include "symbol_declaration.hpp"
 #include "tree_node.hpp"
 #include "symbol.hpp"
 
-variable_declaration::variable_declaration (int type,
+symbol_declaration::symbol_declaration (int type,
                                             std::list<tree_node*> *id_list) {
   // list<symbol*> is a list<symbol*>
   // deal with scope
@@ -18,7 +18,7 @@ variable_declaration::variable_declaration (int type,
   
 }
 
-void variable_declaration::print() {
+void symbol_declaration::print() {
   
   for (auto it = id_list->begin(); it != id_list->end();
         it++) {
@@ -43,7 +43,7 @@ void variable_declaration::print() {
    }  
 }
 
-void variable_declaration::evaluate() {
+void symbol_declaration::evaluate() {
   std::cout << "evaluating a variable declaration ...\n";
   for (auto it = id_list->begin(); it != id_list->end();
         it++) {

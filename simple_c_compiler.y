@@ -139,7 +139,7 @@ declaration_stmt
 
 var_dec : type_specifier var_spec_list ';'
         {
-          $$ = new variable_declaration($1, $2); 
+          $$ = new symbol_declaration($1, $2); 
         }
         ;
 
