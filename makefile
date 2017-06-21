@@ -2,33 +2,35 @@ all: cmm
 
 CC       = g++
 
-OBJS = parser.o                             \
-       scanner.o                            \
-       abstract_syntax_tree.o               \
-       symbol_table.o                       \
-       expression.o                         \
-       symbol.o                         \
-       symbol_declaration.o               \
-       number.o                             \
-       string_literal.o                     \
-       boolean.o                            \
-       assignment.o                         \
-       plus_operation.o                     \
-       minus_operation.o                    \
-       times_operation.o                    \
-       over_operation.o                     \
-       module_operation.o                   \
-       less_operation.o                     \
-       greater_operation.o                  \
-       less_or_equal_operation.o            \
-       greater_or_equal_operation.o         \
+OBJS = abstract_syntax_tree.o               \
        and_operation.o                      \
-       or_operation.o                       \
+       assignment.o                         \
+       basic_block.o                        \
+       boolean.o                            \
        equal_operation.o                    \
+       expression.o                         \
+       greater_operation.o                  \
+       greater_or_equal_operation.o         \
+       less_operation.o                     \
+       less_or_equal_operation.o            \
+       minus_operation.o                    \
+       module_operation.o                   \
        not_equal_operation.o                \
-       unary_not_operation.o                \
-       unary_minus_operation.o              \
+       number.o                             \
+       or_operation.o                       \
+       over_operation.o                     \
+       plus_operation.o                     \
+       scanner.o                            \
+       string_literal.o                     \
+       subprogram_declaration.o             \
+       symbol.o                             \
+       symbol_declaration.o                 \
+       symbol_table.o                       \
        ternary_if_operation.o               \
+       times_operation.o                    \
+       unary_minus_operation.o              \
+       unary_not_operation.o                \
+       parser.o                             \
 
 
 LDFLAGS  = -lm

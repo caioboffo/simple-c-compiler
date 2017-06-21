@@ -47,6 +47,7 @@ abstract_syntax_tree *root;
 %union {
   int                               num;
   char                             *str;
+  basic_type                        type;
   std::list<tree_node*>            *node_list;
   tree_node                        *node;
   abstract_syntax_tree             *prog;
@@ -97,22 +98,26 @@ abstract_syntax_tree *root;
 %type <prog> program
 
 %type <node_list> declaration_stmt_list
-                  var_spec_list
-                  literal_list
-                  param_seq
                   param_list
+                  param_seq
+                  var_spec_list
+                  var_dec_list
+                  stmt_list
+                  literal_list
 
-%type <node> declaration_stmt
+%type <node> assign
+             compound_stmt
+             declaration_stmt
+             exp
+             initializer
+             literal
+             param
+             stmt
+             var
              var_dec
              var_spec
-             var
-             literal
-             initializer
-             assign
-             exp
-             param
 
-%type <num> type_specifier INT BOOL STRING
+%type <type> type_specifier INT BOOL STRING
 
 %%
 
@@ -134,7 +139,13 @@ declaration_stmt_list
 declaration_stmt
         : var_dec
         | IDENTIFIER '(' param_list ')' compound_stmt
+        {
+          $$ = new subprogram_declaration($1, $3, $5);
+        }
         | type_specifier IDENTIFIER '(' param_list ')' compound_stmt
+        {
+          $$ = new subprogram_declaration($1, $2, $4, $6);
+        }
         ;
 
 var_dec : type_specifier var_spec_list ';'
@@ -144,9 +155,9 @@ var_dec : type_specifier var_spec_list ';'
         ;
 
 type_specifier
-        : INT    { $$ = 10; }
-        | BOOL   { $$ = 20; }
-        | STRING { $$ = 30; }
+        : INT    { $$ = basic_type::INTEGER; }
+        | BOOL   { $$ = basic_type::BOOLEAN; }
+        | STRING { $$ = basic_type::STRING; }
         ;
 
 var_spec_list
@@ -180,7 +191,7 @@ initializer
       
 param_list
         : param_seq
-        | %empty
+        | %empty { $$ = new std::list<tree_node*>(); }
         ;
 
 param_seq
@@ -198,11 +209,15 @@ param_seq
 param
         : type_specifier IDENTIFIER
         {
-          //$$ = new param_declaration($1, $2);
+          $$ = new symbol_declaration($1,
+                                      new std::list<tree_node*>({
+                                          new symbol($2)}));
         }
         | type_specifier IDENTIFIER '[' ']'
         {
-          //$$ = new param_declaration($1, $2, "ptr");
+          $$ = new symbol_declaration($1,
+                                      new std::list<tree_node*>({
+                                          new symbol($2, new number(0))}));
         }
         ;
         
@@ -220,20 +235,37 @@ literal_list
         
 
 var_dec_list
-        : var_dec var_dec_list
+        : var_dec_list var_dec
+        {
+          $$ = $1;
+          $1->push_back($2);
+        }
         | var_dec
+        {
+          $$ = new std::list<tree_node*>({$1});
+        }
         ;
 
 stmt_list
-        : stmt stmt_list
+        : stmt_list stmt
+        {
+          $$ = $1;
+          $1->push_back($2);
+        }
         | stmt
+        {
+          $$ = new std::list<tree_node*>({$1});
+        }
         ;
         
 compound_stmt
-        : '{' '}'
+        : '{' '}'              { $$ = new basic_block(); }
         | '{' var_dec_list stmt_list '}'
-        | '{' var_dec_list '}'
-        | '{' stmt_list '}'
+        {
+          $$ = new basic_block($2, $3);
+        }
+        | '{' var_dec_list '}' { $$ = new basic_block($2); }
+        | '{' stmt_list '}'    { $$ = new basic_block($2); }   
         ;
 
 stmt
