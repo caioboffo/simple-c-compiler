@@ -27,8 +27,9 @@ void subprogram_declaration::print() {
 }
 
 void subprogram_declaration::evaluate() {
+  #ifdef STATUS_OUTPUT 
   std::cout << "evaluating a procedure declaration " << "\n";
-  
+  #endif
   // evaluate each parameter 
   if (this->params->size() > 0) {
     for (auto param = params->begin(); param != params->end(); param++) {

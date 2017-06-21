@@ -9,5 +9,7 @@ void plus_operation::print() {
 }
 
 void plus_operation::evaluate() {
+  #ifdef STATUS_OUTPUT
   std::cout << "evaluating a + operation ...\n";
+  #endif
 }

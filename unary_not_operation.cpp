@@ -7,5 +7,7 @@ void unary_not_operation::print() {
 }
 
 void unary_not_operation::evaluate() {
-  std::cout << "evaluating a unary not operation ...\n";
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating a unary not operation\n";
+  #endif
 }

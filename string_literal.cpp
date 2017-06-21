@@ -14,5 +14,7 @@ void string_literal::print() {
 }
 
 void string_literal::evaluate() {
-  std::cout << "evaluating a string literal...\n";
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating a string literal " << string_value << "\n";
+  #endif
 }

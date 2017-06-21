@@ -5,5 +5,7 @@ void number::print() {
 }
 
 void number::evaluate() {
-  std::cout << "evaluating number...\n";
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating number " << value << "\n";
+  #endif
 }

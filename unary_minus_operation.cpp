@@ -7,5 +7,7 @@ void unary_minus_operation::print() {
 }
 
 void unary_minus_operation::evaluate() {
-  std::cout << "evaluating a unary minus operation...\n";
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating a unary minus operation\n";
+  #endif
 }

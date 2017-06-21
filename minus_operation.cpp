@@ -9,5 +9,7 @@ void minus_operation::print() {
 }
 
 void minus_operation::evaluate() {
-  std::cout << "evaluating a - operation ...\n";
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating - operation\n";
+  #endif
 }

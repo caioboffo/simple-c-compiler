@@ -11,6 +11,8 @@ void assignment::print() {
 }
 
 void assignment::evaluate() {
+  #ifdef STATUS_OUTPUT
   std::cout << "evaluating an assignment\n";
+  #endif
   exp->evaluate();
 }

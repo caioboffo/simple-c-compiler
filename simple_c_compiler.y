@@ -225,7 +225,7 @@ literal_list
         : literal_list ',' literal
         {
           $$ = $1;
-          $$ = new std::list<tree_node*>({$3});
+          $1->push_back($3);
         }
         | literal
         {

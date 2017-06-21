@@ -22,13 +22,14 @@ symbol::symbol(tree_node *var, tree_node *init) {
 symbol::symbol(tree_node *var, std::list<tree_node*> *init_list) {
   this->id = static_cast<symbol*>(var)->id;
   this->is_array_type = static_cast<symbol*>(var)->is_array_type;
-
+  this->size = static_cast<symbol*>(var)->size;
   this->initializer_list = init_list;
 }
 
 void symbol::set_type(basic_type t) {
   this->type = t;
 
+  #ifdef STATUS_OUTPUT
   // use this code only when debug_output is enabled
   if (initializer == NULL) {
     switch (type) {
@@ -48,35 +49,54 @@ void symbol::set_type(basic_type t) {
       break;
     }
   }
-  
+  #endif
 }
 
 void symbol::print() {
-  std::cout << id << " = ";
-  if (initializer)
-    initializer->print();
-  else
-    std::cout << value;
-  std::cout << std::endl;
+  std::cout << id;
+  if (is_array_type) {
+    std::cout << "[";
+    size->print();
+    std::cout << "] = { ";
+    
+    int index = 1;
+    for (auto it=initializer_list->begin();
+         it != initializer_list->end();
+          it++, index++) {
+      (*it)->print();
+      if (index != initializer_list->size())
+        std::cout << ", ";
+    }
+    
+    std::cout << " }\n";
+    
+  } else {
+    std::cout << " = ";
+    if (initializer)
+      initializer->print();
+    else
+      std::cout << value;
+    std::cout << std::endl;
+  }
 }
 
 void symbol::evaluate() {
-  std::cout << "evaluating symbol ...\n" ;
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating symbol " << id << "\n" ;
+  #endif
+  
   // symbol is array size must evaluate the expression size
   // into a digit
   if (size) {
-    std::cout << "eval id size ...\n";
     size->evaluate();
   }
   // symbol is assigned to some value so evaluate its assignment
   if (initializer) {
-    std::cout <<  "eval init ...\n";
     initializer->evaluate();
   }
   // symbol is an array and this is the list of values assigned to it
   // so evaluate each symbol (literal)
   if (initializer_list) {
-    std::cout << "eval init_list ...\n";
     for (auto it = initializer_list->begin();
          it != initializer_list->end();
          it ++) {

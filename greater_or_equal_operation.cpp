@@ -9,5 +9,7 @@ void greater_or_equal_operation::print() {
 }
 
 void greater_or_equal_operation::evaluate() {
-  std::cout << "evaluating a >= operation ...\n";
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating >= operation\n";
+  #endif 
 }

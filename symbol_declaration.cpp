@@ -44,7 +44,9 @@ void symbol_declaration::print() {
 }
 
 void symbol_declaration::evaluate() {
-  std::cout << "evaluating a variable declaration ...\n";
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating a variable declaration\n";
+  #endif
   for (auto it = id_list->begin(); it != id_list->end();
         it++) {
     (*it)->evaluate();

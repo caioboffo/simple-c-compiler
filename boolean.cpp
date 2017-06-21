@@ -8,6 +8,8 @@ void boolean::print() {
 }
 
 void boolean::evaluate() {
+  #ifdef STATUS_OUTPUT
   std::cout << "evaluating a boolean type ...\n";
+  #endif
 }
 

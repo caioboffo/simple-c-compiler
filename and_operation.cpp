@@ -9,6 +9,7 @@ void and_operation::print() {
 }
 
 void and_operation::evaluate() {
-  std::cout << "evaluating a && operation ...\n";
-
+  #ifdef STATUS_OUTPUT
+  std::cout << "evaluating && operation\n";
+  #endif
 }
