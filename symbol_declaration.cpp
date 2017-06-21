@@ -19,9 +19,10 @@ symbol_declaration::symbol_declaration (basic_type type,
 }
 
 void symbol_declaration::print() {
-  
+
+  int index = 1;
   for (auto it = id_list->begin(); it != id_list->end();
-        it++) {
+       it++, index++) {
     switch (type) {
     case basic_type::INTEGER : {
       std::cout << "int ";
@@ -40,6 +41,8 @@ void symbol_declaration::print() {
       break;
     }
     (*it)->print();
+    if (index != id_list->size())
+      std::cout << ", ";
    }  
 }
 

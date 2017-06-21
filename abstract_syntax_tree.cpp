@@ -1,3 +1,4 @@
+#include <iostream>
 #include "abstract_syntax_tree.hpp"
 
 void abstract_syntax_tree::evaluate() {
@@ -8,6 +9,7 @@ void abstract_syntax_tree::evaluate() {
     (*nodelist_iterator)->evaluate();
     #if defined SOURCE_OUTPUT
     (*nodelist_iterator)->print();
+    std::cout << "\n";
     #endif
   }
 }

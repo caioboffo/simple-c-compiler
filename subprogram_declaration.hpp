@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include "basic_type.hpp"
+#include "basic_block.hpp"
 #include "symbol.hpp"
 #include "tree_node.hpp"
 #include "statement.hpp"
@@ -12,8 +13,8 @@ class subprogram_declaration : public statement {
 protected:
   basic_type             return_type;
   symbol                *name;
-  std::list<tree_node*> *params;
-  tree_node             *block;
+  std::list<tree_node*>    *param_list;
+  basic_block           *block;
   
 public:
   subprogram_declaration(std::string            id,

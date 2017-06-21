@@ -195,10 +195,10 @@ param_list
         ;
 
 param_seq
-        : param ',' param_seq
+        : param_seq ',' param
         {
-          $$ = $3;
-          $3->push_back($1);
+          $$ = $1;
+          $1->push_back($3);
         }
         | param 
         {

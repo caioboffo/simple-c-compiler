@@ -29,7 +29,7 @@ symbol::symbol(tree_node *var, std::list<tree_node*> *init_list) {
 void symbol::set_type(basic_type t) {
   this->type = t;
 
-  #ifdef STATUS_OUTPUT
+  #ifdef SOURCE_OUTPUT
   // use this code only when debug_output is enabled
   if (initializer == NULL) {
     switch (type) {
@@ -57,26 +57,27 @@ void symbol::print() {
   if (is_array_type) {
     std::cout << "[";
     size->print();
-    std::cout << "] = { ";
+    std::cout << "]";
+
+    if (initializer_list) {
+      std::cout << " = {";
+      int index = 1;
+      for (auto it=initializer_list->begin();
+           it != initializer_list->end();
+           it++, index++) {
+        (*it)->print();
+        if (index != initializer_list->size())
+          std::cout << ", ";
+      }
     
-    int index = 1;
-    for (auto it=initializer_list->begin();
-         it != initializer_list->end();
-          it++, index++) {
-      (*it)->print();
-      if (index != initializer_list->size())
-        std::cout << ", ";
+      std::cout << "}";
     }
-    
-    std::cout << " }\n";
-    
   } else {
-    std::cout << " = ";
-    if (initializer)
+
+    if (initializer) {
+      std::cout << " = ";
       initializer->print();
-    else
-      std::cout << value;
-    std::cout << std::endl;
+    } 
   }
 }
 
