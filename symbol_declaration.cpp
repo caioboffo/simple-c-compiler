@@ -2,8 +2,8 @@
 #include "tree_node.hpp"
 #include "symbol.hpp"
 
-symbol_declaration::symbol_declaration (int type,
-                                            std::list<tree_node*> *id_list) {
+symbol_declaration::symbol_declaration (basic_type type,
+                                        std::list<tree_node*> *id_list) {
   // list<symbol*> is a list<symbol*>
   // deal with scope
   this->type = type;
@@ -23,15 +23,15 @@ void symbol_declaration::print() {
   for (auto it = id_list->begin(); it != id_list->end();
         it++) {
     switch (type) {
-    case 10: {
+    case basic_type::INTEGER : {
       std::cout << "int ";
       break;
     }
-    case 20: {
+    case basic_type::BOOLEAN : {
       std::cout << "bool ";
       break;
     }
-    case 30: {
+    case basic_type::STRING : {
       std::cout << "string ";
       break;
     }

@@ -3,10 +3,11 @@
 
 #include <iostream>
 #include "expression.hpp"
+#include "basic_type.hpp"
 
 class number : public expression {
 public:
-  number(int v) : expression(v, 10)  {}
+  number(int v) : expression(v, basic_type::INTEGER)  {}
   void print();
   void evaluate();
 };

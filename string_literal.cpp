@@ -1,8 +1,9 @@
 #include "string_literal.hpp"
+#include "basic_type.hpp"
 
 string_literal::string_literal(std::string str) {
   string_value = str;
-  set_type(30);
+  set_type(basic_type::STRING);
 }
 
 void string_literal::print() {

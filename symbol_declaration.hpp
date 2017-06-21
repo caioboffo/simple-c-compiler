@@ -4,15 +4,16 @@
 #include <iostream>
 #include <list>
 #include "statement.hpp"
+#include "basic_type.hpp"
 
 class expression;
 class symbol;
 
 class symbol_declaration : public statement {
-  int type;
+  basic_type type;
   std::list<symbol*> *id_list;
 public:
-  symbol_declaration(int type, std::list<tree_node*> *id_list);
+  symbol_declaration(basic_type type, std::list<tree_node*> *id_list);
   void print();
   void evaluate();
 };
