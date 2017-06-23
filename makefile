@@ -10,6 +10,7 @@ OBJS = abstract_syntax_tree.o               \
        break_stmt.o                         \
        equal_operation.o                    \
        expression.o                         \
+       if_stmt.o                            \
        greater_operation.o                  \
        greater_or_equal_operation.o         \
        less_operation.o                     \

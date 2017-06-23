@@ -55,7 +55,7 @@ void subprogram_declaration::print() {
         std::cout << ", ";
     }
   }
-  std::cout << ") ";
+  std::cout << ") \n";
 
   block->print();
 }

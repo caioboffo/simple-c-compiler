@@ -9,6 +9,7 @@
 #include "expression.hpp"
 #include "greater_operation.hpp"
 #include "greater_or_equal_operation.hpp"
+#include "if_stmt.hpp"
 #include "less_operation.hpp"
 #include "less_or_equal_operation.hpp"
 #include "minus_operation.hpp"

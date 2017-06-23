@@ -115,6 +115,7 @@ abstract_syntax_tree *root;
              literal
              param
              stmt
+             selection_stmt
              jump_stmt
              in_out_stmt
              subprogram_call
@@ -284,7 +285,13 @@ stmt
 
 selection_stmt
         : IF '(' exp ')' compound_stmt
+        {
+          $$ = new if_stmt($3, $5);
+        }
         | IF '(' exp ')' compound_stmt ELSE compound_stmt
+        {
+          $$ = new if_stmt($3, $5, $7);
+        }
         ;
 
 loop_stmt
