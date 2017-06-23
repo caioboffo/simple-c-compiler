@@ -7,6 +7,7 @@ OBJS = abstract_syntax_tree.o               \
        assignment.o                         \
        basic_block.o                        \
        boolean.o                            \
+       break_stmt.o                         \
        equal_operation.o                    \
        expression.o                         \
        greater_operation.o                  \
@@ -20,6 +21,7 @@ OBJS = abstract_syntax_tree.o               \
        or_operation.o                       \
        over_operation.o                     \
        plus_operation.o                     \
+       return_stmt.o                        \
        scanner.o                            \
        string_literal.o                     \
        subprogram_declaration.o             \

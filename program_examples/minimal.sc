@@ -1,5 +1,4 @@
 
-
 int main(int argc, string argv[]) {
   bool is_array_type = true;
   string name = "Jhon", lastname ;
@@ -8,8 +7,7 @@ int main(int argc, string argv[]) {
   int two = 2, three;
 
   three = 23 + two;
-  two += 2;
   
-
+  return;
   
 }

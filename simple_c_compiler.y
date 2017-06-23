@@ -113,6 +113,7 @@ abstract_syntax_tree *root;
              literal
              param
              stmt
+             jump_stmt
              var
              var_dec
              var_spec
@@ -288,9 +289,9 @@ loop_stmt
         ;
 
 jump_stmt
-        : RETURN ';'
-        | RETURN exp ';' 
-        | BREAK ';'  
+        : RETURN ';'     { $$ = new return_stmt(); }
+        | RETURN exp ';' { $$ = new return_stmt($2); }
+        | BREAK ';'      { $$ = new break_stmt();  }
         ;
 
 in_out_stmt
