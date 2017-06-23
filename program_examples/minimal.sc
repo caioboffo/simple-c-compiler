@@ -1,18 +1,18 @@
 /* simple program in cmm language */
 
-// retorna o maior entre dois inteiros
-int maior(int a, int b) {
-  if (a > b) {
-    return a;
+int v[10];
+
+int main() {
+
+  int i;
+  for (i = 0; i < 10; i +=1) {
+    v[i] = i;
   }
-  return b;
 
-}
-
-
-int main(int argc, string argv[]) {
-
-  int b = maior(2, 3);
+  while (i > 0) {
+    write i;
+    i -= 1;
+  }
   
   return 0;
 }

@@ -117,6 +117,7 @@ abstract_syntax_tree *root;
              stmt
              selection_stmt
              jump_stmt
+             loop_stmt
              in_out_stmt
              subprogram_call
              var
@@ -296,7 +297,13 @@ selection_stmt
 
 loop_stmt
         : WHILE '(' exp ')' compound_stmt
+        {
+          $$ = new while_stmt($3, $5);
+        }
         | FOR '(' assign ';' exp ';' assign ')' compound_stmt
+        {
+          $$ = new for_stmt($3, $5, $7, $9);
+        }
         ;
 
 jump_stmt

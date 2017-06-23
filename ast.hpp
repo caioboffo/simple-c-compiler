@@ -7,6 +7,7 @@
 #include "break_stmt.hpp"
 #include "equal_operation.hpp"
 #include "expression.hpp"
+#include "for_stmt.hpp"
 #include "greater_operation.hpp"
 #include "greater_or_equal_operation.hpp"
 #include "if_stmt.hpp"
@@ -34,3 +35,4 @@
 #include "unary_minus_operation.hpp"
 #include "unary_not_operation.hpp"
 #include "write_stmt.hpp"
+#include "while_stmt.hpp"

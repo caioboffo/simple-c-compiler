@@ -7,7 +7,6 @@ void assignment::print() {
   id->print();
   std::cout << " = ";
   exp->print();
-  std::cout << std::endl;
 }
 
 void assignment::evaluate() {

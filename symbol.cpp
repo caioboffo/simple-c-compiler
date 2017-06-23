@@ -73,7 +73,6 @@ void symbol::print() {
       std::cout << "}";
     }
   } else {
-
     if (initializer) {
       std::cout << " = ";
       initializer->print();

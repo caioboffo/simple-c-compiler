@@ -10,6 +10,7 @@ OBJS = abstract_syntax_tree.o               \
        break_stmt.o                         \
        equal_operation.o                    \
        expression.o                         \
+       for_stmt.o                           \
        if_stmt.o                            \
        greater_operation.o                  \
        greater_or_equal_operation.o         \
@@ -37,6 +38,7 @@ OBJS = abstract_syntax_tree.o               \
        unary_not_operation.o                \
        parser.o                             \
        write_stmt.o                         \
+       while_stmt.o                         \
 
 
 LDFLAGS  = -lm
