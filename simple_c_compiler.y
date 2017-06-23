@@ -117,6 +117,7 @@ abstract_syntax_tree *root;
              stmt
              jump_stmt
              in_out_stmt
+             subprogram_call
              var
              var_dec
              var_spec
@@ -303,7 +304,10 @@ in_out_stmt
         ;
         
 subprogram_call
-        : IDENTIFIER '(' expression_list ')' 
+        : IDENTIFIER '(' expression_list ')'
+        {
+          $$ = new subprogram_call($1, $3);
+        }
         ;
         
 expression_list
@@ -386,7 +390,7 @@ exp
         }
         | var
         | literal
-          //       | subprogram_call 
+        | subprogram_call 
         | '(' exp ')' { $$ = $2; }
         ;
 

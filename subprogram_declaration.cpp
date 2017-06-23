@@ -13,7 +13,7 @@ subprogram_declaration::subprogram_declaration
 }
 
 subprogram_declaration::subprogram_declaration
-                       (basic_type            t,
+                       (basic_type             t,
                         std::string            id,
                         std::list<tree_node*> *parameters,
                         tree_node             *compound_statement) {

@@ -23,6 +23,7 @@
 #include "return_stmt.hpp"
 #include "statement.hpp"
 #include "string_literal.hpp"
+#include "subprogram_call.hpp"
 #include "subprogram_declaration.hpp"
 #include "symbol.hpp"
 #include "symbol_declaration.hpp"

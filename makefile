@@ -25,6 +25,7 @@ OBJS = abstract_syntax_tree.o               \
        return_stmt.o                        \
        scanner.o                            \
        string_literal.o                     \
+       subprogram_call.o                    \
        subprogram_declaration.o             \
        symbol.o                             \
        symbol_declaration.o                 \
