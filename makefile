@@ -21,6 +21,7 @@ OBJS = abstract_syntax_tree.o               \
        or_operation.o                       \
        over_operation.o                     \
        plus_operation.o                     \
+       read_stmt.o                          \
        return_stmt.o                        \
        scanner.o                            \
        string_literal.o                     \
@@ -33,6 +34,7 @@ OBJS = abstract_syntax_tree.o               \
        unary_minus_operation.o              \
        unary_not_operation.o                \
        parser.o                             \
+       write_stmt.o                         \
 
 
 LDFLAGS  = -lm

@@ -98,6 +98,8 @@ abstract_syntax_tree *root;
 %type <prog> program
 
 %type <node_list> declaration_stmt_list
+                  expression_seq
+                  expression_list
                   param_list
                   param_seq
                   var_spec_list
@@ -114,6 +116,7 @@ abstract_syntax_tree *root;
              param
              stmt
              jump_stmt
+             in_out_stmt
              var
              var_dec
              var_spec
@@ -295,8 +298,8 @@ jump_stmt
         ;
 
 in_out_stmt
-        : READ var ';'
-        | WRITE expression_list ';'
+        : READ var ';'              { $$ = new read_stmt($2);  }
+        | WRITE expression_list ';' { $$ = new write_stmt($2); }
         ;
         
 subprogram_call
@@ -305,12 +308,19 @@ subprogram_call
         
 expression_list
         : expression_seq
-        | %empty
+        | %empty          { $$ = new std::list<tree_node*>(); }
         ;
 
 expression_seq
-        : initializer ',' expression_seq
+        : expression_seq ',' initializer
+        {
+          $$ = $1;
+          $1->push_back($3);
+        }
         | initializer
+        {
+          $$ = new std::list<tree_node*>({$1});
+        }
         ;
 
 assign  : var '=' exp

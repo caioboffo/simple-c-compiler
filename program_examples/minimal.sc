@@ -7,7 +7,10 @@ int main(int argc, string argv[]) {
   int two = 2, three;
 
   three = 23 + two;
-  
+  read name;
+
+  write three, name, valores[2], "ola mundo";
+
   return;
   
 }

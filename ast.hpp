@@ -19,6 +19,7 @@
 #include "or_operation.hpp"
 #include "over_operation.hpp"
 #include "plus_operation.hpp"
+#include "read_stmt.hpp"
 #include "return_stmt.hpp"
 #include "statement.hpp"
 #include "string_literal.hpp"
@@ -30,3 +31,4 @@
 #include "tree_node.hpp"
 #include "unary_minus_operation.hpp"
 #include "unary_not_operation.hpp"
+#include "write_stmt.hpp"
