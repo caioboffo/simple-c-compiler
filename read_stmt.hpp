@@ -7,7 +7,10 @@ class read_stmt : public statement {
 protected:
   tree_node *var;
 public:
-  read_stmt(tree_node *v) : var(v) {}
+  read_stmt(tree_node *v, YYLTYPE loc) {
+    this->var = v;
+    this->locations = loc;
+  }
   void print();
   void evaluate();
 };

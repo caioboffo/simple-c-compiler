@@ -5,7 +5,7 @@ void if_stmt::print() {
   std::cout << "if ";
   exp->print();
   std::cout << "\n";
-  true_block->print();
+  then_block->print();
   if (else_block) {
     std::cout << "\n";
     else_block->print();

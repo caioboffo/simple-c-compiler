@@ -6,10 +6,18 @@
 class if_stmt : public statement {
 protected:
   tree_node *exp;
-  tree_node *true_block, *else_block;
+  tree_node *then_block, *else_block;
 public:
-  if_stmt(tree_node *exp, tree_node *true_block, tree_node *else_block = NULL)
-    : exp(exp), true_block(true_block), else_block(else_block) {}
+  if_stmt(tree_node *exp,
+          tree_node *then_block,
+          YYLTYPE loc,
+          tree_node *else_block = NULL) {
+    exp = exp;
+    then_block = then_block;
+    else_block = else_block;
+    this->locations = loc;
+  }
+    
   void print();
   void evaluate();
 };

@@ -9,8 +9,12 @@ class return_stmt : public statement {
 protected:
   tree_node *return_expression;
 public:
-  return_stmt() {}
-  return_stmt(tree_node *re) : return_expression(re) {}
+  return_stmt(YYLTYPE loc) {}
+  return_stmt(tree_node *re, YYLTYPE loc) {
+    return_expression = re;
+    this->locations = loc;
+  }
+    
   void print();
   void evaluate();
 };

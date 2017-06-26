@@ -13,7 +13,9 @@ protected:
   std::list<tree_node*> *parameters;
   expression *return_value;
 public:
-  subprogram_call(std::string id, std::list<tree_node*> *param);
+  subprogram_call(std::string id,
+                  std::list<tree_node*> *param,
+                  YYLTYPE loc);
   void print();
   void evaluate();
 };

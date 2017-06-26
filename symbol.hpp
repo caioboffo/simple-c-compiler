@@ -20,10 +20,18 @@ public:
                            size(NULL),
                            initializer(NULL),
                            is_array_type(false) {}
+
+  symbol(std::string id, YYLTYPE loc);
   symbol(std::string id,
-             tree_node *size);
-  symbol(tree_node *var, tree_node *init);
-  symbol(tree_node *var, std::list<tree_node*> *init_list);
+         tree_node *size);
+  symbol(std::string id,
+         tree_node *size,
+         YYLTYPE loc);
+  symbol(tree_node *var, tree_node *init, YYLTYPE loc);
+  symbol(tree_node *var,
+         std::list<tree_node*> *init_list,
+         YYLTYPE loc);
+
   void set_type(basic_type t);
   void print();
   void evaluate();

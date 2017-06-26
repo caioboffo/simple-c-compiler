@@ -15,9 +15,10 @@ protected:
   symbol *id;
   expression *exp;
 public:
-  assignment(symbol *var, tree_node *exp) {
+  assignment(symbol *var, tree_node *exp, YYLTYPE loc) {
     this->id = var;
     this->exp = static_cast<expression*>(exp);
+    this->locations = loc;
   }
   void print();
   void evaluate();

@@ -3,12 +3,13 @@
 #include "symbol.hpp"
 
 symbol_declaration::symbol_declaration (basic_type type,
-                                        std::list<tree_node*> *id_list) {
+                                        std::list<tree_node*> *id_list,
+                                        YYLTYPE loc) {
   // list<symbol*> is a list<symbol*>
   // deal with scope
   this->type = type;
   this->id_list = new std::list<symbol*>();
-
+  this->locations = loc;
   // set the type of each symbol
   for (auto it = id_list->begin(); it != id_list->end();
         it++) {

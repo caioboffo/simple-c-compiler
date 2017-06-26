@@ -5,7 +5,9 @@
 
 class break_stmt : public statement {
 public:
-  break_stmt() {}
+  break_stmt(YYLTYPE loc) {
+    this->locations = loc;
+  }
   void print();
   void evaluate();
 };

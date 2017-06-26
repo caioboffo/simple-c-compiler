@@ -9,6 +9,7 @@ class string_literal : public expression {
   std::string string_value;
 public:
   string_literal(std::string str);
+  string_literal(std::string str, YYLTYPE loc);
   void print();
   void evaluate();
 };

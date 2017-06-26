@@ -2,9 +2,12 @@
 #include "subprogram_call.hpp"
 #include "symbol.hpp"
 
-subprogram_call::subprogram_call(std::string id, std::list<tree_node*> *param) {
+subprogram_call::subprogram_call(std::string id,
+                                 std::list<tree_node*> *param,
+                                 YYLTYPE loc) {
   identifier = new symbol(id);
   parameters = param;
+  this->locations = loc;
 }
 void subprogram_call::print() {
   identifier->print();

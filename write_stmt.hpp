@@ -9,7 +9,10 @@ protected:
   std::list<tree_node*> *expressions;
 
 public:
-  write_stmt(std::list<tree_node*> *exps) : expressions(exps) {}
+  write_stmt(std::list<tree_node*> *exps, YYLTYPE loc) {
+    this->expressions = exps;
+    this->locations = loc;
+  }
   void print();
   void evaluate();
 };

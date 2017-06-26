@@ -8,6 +8,7 @@
 class boolean : public expression {
 public:
   boolean(int v) : expression(v, basic_type::BOOLEAN) {}
+  boolean(int v, YYLTYPE loc);
   void print();
   void evaluate();
 };

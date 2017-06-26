@@ -10,12 +10,13 @@ protected:
   std::list<tree_node*> *statement_list;
   
 public:
-  basic_block();
+  basic_block(YYLTYPE loc);
   
-  basic_block(std::list<tree_node*> *stmt_list);
+  basic_block(std::list<tree_node*> *stmt_list, YYLTYPE loc);
   
   basic_block(std::list<tree_node*> *var_dec_list,
-              std::list<tree_node*> *stmt_list);
+              std::list<tree_node*> *stmt_list,
+              YYLTYPE loc);
 
   void print();
   void evaluate();

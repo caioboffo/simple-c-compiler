@@ -4,11 +4,13 @@
 subprogram_declaration::subprogram_declaration
                        (std::string            id,
                         std::list<tree_node*> *parameters,
-                        tree_node             *compound_statement) {
+                        tree_node             *compound_statement,
+                        YYLTYPE loc) {
   
   this->name   = new symbol(id);
   this->param_list = parameters;
   this->block = static_cast<basic_block*>(compound_statement);
+  this->locations = loc;
   
 }
 
@@ -16,12 +18,14 @@ subprogram_declaration::subprogram_declaration
                        (basic_type             t,
                         std::string            id,
                         std::list<tree_node*> *parameters,
-                        tree_node             *compound_statement) {
+                        tree_node             *compound_statement,
+                        YYLTYPE loc) {
 
   this->return_type = t;
   this->name   = new symbol(id);
   this->param_list = parameters;
   this->block = static_cast<basic_block*>(compound_statement);
+  this->locations = loc;
 
 }
 

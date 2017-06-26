@@ -13,7 +13,9 @@ class symbol_declaration : public statement {
   basic_type type;
   std::list<symbol*> *id_list;
 public:
-  symbol_declaration(basic_type type, std::list<tree_node*> *id_list);
+  symbol_declaration(basic_type type,
+                     std::list<tree_node*> *id_list,
+                     YYLTYPE loc);
   void print();
   void evaluate();
 };

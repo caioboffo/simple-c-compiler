@@ -3,13 +3,26 @@
 #include "boolean.hpp"
 #include "number.hpp"
 
+symbol::symbol(std::string id, YYLTYPE loc) {
+  this->id = id;
+  this->locations = loc;
+  this->is_array_type = false;
+}
+
 symbol::symbol(std::string id, tree_node *size) {
   this->id = id;
   this->size = static_cast<expression*>(size);
   this->is_array_type = true;
 }
 
-symbol::symbol(tree_node *var, tree_node *init) {
+symbol::symbol(std::string id, tree_node *size, YYLTYPE loc) {
+  this->id = id;
+  this->size = static_cast<expression*>(size);
+  this->is_array_type = true;
+  this->locations = loc;
+}
+
+symbol::symbol(tree_node *var, tree_node *init, YYLTYPE loc) {
   this->id = static_cast<symbol*>(var)->id;
   this->is_array_type = static_cast<symbol*>(var)->is_array_type;
   
@@ -17,13 +30,17 @@ symbol::symbol(tree_node *var, tree_node *init) {
     this->size = static_cast<symbol*>(var)->size;
   
   initializer = static_cast<expression*>(init);
+  this->locations = loc;
 }
 
-symbol::symbol(tree_node *var, std::list<tree_node*> *init_list) {
+symbol::symbol(tree_node *var,
+               std::list<tree_node*> *init_list,
+               YYLTYPE loc) {
   this->id = static_cast<symbol*>(var)->id;
   this->is_array_type = static_cast<symbol*>(var)->is_array_type;
   this->size = static_cast<symbol*>(var)->size;
   this->initializer_list = init_list;
+  this->locations = loc;
 }
 
 void symbol::set_type(basic_type t) {

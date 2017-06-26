@@ -147,17 +147,17 @@ declaration_stmt
         : var_dec
         | IDENTIFIER '(' param_list ')' compound_stmt
         {
-          $$ = new subprogram_declaration($1, $3, $5);
+          $$ = new subprogram_declaration($1, $3, $5, @$);
         }
         | type_specifier IDENTIFIER '(' param_list ')' compound_stmt
         {
-          $$ = new subprogram_declaration($1, $2, $4, $6);
+          $$ = new subprogram_declaration($1, $2, $4, $6, @$);
         }
         ;
 
 var_dec : type_specifier var_spec_list ';'
         {
-          $$ = new symbol_declaration($1, $2); 
+          $$ = new symbol_declaration($1, $2, @$); 
         }
         ;
 
@@ -183,11 +183,11 @@ var_spec
         : var                 { $$ = $1; } 
         | var '=' initializer 
         {
-          $$ = new symbol($1, $3);
+          $$ = new symbol($1, $3, @$);
         }
         | var '=' '{' literal_list '}'
         {
-          $$ = new symbol($1, $4);
+          $$ = new symbol($1, $4, @$);
         }
         ;
 
@@ -218,13 +218,15 @@ param
         {
           $$ = new symbol_declaration($1,
                                       new std::list<tree_node*>({
-                                          new symbol($2)}));
+                                          new symbol($2)}),
+                                      @$);
         }
         | type_specifier IDENTIFIER '[' ']'
         {
           $$ = new symbol_declaration($1,
                                       new std::list<tree_node*>({
-                                          new symbol($2, new number(0))}));
+                                          new symbol($2, new number(0))}),
+                                      @$);
         }
         ;
         
@@ -266,13 +268,13 @@ stmt_list
         ;
         
 compound_stmt
-        : '{' '}'              { $$ = new basic_block(); }
+        : '{' '}'              { $$ = new basic_block(@$); }
         | '{' var_dec_list stmt_list '}'
         {
-          $$ = new basic_block($2, $3);
+          $$ = new basic_block($2, $3, @$);
         }
-        | '{' var_dec_list '}' { $$ = new basic_block($2); }
-        | '{' stmt_list '}'    { $$ = new basic_block($2); }   
+        | '{' var_dec_list '}' { $$ = new basic_block($2, @$); }
+        | '{' stmt_list '}'    { $$ = new basic_block($2, @$); }   
         ;
 
 stmt
@@ -287,40 +289,40 @@ stmt
 selection_stmt
         : IF '(' exp ')' compound_stmt
         {
-          $$ = new if_stmt($3, $5);
+          $$ = new if_stmt($3, $5, @$);
         }
         | IF '(' exp ')' compound_stmt ELSE compound_stmt
         {
-          $$ = new if_stmt($3, $5, $7);
+          $$ = new if_stmt($3, $5, @$, $7);
         }
         ;
 
 loop_stmt
         : WHILE '(' exp ')' compound_stmt
         {
-          $$ = new while_stmt($3, $5);
+          $$ = new while_stmt($3, $5, @$);
         }
         | FOR '(' assign ';' exp ';' assign ')' compound_stmt
         {
-          $$ = new for_stmt($3, $5, $7, $9);
+          $$ = new for_stmt($3, $5, $7, $9, @$);
         }
         ;
 
 jump_stmt
-        : RETURN ';'     { $$ = new return_stmt(); }
-        | RETURN exp ';' { $$ = new return_stmt($2); }
-        | BREAK ';'      { $$ = new break_stmt();  }
+        : RETURN ';'     { $$ = new return_stmt(@$); }
+        | RETURN exp ';' { $$ = new return_stmt($2, @$); }
+        | BREAK ';'      { $$ = new break_stmt(@$);  }
         ;
 
 in_out_stmt
-        : READ var ';'              { $$ = new read_stmt($2);  }
-        | WRITE expression_list ';' { $$ = new write_stmt($2); }
+        : READ var ';'              { $$ = new read_stmt($2, @$);  }
+        | WRITE expression_list ';' { $$ = new write_stmt($2, @$); }
         ;
         
 subprogram_call
         : IDENTIFIER '(' expression_list ')'
         {
-          $$ = new subprogram_call($1, $3);
+          $$ = new subprogram_call($1, $3, @$);
         }
         ;
         
@@ -343,43 +345,43 @@ expression_seq
 
 assign  : var '=' exp
         {
-          $$ = new assignment( static_cast<symbol*>($1), $3);
+          $$ = new assignment( static_cast<symbol*>($1), $3, @$);
         }
         | var "+=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new plus_operation($1, $3) );
+                               new plus_operation($1, $3), @$ );
         }
         | var "-=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new minus_operation($1, $3) );
+                               new minus_operation($1, $3), @$ );
         }
         | var "*=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new times_operation($1, $3) );
+                               new times_operation($1, $3), @$ );
         }
         | var "/=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new over_operation($1, $3) );
+                               new over_operation($1, $3), @$ );
         }
         | var "%=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new module_operation($1, $3) );
+                               new module_operation($1, $3), @$ );
         }
         ;
         
-var     : IDENTIFIER  { $$ = new symbol($1); }
-        | IDENTIFIER '[' exp ']'  { $$ = new symbol($1, $3); } 
+var     : IDENTIFIER  { $$ = new symbol($1, @$); }
+        | IDENTIFIER '[' exp ']'  { $$ = new symbol($1, $3, @$); } 
         ;
 
-literal : CONSTANT       { $$ = new number($1); }
-        | STRING_LITERAL { $$ = new string_literal($1); }
-        | TRUE           { $$ = new boolean(1); }
-        | FALSE          { $$ = new boolean(0); }
+literal : CONSTANT       { $$ = new number($1, @$); }
+        | STRING_LITERAL { $$ = new string_literal($1, @$); }
+        | TRUE           { $$ = new boolean(1, @$); }
+        | FALSE          { $$ = new boolean(0, @$); }
         ;
 
 exp

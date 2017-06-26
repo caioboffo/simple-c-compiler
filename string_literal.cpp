@@ -6,6 +6,11 @@ string_literal::string_literal(std::string str) {
   set_type(basic_type::STRING);
 }
 
+string_literal::string_literal(std::string str, YYLTYPE loc) {
+  string_value = str;
+  set_type(basic_type::STRING);
+  this->locations = loc;
+}
 void string_literal::print() {
   if (string_value.length()) 
     std::cout << string_value ;
