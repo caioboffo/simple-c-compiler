@@ -419,7 +419,7 @@ void yyerror(char const *s, ...) {
   va_start(ap, s);
 
   if (yylloc.first_line)
-     fprintf(stderr, "%s:%d:%d-%d: \033[1;31merror:\033[0m ",
+     fprintf(stderr, "%s %d:%d-%d: \033[1;31merror:\033[0m ",
              filename,
              yylloc.first_line,
              yylloc.first_column,

@@ -106,7 +106,10 @@ void symbol::evaluate() {
   // into a digit
   if (size) {
     size->evaluate();
+    if (size->type != basic_type::INTEGER)
+      error("array size must be a numeric expression");
   }
+  
   // symbol is assigned to some value so evaluate its assignment
   if (initializer) {
     initializer->evaluate();

@@ -14,10 +14,10 @@ public:
            tree_node *sa,
            tree_node *block,
            YYLTYPE loc) {
-    first_assign = fa;
-    exp = exp;
-    second_assign = sa;
-    block = block;
+    this->first_assign = fa;
+    this->exp = exp;
+    this->second_assign = sa;
+    this->block = block;
     this->locations = loc;
   }
       
