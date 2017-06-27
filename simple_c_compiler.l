@@ -141,8 +141,6 @@ int main(int argc, char* argv[]) {
   yylineno = 1;
 
   sym_table = new symbol_table();
-  sym_table->insert("read");
-  sym_table->insert("write");
 
   yyparse();
   if (!any_errors)

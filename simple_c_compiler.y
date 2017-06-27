@@ -20,14 +20,16 @@
 %code top {
 
 #include <iostream>
-  
+#include "symbol_table.hpp"
+
 extern int yylex(void);
 extern int yylineno;
 extern FILE *yyin;
 extern char *filename;
 extern bool any_errors;
- 
-void yyerror(char const *, ...);
+
+ void yyerror(char const *, ...);
+extern symbol_table *sym_table;
 
 void yyusage() {
   std::cout
@@ -157,7 +159,7 @@ declaration_stmt
 
 var_dec : type_specifier var_spec_list ';'
         {
-          $$ = new symbol_declaration($1, $2, @$); 
+          $$ = new symbol_declaration($1, $2, @$);
         }
         ;
 
@@ -268,13 +270,27 @@ stmt_list
         ;
         
 compound_stmt
-        : '{' '}'              { $$ = new basic_block(@$); }
+        : '{' '}'
+        {
+          sym_table->new_scope();
+          $$ = new basic_block(@$);
+          
+        }
         | '{' var_dec_list stmt_list '}'
         {
+          sym_table->new_scope();
           $$ = new basic_block($2, $3, @$);
         }
-        | '{' var_dec_list '}' { $$ = new basic_block($2, @$); }
-        | '{' stmt_list '}'    { $$ = new basic_block($2, @$); }   
+        | '{' var_dec_list '}'
+        {
+          sym_table->new_scope();
+          $$ = new basic_block($2, @$);
+        }
+        | '{' stmt_list '}'
+        {
+          sym_table->new_scope();
+          $$ = new basic_block($2, @$);
+        }   
         ;
 
 stmt
@@ -289,10 +305,12 @@ stmt
 selection_stmt
         : IF '(' exp ')' compound_stmt
         {
+          sym_table->new_scope();
           $$ = new if_stmt($3, $5, @$);
         }
         | IF '(' exp ')' compound_stmt ELSE compound_stmt
         {
+          sym_table->new_scope();
           $$ = new if_stmt($3, $5, @$, $7);
         }
         ;
@@ -300,10 +318,12 @@ selection_stmt
 loop_stmt
         : WHILE '(' exp ')' compound_stmt
         {
+          sym_table->new_scope();
           $$ = new while_stmt($3, $5, @$);
         }
         | FOR '(' assign ';' exp ';' assign ')' compound_stmt
         {
+          sym_table->new_scope();
           $$ = new for_stmt($3, $5, $7, $9, @$);
         }
         ;
@@ -374,8 +394,14 @@ assign  : var '=' exp
         }
         ;
         
-var     : IDENTIFIER  { $$ = new symbol($1, @$); }
-        | IDENTIFIER '[' exp ']'  { $$ = new symbol($1, $3, @$); } 
+var     : IDENTIFIER
+        {
+          $$ = new symbol($1, @$);
+        }
+        | IDENTIFIER '[' exp ']'
+        {
+          $$ = new symbol($1, $3, @$);
+        } 
         ;
 
 literal : CONSTANT       { $$ = new number($1, @$); }
@@ -419,11 +445,11 @@ void yyerror(char const *s, ...) {
   va_start(ap, s);
 
   if (yylloc.first_line)
-     fprintf(stderr, "%s %d:%d-%d: \033[1;31merror:\033[0m ",
-             filename,
-             yylloc.first_line,
-             yylloc.first_column,
-             yylloc.last_column);
+    fprintf(stderr, "%s %d:%d-%d: \033[1;31merror:\033[0m ",
+            filename,
+            yylloc.first_line,
+            yylloc.first_column,
+            yylloc.last_column);
   vfprintf(stderr, s, ap);
   fprintf(stderr, "\n");
 }

@@ -5,41 +5,39 @@
 #include <map>
 #include <list>
 
-
-enum class symbol_type_t
+enum class symbol_type
 {
   INTEGER, BOOLEAN, STRING, FUNCTION, PROCEDURE
-    };
+};
 
-enum class scope_type_t
+enum class scope_type
 {
   GLOBAL, LOCAL, FORMAL
-    };
+};
 
-typedef struct scope_t
-{
-  int id;
-  scope_type_t scope_type;
-  symbol_type_t symbol_type;
-} scope ;
+typedef struct scope {
+  int         id;
+  scope_type  scope_t;
+  symbol_type sym_t;
+  scope(int i, scope_type scope_t, symbol_type sym_t) :
+    id(i), scope_t(scope_t), sym_t(sym_t) {}
+} scope;
 
-typedef std::map<std::string, std::list<scope>* > symbol_table_t;
-typedef symbol_table_t::iterator symbol_ref;
-
-typedef struct symbol_status_t
-{
-  bool already_exists;
-  symbol_ref reference;
-} *sym_status;
+typedef std::map<std::string, std::list<scope*>* > symbol_table_t;
+typedef std::pair<std::string, std::list<scope*>*> sym_table_item;
 
 class symbol_table {
-
   // private member
   symbol_table_t *_table;
-  
+  int current_scope;
 public:
+
   symbol_table();
-  sym_status insert(std::string id);
+  void insert(std::string id);
+  void insert(std::string id,
+              scope_type scope_t,
+              symbol_type sym_t);
+  void new_scope();
   
 };
 
