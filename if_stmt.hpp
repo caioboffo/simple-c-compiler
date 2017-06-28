@@ -12,9 +12,9 @@ public:
           tree_node *then_block,
           YYLTYPE loc,
           tree_node *else_block = NULL) {
-    exp = exp;
-    then_block = then_block;
-    else_block = else_block;
+    this->exp = exp;
+    this->then_block = then_block;
+    this->else_block = else_block;
     this->locations = loc;
   }
     
