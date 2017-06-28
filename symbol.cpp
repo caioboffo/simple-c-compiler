@@ -1,4 +1,5 @@
 #include "symbol.hpp"
+#include "error_manager.hpp"
 #include "string_literal.hpp"
 #include "boolean.hpp"
 #include "number.hpp"
@@ -107,7 +108,8 @@ void symbol::evaluate() {
   if (size) {
     size->evaluate();
     if (size->type != basic_type::INTEGER)
-      error("array size must be a numeric expression");
+      error_manager::error("array size must be a numeric expression",
+                           this->locations);
   }
   
   // symbol is assigned to some value so evaluate its assignment

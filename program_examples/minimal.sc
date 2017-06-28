@@ -1,7 +1,7 @@
 /* simple program in cmm language */
 
 int v[10];
-
+int name = "jones";
 int main() {
 
   int i;

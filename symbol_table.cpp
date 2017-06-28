@@ -1,4 +1,7 @@
+#include <string>
 #include "symbol_table.hpp"
+#include "error_manager.hpp"
+#include "locations.hpp"
 
 symbol_table::symbol_table() {
   current_scope = 0;
@@ -13,7 +16,8 @@ void symbol_table::insert(std::string id) {
 // Add symbol to symbol table
 void symbol_table::insert(std::string id,
                           scope_type scope_t,
-                          symbol_type sym_t) {
+                          symbol_type sym_t,
+                          YYLTYPE locations) {
 
   scope *ns = new scope(current_scope, scope_t, sym_t);
   
@@ -22,7 +26,8 @@ void symbol_table::insert(std::string id,
   if (sym != _table->end()) {
     // is same escope? should give a symbol redeclaration error
     if (((*sym).second->back())->id == current_scope) {
-      
+      std::string err = "redefinition of symbol " + id;
+      error_manager::error(err.c_str(), locations);
     } else { // insert the new scope information at the back of the list
       (*sym).second->push_back(ns);
     } 
@@ -36,3 +41,4 @@ void symbol_table::insert(std::string id,
 void symbol_table::new_scope() {
   current_scope++;
 }
+

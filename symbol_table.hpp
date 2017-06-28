@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include "locations.hpp"
 
 enum class symbol_type
 {
@@ -36,9 +37,10 @@ public:
   void insert(std::string id);
   void insert(std::string id,
               scope_type scope_t,
-              symbol_type sym_t);
+              symbol_type sym_t,
+              YYLTYPE locations);
   void new_scope();
-  
+
 };
 
 #endif /* SYMBOL_TABLE_H */

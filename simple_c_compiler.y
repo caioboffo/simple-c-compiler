@@ -8,40 +8,29 @@
 
 %code requires {
 
+#include <iostream>
 #include <string>
 #include <fstream>
 #include <cstdlib>
 #include <cstdarg>
 #include <list>
+
 #include "ast.hpp"
 
 }
 
 %code top {
 
-#include <iostream>
 #include "symbol_table.hpp"
-
-extern int yylex(void);
-extern int yylineno;
-extern FILE *yyin;
-extern char *filename;
-extern bool any_errors;
-
- void yyerror(char const *, ...);
+#include "abstract_syntax_tree.hpp"
+#include "error_manager.hpp"
+extern int           yylex(void);
+extern int           yylineno;
+extern void yyerror(char const *, ...); 
 extern symbol_table *sym_table;
 
-void yyusage() {
-  std::cout
-        <<  "cmm: fatal error: no input files\n"
-        <<  "compilation terminated."
-        << std::endl;
-}
-
-#include "abstract_syntax_tree.hpp"
- 
 abstract_syntax_tree *root;
- 
+
 }
 
 %locations
@@ -439,19 +428,7 @@ exp
 %%
 
 void yyerror(char const *s, ...) {
-  if (!any_errors)
-    any_errors = true;
-  va_list ap;
-  va_start(ap, s);
-
-  if (yylloc.first_line)
-    fprintf(stderr, "%s %d:%d-%d: \033[1;31merror:\033[0m ",
-            filename,
-            yylloc.first_line,
-            yylloc.first_column,
-            yylloc.last_column);
-  vfprintf(stderr, s, ap);
-  fprintf(stderr, "\n");
+  error_manager::error(s, yylloc);
 }
 
 void yyevaluate() {

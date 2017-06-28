@@ -9,23 +9,22 @@
 
 #include <iostream>
 #include <string>
+#include "locations.hpp"
+#include "error_manager.hpp"
 #include "parser.hpp"
 #include "symbol_table.hpp"
 
-
-extern void yyusage();
 extern void yyevaluate();
 extern void yyerror(char const *, ...);
+extern FILE *yyin;
 
- 
 %}
 
 %{
 
 int yycolumn = 0, comment_nesting;
-bool any_errors;
-char *filename;
 symbol_table *sym_table;
+
 
 #define YY_BUF_SIZE 16384
  
@@ -57,7 +56,7 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 <comment>"*/"     { if (--comment_nesting == 0) BEGIN(INITIAL);  }
 <comment>[*/]     { /* match a / or * */                         }
 <comment><<EOF>>  {
-                    yyerror("unterminated comment");
+                    error_manager::error("unterminated comment",  yylloc);
                     yyterminate();
                   }
 
@@ -69,7 +68,7 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
                   }
 
 \"(\\.|[^"\n])*   { 
-                    yyerror("missing closing quotes");
+                    error_manager::error("missing closing quotes", yylloc);
                   }
 
 
@@ -115,7 +114,7 @@ write    { return WRITE;            }
 
 {whitespace}     { /* ignore whitespace */         }
 
-.        { yyerror("unkonw token"); }
+.        { error_manager::error("unkonw token", yylloc); }
 
 <<EOF>>  { 
            yypop_buffer_state();
@@ -125,16 +124,23 @@ write    { return WRITE;            }
 
 %%
 
+bool error_manager::any_errors = false;
+char *error_manager::filename;
+
 int main(int argc, char* argv[]) {
   FILE *fh;
   
   if (argc == 2 && (fh = fopen(argv[1], "r"))) {
-    filename = argv[1];
+    error_manager::filename = argv[1];
     yyin = fh;
     if (!yyin)
       yypush_buffer_state(yy_create_buffer(yyin, YY_BUF_SIZE));
   } else {
-    yyusage();
+    std::cout
+      <<  "cmm: fatal error: no input files\n"
+      <<  "compilation terminated."
+      << std::endl;
+
     exit(EXIT_FAILURE);
   }
 
@@ -143,7 +149,7 @@ int main(int argc, char* argv[]) {
   sym_table = new symbol_table();
 
   yyparse();
-  if (!any_errors)
+  if (!error_manager::had_error())
     yyevaluate();
 
   fclose(fh);
