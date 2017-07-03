@@ -70,6 +70,7 @@ void subprogram_declaration::evaluate() {
   #endif
 
   // evaluate each parameter
+  // may not be needed
   if (param_list->size() > 0) {
     for (auto param = param_list->begin();
          param != param_list->end();

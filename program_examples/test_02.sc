@@ -1,10 +1,7 @@
+string name = "thunder";
 
 int main() {
-  int i = false;
-  string name = 10;
-  int k, f, g;
-  
- 
-  write "hello world";
+  int i = 1;
+
   return 0;
 }

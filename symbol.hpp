@@ -9,13 +9,14 @@
 #include "basic_type.hpp"
 
 class symbol : public expression {
-  std::string id;
+
   bool        is_array_type;
   expression  *size,
               *initializer;
   
   std::list<tree_node*> *initializer_list; 
 public:
+  std::string id;
   symbol(std::string id) : id(id),
                            size(NULL),
                            initializer(NULL),

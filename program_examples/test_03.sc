@@ -1,10 +1,10 @@
 
 int n[10];
 
-print_array(int n[], int size) {
+print_array(int p[], int size) {
   int i;
   for (i = 0; i < size; i += 1) {
-    write i;
+    write p[i];
     if (i < size) {
       write ", ";
     }

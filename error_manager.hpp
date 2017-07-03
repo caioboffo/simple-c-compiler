@@ -6,9 +6,10 @@
 
 
 class error_manager {
+private:
+  static bool any_errors;
 
 public:
-  static bool any_errors;
   static char *filename;
   static bool had_error() { return any_errors; }
 

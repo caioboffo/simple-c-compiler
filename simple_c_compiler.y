@@ -27,7 +27,6 @@
 extern int           yylex(void);
 extern int           yylineno;
 extern void yyerror(char const *, ...); 
-extern symbol_table *sym_table;
 
 abstract_syntax_tree *root;
 
@@ -261,23 +260,19 @@ stmt_list
 compound_stmt
         : '{' '}'
         {
-          sym_table->new_scope();
           $$ = new basic_block(@$);
           
         }
         | '{' var_dec_list stmt_list '}'
         {
-          sym_table->new_scope();
           $$ = new basic_block($2, $3, @$);
         }
         | '{' var_dec_list '}'
         {
-          sym_table->new_scope();
           $$ = new basic_block($2, @$);
         }
         | '{' stmt_list '}'
         {
-          sym_table->new_scope();
           $$ = new basic_block($2, @$);
         }   
         ;
@@ -294,12 +289,10 @@ stmt
 selection_stmt
         : IF '(' exp ')' compound_stmt
         {
-          sym_table->new_scope();
           $$ = new if_stmt($3, $5, @$);
         }
         | IF '(' exp ')' compound_stmt ELSE compound_stmt
         {
-          sym_table->new_scope();
           $$ = new if_stmt($3, $5, @$, $7);
         }
         ;
@@ -307,12 +300,10 @@ selection_stmt
 loop_stmt
         : WHILE '(' exp ')' compound_stmt
         {
-          sym_table->new_scope();
           $$ = new while_stmt($3, $5, @$);
         }
         | FOR '(' assign ';' exp ';' assign ')' compound_stmt
         {
-          sym_table->new_scope();
           $$ = new for_stmt($3, $5, $7, $9, @$);
         }
         ;

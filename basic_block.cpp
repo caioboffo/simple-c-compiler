@@ -14,7 +14,6 @@ basic_block::basic_block(std::list<tree_node*> *stmt_list, YYLTYPE loc) {
 basic_block::basic_block(std::list<tree_node*> *var_dec_list,
                          std::list<tree_node*> *stmt_list,
                          YYLTYPE loc) {
-
   // add variable declarations at the begining of the list
   this->statement_list = var_dec_list;
 

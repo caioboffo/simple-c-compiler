@@ -124,9 +124,6 @@ write    { return WRITE;            }
 
 %%
 
-bool error_manager::any_errors = false;
-char *error_manager::filename;
-
 int main(int argc, char* argv[]) {
   FILE *fh;
   
@@ -149,6 +146,7 @@ int main(int argc, char* argv[]) {
   sym_table = new symbol_table();
 
   yyparse();
+
   if (!error_manager::had_error())
     yyevaluate();
 

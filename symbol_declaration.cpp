@@ -10,13 +10,13 @@ symbol_declaration::symbol_declaration (basic_type type,
   this->type = type;
   this->id_list = new std::list<symbol*>();
   this->locations = loc;
+
   // set the type of each symbol
   for (auto it = id_list->begin(); it != id_list->end();
         it++) {
     static_cast<symbol*>(*it)->set_type(type);
     this->id_list->push_back(static_cast<symbol*>(*it));
   }
-  
 }
 
 void symbol_declaration::print() {
