@@ -6,7 +6,8 @@
 
 class or_operation : public operation {
 public:
-  or_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
+  or_operation(tree_node *l, tree_node *r, YYLTYPE loc)
+    : operation(l, r, loc) {} 
   void print();
   void evaluate();
 };

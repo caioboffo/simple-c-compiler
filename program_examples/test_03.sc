@@ -3,9 +3,11 @@ int n[10];
 
 print_array(int p[], int size) {
   int i;
+  int k;
   for (i = 0; i < size; i += 1) {
     write p[i];
     if (i < size) {
+      int aix;
       write ", ";
     }
   }

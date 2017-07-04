@@ -13,10 +13,12 @@ protected:
 public:
   ternary_if_operation(tree_node *c,
                        tree_node *t,
-                       tree_node *e) {
+                       tree_node *e,
+                       YYLTYPE    loc) {
     condition = static_cast<expression*>(c);
     then_branch = static_cast<expression*>(t);
     else_branch = static_cast<expression*>(e);
+    this->locations = loc;
   }
   
   void print();

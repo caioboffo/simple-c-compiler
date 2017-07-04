@@ -1,5 +1,6 @@
 #include <iostream>
 #include "subprogram_declaration.hpp"
+#include "symbol_table.hpp"
 
 subprogram_declaration::subprogram_declaration
                        (std::string            id,
@@ -69,8 +70,24 @@ void subprogram_declaration::evaluate() {
   std::cout << "evaluating subprogram declaration\n";
   #endif
 
-  // evaluate each parameter
-  // may not be needed
+  if (return_type != basic_type::VOID) { 
+    symbol_table::insert(this->name->id,
+                         basic_type::PROCEDURE,
+                         basic_type::VOID,
+                         this->param_list,
+                         this->locations);
+  } else {
+    symbol_table::insert(this->name->id,
+                         basic_type::FUNCTION,
+                         this->return_type,
+                         this->param_list,
+                         this->locations);
+
+  }
+
+  symbol_table::create_scope();
+
+  // evaluate each parameter so it can be inserted to symbol table
   if (param_list->size() > 0) {
     for (auto param = param_list->begin();
          param != param_list->end();
@@ -81,4 +98,5 @@ void subprogram_declaration::evaluate() {
 
   // evaluate the subprogram block
   block->evaluate();
+  symbol_table::delete_scope();
 }

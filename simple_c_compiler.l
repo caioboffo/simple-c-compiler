@@ -23,8 +23,6 @@ extern FILE *yyin;
 %{
 
 int yycolumn = 0, comment_nesting;
-symbol_table *sym_table;
-
 
 #define YY_BUF_SIZE 16384
  
@@ -81,10 +79,10 @@ float ([+-]?{digit}+)?\.{digit}*([E|e]?[+-]?{digit}+)?
 "*="    { return TIMES_ASSIGN;      }
 "/="    { return OVER_ASSIGN;       }
 "%="    { return MOD_ASSIGN;        }
-"<"     { return GT;                }
-"<="    { return GE;                }
-">"     { return LT;                }
-">="    { return LE;                }
+"<"     { return LT;                }
+"<="    { return LE;                }
+">"     { return GT;                }
+">="    { return GE;                }
 "=="    { return EQ;                }
 "!="    { return NE;                }
 "&&"    { return AND;               }
@@ -107,7 +105,7 @@ write    { return WRITE;            }
 
 {integer}        { yylval.num = atoi(yytext);   return CONSTANT;   } 
 {identifier}     { 
-                   sym_table->insert(yytext);
+                   symbol_table::insert(yytext);
                    yylval.str = strdup(yytext); 
                    return IDENTIFIER; 
                  }
@@ -143,7 +141,7 @@ int main(int argc, char* argv[]) {
 
   yylineno = 1;
 
-  sym_table = new symbol_table();
+  symbol_table::create_symbol_table();
 
   yyparse();
 

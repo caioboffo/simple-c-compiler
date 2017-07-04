@@ -208,14 +208,14 @@ param
         {
           $$ = new symbol_declaration($1,
                                       new std::list<tree_node*>({
-                                          new symbol($2)}),
+                                          new symbol($2, @$)}),
                                       @$);
         }
         | type_specifier IDENTIFIER '[' ']'
         {
           $$ = new symbol_declaration($1,
                                       new std::list<tree_node*>({
-                                          new symbol($2, new number(0))}),
+                                          new symbol($2, new number(0, @$))}),
                                       @$);
         }
         ;
@@ -350,27 +350,27 @@ assign  : var '=' exp
         | var "+=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new plus_operation($1, $3), @$ );
+                               new plus_operation($1, $3, @3), @$ );
         }
         | var "-=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new minus_operation($1, $3), @$ );
+                               new minus_operation($1, $3, @3), @$ );
         }
         | var "*=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new times_operation($1, $3), @$ );
+                               new times_operation($1, $3, @3), @$ );
         }
         | var "/=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new over_operation($1, $3), @$ );
+                               new over_operation($1, $3, @3), @$ );
         }
         | var "%=" exp
         {
           $$ = new assignment( static_cast<symbol*>($1),
-                               new module_operation($1, $3), @$ );
+                               new module_operation($1, $3, @3), @$ );
         }
         ;
         
@@ -391,24 +391,24 @@ literal : CONSTANT       { $$ = new number($1, @$); }
         ;
 
 exp
-        : exp '+' exp         { $$ = new plus_operation($1, $3);              }
-        | exp '-' exp         { $$ = new minus_operation($1, $3);             }
-        | exp '*' exp         { $$ = new times_operation($1, $3);             }
-        | exp '/' exp         { $$ = new over_operation($1, $3);              }
-        | exp '%' exp         { $$ = new module_operation($1, $3);            }
-        | exp "<" exp         { $$ = new less_operation($1, $3);              }
-        | exp ">" exp         { $$ = new greater_operation($1, $3);           }
-        | exp "<=" exp        { $$ = new less_or_equal_operation($1, $3);     }
-        | exp ">=" exp        { $$ = new greater_or_equal_operation($1, $3);  }
-        | exp "&&" exp        { $$ = new and_operation($1, $3);               }
-        | exp "||" exp        { $$ = new or_operation($1, $3);                }
-        | exp "==" exp        { $$ = new equal_operation($1, $3);             }
-        | exp "!=" exp        { $$ = new not_equal_operation($1, $3);         }
-        | '!' exp %prec NOT   { $$ = new unary_not_operation($2);             }
-        | '-' exp %prec NEG   { $$ = new unary_minus_operation($2);           }
+        : exp '+' exp         { $$ = new plus_operation($1, $3, @$);        }
+        | exp '-' exp         { $$ = new minus_operation($1, $3, @$);       }
+        | exp '*' exp         { $$ = new times_operation($1, $3, @$);       }
+        | exp '/' exp         { $$ = new over_operation($1, $3, @$);        }
+        | exp '%' exp         { $$ = new module_operation($1, $3, @$);      }
+        | exp "<" exp         { $$ = new less_operation($1, $3, @$);        }
+        | exp ">" exp         { $$ = new greater_operation($1, $3, @$);     }
+        | exp "<=" exp        { $$ = new less_or_equal_operation($1, $3, @$);}
+        | exp ">=" exp        { $$ = new greater_or_equal_operation($1, $3, @$);}
+        | exp "&&" exp        { $$ = new and_operation($1, $3, @$);         }
+        | exp "||" exp        { $$ = new or_operation($1, $3, @$);          }
+        | exp "==" exp        { $$ = new equal_operation($1, $3, @$);       }
+        | exp "!=" exp        { $$ = new not_equal_operation($1, $3, @$);   }
+        | '!' exp %prec NOT   { $$ = new unary_not_operation($2, @$);       }
+        | '-' exp %prec NEG   { $$ = new unary_minus_operation($2, @$);     }
         | exp '?' exp ':' exp
         {
-          $$ = new ternary_if_operation($1, $3, $5);
+          $$ = new ternary_if_operation($1, $3, $5, @$);
         }
         | var
         | literal

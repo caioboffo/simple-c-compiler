@@ -9,10 +9,12 @@ public:
   expression *left;
   expression *right;
   operation() {}
-  operation(expression *left, expression *right) : left(left), right(right) {}
-  operation(tree_node  *left, tree_node  *right) {
+  operation(expression *left, expression *right, YYLTYPE loc)
+    : left(left), right(right), expression(loc) {}
+  operation(tree_node  *left, tree_node  *right, YYLTYPE loc) {
     this->left = static_cast<expression*>(left);
     this->right = static_cast<expression*>(right);
+    this->locations = loc;
   }
 };
 

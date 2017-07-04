@@ -1,4 +1,5 @@
 #include "greater_or_equal_operation.hpp"
+#include "error_manager.hpp"
 
 void greater_or_equal_operation::print() {
   std::cout << "(";
@@ -11,5 +12,15 @@ void greater_or_equal_operation::print() {
 void greater_or_equal_operation::evaluate() {
   #ifdef STATUS_OUTPUT
   std::cout << "evaluating >= operation\n";
-  #endif 
+  #endif
+
+  this->left->evaluate();
+  this->right->evaluate();
+
+  if (this->left->type  == basic_type::INTEGER &&
+      this->right->type == basic_type::INTEGER)
+    this->type = basic_type::BOOLEAN;
+  else
+    error_manager::error("incompatible types", this->locations);  
+
 }

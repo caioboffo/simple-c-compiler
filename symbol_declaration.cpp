@@ -1,6 +1,7 @@
 #include "symbol_declaration.hpp"
 #include "tree_node.hpp"
 #include "symbol.hpp"
+#include "symbol_table.hpp"
 
 symbol_declaration::symbol_declaration (basic_type type,
                                         std::list<tree_node*> *id_list,
@@ -13,7 +14,7 @@ symbol_declaration::symbol_declaration (basic_type type,
 
   // set the type of each symbol
   for (auto it = id_list->begin(); it != id_list->end();
-        it++) {
+       it++) {
     static_cast<symbol*>(*it)->set_type(type);
     this->id_list->push_back(static_cast<symbol*>(*it));
   }
@@ -44,16 +45,32 @@ void symbol_declaration::print() {
     (*it)->print();
     if (index != id_list->size())
       std::cout << ", ";
-   }  
+  }  
 }
 
 void symbol_declaration::evaluate() {
+
   #ifdef STATUS_OUTPUT
-  std::cout << "evaluating a variable declaration\n";
+  std::cout << "evaluating a symbol declaration\n";
   #endif
-  for (auto it = id_list->begin(); it != id_list->end();
-        it++) {
+
+  for (auto it = this->id_list->begin(); it != this->id_list->end();
+       it++) {
+
+    if ((*it)->type == basic_type::STRING)
+      symbol_table::insert((*it)->id,
+                           (*it)->type,
+                           (*it)->string_value,
+                           this->locations);
+    else
+      symbol_table::insert((*it)->id,
+                           (*it)->type,
+                           (*it)->value,
+                           this->locations);
+
     (*it)->evaluate();
+    
   }
+
 }
 

@@ -6,7 +6,8 @@
 
 class minus_operation : public operation {
 public:
-  minus_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
+  minus_operation(tree_node *l, tree_node *r, YYLTYPE loc)
+    : operation(l, r, loc) {} 
   void print();
   void evaluate();
 };

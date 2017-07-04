@@ -6,7 +6,8 @@
 
 class less_or_equal_operation : public operation {
 public:
-  less_or_equal_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
+  less_or_equal_operation(tree_node *l, tree_node *r, YYLTYPE loc)
+    : operation(l, r, loc) {} 
   void print();
   void evaluate();
 };

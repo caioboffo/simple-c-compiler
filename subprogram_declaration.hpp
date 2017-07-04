@@ -3,7 +3,6 @@
 
 #include <string>
 #include <list>
-#include "basic_type.hpp"
 #include "basic_block.hpp"
 #include "symbol.hpp"
 #include "tree_node.hpp"

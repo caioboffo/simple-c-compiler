@@ -3,6 +3,8 @@
 #include "string_literal.hpp"
 #include "boolean.hpp"
 #include "number.hpp"
+#include "symbol_table.hpp"
+//#include "basic_type.hpp"
 
 symbol::symbol(std::string id, YYLTYPE loc) {
   this->id = id;
@@ -102,7 +104,11 @@ void symbol::evaluate() {
   #ifdef STATUS_OUTPUT
   std::cout << "evaluating symbol " << id << "\n" ;
   #endif
-  
+
+  symbol_table::symbol_info *si = symbol_table::lookup(this->id,
+                                                       this->locations);
+  this->type = si->type;
+
   // symbol is array size must evaluate the expression size
   // into a digit
   if (size) {
@@ -115,6 +121,18 @@ void symbol::evaluate() {
   // symbol is assigned to some value so evaluate its assignment
   if (initializer) {
     initializer->evaluate();
+    if (this->type != initializer->type) {
+      std::string err
+        = "assingment for variable " + this->id
+        + " should be of type " + to_string(this->type);
+      error_manager::error(err.c_str(), initializer->locations);
+    }
+    if (this->type == basic_type::STRING) {
+      this->string_value = initializer->string_value;
+    }
+    else {
+      this->value = initializer->value;
+    }
   }
   // symbol is an array and this is the list of values assigned to it
   // so evaluate each symbol (literal)
@@ -124,6 +142,13 @@ void symbol::evaluate() {
          it ++) {
       // evaluate each one of the literals in the list
       (*it)->evaluate();
+      if (this->type != static_cast<expression*>(*it)->type) {
+        std::string err
+        = "assingment for variable " + this->id
+          + " should be of type " + to_string(this->type);
+        error_manager::error(err.c_str(),
+                             static_cast<expression*>(*it)->locations);
+      }
     }
   }
 }

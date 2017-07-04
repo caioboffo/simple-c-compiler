@@ -5,44 +5,82 @@
 #include <map>
 #include <list>
 #include "locations.hpp"
-
-enum class symbol_type
-{
-  INTEGER, BOOLEAN, STRING, FUNCTION, PROCEDURE
-};
-
-enum class scope_type
-{
-  GLOBAL, LOCAL, FORMAL
-};
+#include "tree_node.hpp"
+#include "basic_type.hpp"
 
 class symbol_table {
+private:
+  typedef struct symbol_value {
+    int         i_val;
+    int         b_val;
+    std::string s_val;
+  } symbol_value;
+
+public:
+  typedef struct symbol_info {
+    basic_type               type;
+    symbol_value             value;
+    basic_type               return_type;
+    std::list<basic_type>   *param_type;
+    symbol_info(basic_type t) :
+      type(t) {}
+    symbol_info(basic_type   t,
+                symbol_value s) :
+      type(t),
+      value(s) {}
+    symbol_info(basic_type t,
+                basic_type r,
+                std::list<basic_type> *p) :
+      type(t),
+      return_type(r),
+      param_type(p) {}
+  } symbol_info;
+
+private:
+  
+  
 
   typedef struct scope {
-    int         id;
-    scope_type  scope_t;
-    symbol_type sym_t;
-    scope(int i, scope_type scope_t, symbol_type sym_t) :
-      id(i), scope_t(scope_t), sym_t(sym_t) {}
+    int          num;
+    symbol_info *info;
+    scope(int i, symbol_info *info) :
+      num(i), info(info) {}
   } scope;
-
 
   typedef std::map<std::string, std::list<scope*>* > symbol_table_t;
   typedef std::pair<std::string, std::list<scope*>*> sym_table_item;
 
-  symbol_table_t *_table;
-  int current_scope;
-  scope_type scope_t;
+  static void insert(std::string name,
+                     basic_type type,
+                     symbol_info *si,
+                     YYLTYPE locations);
 
 public:
 
-  symbol_table();
-  void insert(std::string id);
-  void insert(std::string id,
-              symbol_type sym_t,
-              YYLTYPE locations);
-  void new_scope();
 
+  static symbol_table_t *_table;
+  static int             current_scope_num;
+  static void create_symbol_table();
+  static void delete_symbol_table();
+
+  static void insert(std::string name);
+  static void insert(std::string name,
+                     basic_type type,
+                     int  value,
+                     YYLTYPE locations);
+  static void insert(std::string name,
+                     basic_type type,
+                     std::string string_value,
+                     YYLTYPE locations);
+  static void insert(std::string name,
+                     basic_type type,
+                     basic_type return_type,
+                     std::list<tree_node*> *param_list,
+                     YYLTYPE locations);
+
+  static symbol_info* lookup(std::string name, YYLTYPE locations);
+  static void create_scope();
+  static void delete_scope();
 };
 
 #endif /* SYMBOL_TABLE_H */

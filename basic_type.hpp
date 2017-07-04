@@ -1,8 +1,38 @@
 #ifndef BASIC_TYPE_H
 #define BASIC_TYPE_H
 
-enum class basic_type {
-  INTEGER = 10, BOOLEAN = 20, STRING = 30
+enum class basic_type : char
+{
+     ERROR     = 0,
+     INTEGER   ,
+     BOOLEAN   ,
+     STRING    ,
+     VOID      ,
+     FUNCTION  ,
+     PROCEDURE    
 };
+
+inline std::string to_string(basic_type t) {
+  switch (t) {
+  case basic_type::INTEGER: {
+    return "integer";
+    break;
+  }
+  case basic_type::BOOLEAN: {
+    return "boolean";
+    break;
+  }
+  case basic_type::STRING: {
+    return "string";
+    break;
+  }
+  default:
+    return "";
+    break;
+  }
+}
+
+
+
 
 #endif /* BASIC_TYPE_H */

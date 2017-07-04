@@ -6,7 +6,8 @@
 
 class module_operation : public operation {
 public:
-  module_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
+  module_operation(tree_node *l, tree_node *r, YYLTYPE loc)
+    : operation(l, r, loc) {} 
   void print();
   void evaluate();
 };

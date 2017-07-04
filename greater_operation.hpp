@@ -6,7 +6,8 @@
 
 class greater_operation : public operation {
 public:
-  greater_operation(tree_node *l, tree_node *r) : operation(l, r) {} 
+  greater_operation(tree_node *l, tree_node *r, YYLTYPE loc)
+    : operation(l, r, loc) {} 
   void print();
   void evaluate();
 };

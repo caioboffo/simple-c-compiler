@@ -9,7 +9,6 @@ class expression;
 class symbol;
 class tree_node;
 
-
 class assignment : public statement {
 protected:
   symbol *id;

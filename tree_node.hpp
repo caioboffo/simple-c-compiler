@@ -6,12 +6,12 @@
 #include "locations.hpp"
 
 class tree_node {
-protected:
-  YYLTYPE locations;
-  
 public:
+  YYLTYPE locations;
   virtual void print() {}
   virtual void evaluate() {}
+  tree_node() {}
+  tree_node(YYLTYPE loc) : locations(loc) {}
 };
 
 #endif /* TREE_NODE_H */

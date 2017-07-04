@@ -14,7 +14,7 @@ void if_stmt::print() {
 
 void if_stmt::evaluate() {
   #ifdef STATUS_OUTPUT
-  std::cout << "evaluating a if statement\n";
+  std::cout << "evaluating an if statement\n";
   #endif
 }
 
