@@ -89,6 +89,19 @@ void symbol_table::insert(std::string name,
   
 }
 
+bool symbol_table::lookup(std::string name) {
+  auto sym = _table->find(name);
+  
+  if (sym != _table->end()) {
+    if ((*sym).second->size() > 0) {
+      if (((*sym).second->back()->info->type == basic_type::PROCEDURE) ||
+          ((*sym).second->back()->info->type == basic_type::FUNCTION ))
+        return true;
+    }
+  }
+  return false;
+}
+
 symbol_table::symbol_info* symbol_table::lookup(std::string name,
                                                 YYLTYPE locations) {
   symbol_info *si;
@@ -100,7 +113,7 @@ symbol_table::symbol_info* symbol_table::lookup(std::string name,
       return si;
     }
     
-  std::string err = "undefined reference " + name;
+  std::string err = "undefined reference to " + name;
   error_manager::error(err.c_str(), locations);
   si = new symbol_info(basic_type::ERROR);
   return si;

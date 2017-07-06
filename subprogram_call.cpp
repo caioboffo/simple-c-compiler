@@ -5,10 +5,11 @@
 subprogram_call::subprogram_call(std::string id,
                                  std::list<tree_node*> *param,
                                  YYLTYPE loc) {
-  identifier = new symbol(id);
+  identifier = new symbol(id, loc);
   parameters = param;
   this->locations = loc;
 }
+
 void subprogram_call::print() {
   identifier->print();
   std::cout << "(";
@@ -29,4 +30,8 @@ void subprogram_call::evaluate() {
 #ifdef STATUS_OUTPUT
   std::cout << "evaluating subprogram call\n";
 #endif
+
+  identifier->evaluate();
+  this->type = static_cast<symbol*>(identifier)->type;
+  
 }

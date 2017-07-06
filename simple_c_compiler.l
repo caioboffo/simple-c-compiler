@@ -145,8 +145,12 @@ int main(int argc, char* argv[]) {
 
   yyparse();
 
-  if (!error_manager::had_error())
+  if (!error_manager::had_error()) {
     yyevaluate();
+
+    if (!symbol_table::lookup("main")) 
+      error_manager::error("undefined reference to main", yylloc);
+  }
 
   fclose(fh);
   

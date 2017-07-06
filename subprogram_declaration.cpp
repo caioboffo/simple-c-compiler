@@ -2,18 +2,6 @@
 #include "subprogram_declaration.hpp"
 #include "symbol_table.hpp"
 
-subprogram_declaration::subprogram_declaration
-                       (std::string            id,
-                        std::list<tree_node*> *parameters,
-                        tree_node             *compound_statement,
-                        YYLTYPE loc) {
-  
-  this->name   = new symbol(id);
-  this->param_list = parameters;
-  this->block = static_cast<basic_block*>(compound_statement);
-  this->locations = loc;
-  
-}
 
 subprogram_declaration::subprogram_declaration
                        (basic_type             t,
@@ -28,6 +16,21 @@ subprogram_declaration::subprogram_declaration
   this->block = static_cast<basic_block*>(compound_statement);
   this->locations = loc;
 
+}
+
+subprogram_declaration::subprogram_declaration
+                       (std::string            id,
+                        std::list<tree_node*> *parameters,
+                        tree_node             *compound_statement,
+                        YYLTYPE loc) {
+
+  this->return_type = basic_type::VOID;
+  this->name   = new symbol(id);
+  this->param_list = parameters;
+  this->block = static_cast<basic_block*>(compound_statement);
+  this->locations = loc;
+                         
+  
 }
 
 void subprogram_declaration::print() {
@@ -70,7 +73,7 @@ void subprogram_declaration::evaluate() {
   std::cout << "evaluating subprogram declaration\n";
   #endif
 
-  if (return_type != basic_type::VOID) { 
+  if (this->return_type == basic_type::VOID) { 
     symbol_table::insert(this->name->id,
                          basic_type::PROCEDURE,
                          basic_type::VOID,

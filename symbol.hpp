@@ -17,7 +17,6 @@ class symbol : public expression {
 public:
 
   std::string id;
-  
   symbol(std::string id) : id(id),
                            size(NULL),
                            initializer(NULL),

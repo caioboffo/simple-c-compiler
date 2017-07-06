@@ -26,6 +26,15 @@ inline std::string to_string(basic_type t) {
     return "string";
     break;
   }
+  case basic_type::VOID: {
+    return "void";
+    break;
+  }
+  case basic_type::FUNCTION:
+  case basic_type::PROCEDURE: {
+    return "subprogram";
+    break;
+  }
   default:
     return "";
     break;

@@ -107,7 +107,14 @@ void symbol::evaluate() {
 
   symbol_table::symbol_info *si = symbol_table::lookup(this->id,
                                                        this->locations);
-  this->type = si->type;
+  if (si->type == basic_type::PROCEDURE ||
+      si->type == basic_type::FUNCTION ) {
+    this->type = si->return_type;
+    std::cout << "it was a subprogram " << to_string(si->return_type) <<"\n";
+  } else {
+    this->type = si->type;
+    std::cout << "it was a normal type " << to_string(si->type) << "\n";
+  }
 
   // symbol is array size must evaluate the expression size
   // into a digit
@@ -121,17 +128,12 @@ void symbol::evaluate() {
   // symbol is assigned to some value so evaluate its assignment
   if (initializer) {
     initializer->evaluate();
+    std::cout << to_string(initializer->type) << "\n\n";
     if (this->type != initializer->type) {
       std::string err
-        = "assingment for variable " + this->id
+        = "assignment for variable " + this->id
         + " should be of type " + to_string(this->type);
       error_manager::error(err.c_str(), initializer->locations);
-    }
-    if (this->type == basic_type::STRING) {
-      this->string_value = initializer->string_value;
-    }
-    else {
-      this->value = initializer->value;
     }
   }
   // symbol is an array and this is the list of values assigned to it
@@ -144,7 +146,7 @@ void symbol::evaluate() {
       (*it)->evaluate();
       if (this->type != static_cast<expression*>(*it)->type) {
         std::string err
-        = "assingment for variable " + this->id
+        = "assignment for variable " + this->id
           + " should be of type " + to_string(this->type);
         error_manager::error(err.c_str(),
                              static_cast<expression*>(*it)->locations);

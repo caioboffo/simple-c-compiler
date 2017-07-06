@@ -3,11 +3,10 @@
 
 #include <list>
 #include <string>
-#include "statement.hpp"
 #include "expression.hpp"
 #include "tree_node.hpp"
 
-class subprogram_call : public statement {
+class subprogram_call : public expression {
 protected:
   tree_node *identifier;
   std::list<tree_node*> *parameters;

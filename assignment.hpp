@@ -9,14 +9,14 @@ class expression;
 class symbol;
 class tree_node;
 
-class assignment : public statement {
+class assignment : public expression {
 protected:
   symbol *id;
-  expression *exp;
+  expression *rhs;
 public:
   assignment(symbol *var, tree_node *exp, YYLTYPE loc) {
     this->id = var;
-    this->exp = static_cast<expression*>(exp);
+    this->rhs = static_cast<expression*>(exp);
     this->locations = loc;
   }
   void print();

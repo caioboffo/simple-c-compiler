@@ -8,7 +8,7 @@
 void assignment::print() {
   id->print();
   std::cout << " = ";
-  exp->print();
+  rhs->print();
 }
 
 void assignment::evaluate() {
@@ -18,11 +18,11 @@ void assignment::evaluate() {
   
   id->evaluate();
   if (id->type != basic_type::ERROR) {
-    exp->evaluate();
+    rhs->evaluate();
 
-    if (id->type != exp->type) {
+    if (id->type != rhs->type) {
       std::string err
-        = "assingment for variable " + id->id
+        = "assignment for variable " + id->id
         + " should be of type " + to_string(id->type);
       error_manager::error(err.c_str(), this->locations);
     }

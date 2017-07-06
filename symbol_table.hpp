@@ -24,21 +24,13 @@ public:
     std::list<basic_type>   *param_type;
     symbol_info(basic_type t) :
       type(t) {}
-    symbol_info(basic_type   t,
-                symbol_value s) :
-      type(t),
-      value(s) {}
-    symbol_info(basic_type t,
-                basic_type r,
-                std::list<basic_type> *p) :
-      type(t),
-      return_type(r),
-      param_type(p) {}
+    symbol_info(basic_type t, symbol_value s) :
+      type(t), value(s) {}
+    symbol_info(basic_type t, basic_type r, std::list<basic_type> *p) :
+      type(t), return_type(r), param_type(p) {}
   } symbol_info;
 
 private:
-  
-  
 
   typedef struct scope {
     int          num;
@@ -64,20 +56,21 @@ public:
   static void delete_symbol_table();
 
   static void insert(std::string name);
-  static void insert(std::string name,
-                     basic_type type,
-                     int  value,
-                     YYLTYPE locations);
-  static void insert(std::string name,
-                     basic_type type,
-                     std::string string_value,
-                     YYLTYPE locations);
-  static void insert(std::string name,
-                     basic_type type,
-                     basic_type return_type,
+  static void insert(std::string            name,
+                     basic_type             type,
+                     int                    value,
+                     YYLTYPE                locations);
+  static void insert(std::string            name,
+                     basic_type             type,
+                     std::string            string_value,
+                     YYLTYPE                locations);
+  static void insert(std::string            name,
+                     basic_type             type,
+                     basic_type             return_type,
                      std::list<tree_node*> *param_list,
-                     YYLTYPE locations);
+                     YYLTYPE                locations);
 
+  static bool lookup(std::string name);
   static symbol_info* lookup(std::string name, YYLTYPE locations);
   static void create_scope();
   static void delete_scope();
