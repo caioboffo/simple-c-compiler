@@ -7,6 +7,7 @@
 
 class tree_node {
 public:
+  tree_node *parent;
   YYLTYPE locations;
   virtual void print() {}
   virtual void evaluate() {}

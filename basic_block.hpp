@@ -8,8 +8,8 @@
 class basic_block : public statement {
 protected:
   std::list<tree_node*> *statement_list;
-  
 public:
+  bool return_stmt;
   basic_block(YYLTYPE loc);
   
   basic_block(std::list<tree_node*> *stmt_list, YYLTYPE loc);

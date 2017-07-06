@@ -1,12 +1,16 @@
 #include <iostream>
+#include <typeinfo>
+
 #include "basic_block.hpp"
 
 basic_block::basic_block(YYLTYPE loc) {
+  this->return_stmt = false;
   this->statement_list = new std::list<tree_node*>();
   this->locations = loc;
 }
 
 basic_block::basic_block(std::list<tree_node*> *stmt_list, YYLTYPE loc) {
+  this->return_stmt = false;
   this->statement_list = stmt_list;
   this->locations = loc;
 }
@@ -14,6 +18,8 @@ basic_block::basic_block(std::list<tree_node*> *stmt_list, YYLTYPE loc) {
 basic_block::basic_block(std::list<tree_node*> *var_dec_list,
                          std::list<tree_node*> *stmt_list,
                          YYLTYPE loc) {
+
+  this->return_stmt = false;
   // add variable declarations at the begining of the list
   this->statement_list = var_dec_list;
 
@@ -47,6 +53,7 @@ void basic_block::evaluate() {
     for (auto stmt = statement_list->begin();
          stmt != statement_list->end();
          stmt++) {
+      (*stmt)->parent = this;
       (*stmt)->evaluate();
     }
 }

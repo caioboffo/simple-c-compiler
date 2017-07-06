@@ -7,11 +7,13 @@ class tree_node;
 
 class return_stmt : public statement {
 protected:
-  tree_node *return_expression;
+  expression *return_expression;
 public:
-  return_stmt(YYLTYPE loc) {}
+  return_stmt(YYLTYPE loc) {
+    this->locations = loc;
+  }
   return_stmt(tree_node *re, YYLTYPE loc) {
-    return_expression = re;
+    return_expression = static_cast<expression*>(re);
     this->locations = loc;
   }
     

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "subprogram_declaration.hpp"
 #include "symbol_table.hpp"
-
+#include "error_manager.hpp"
 
 subprogram_declaration::subprogram_declaration
                        (basic_type             t,
@@ -100,6 +100,15 @@ void subprogram_declaration::evaluate() {
   }
 
   // evaluate the subprogram block
+  block->return_type = this->return_type;
+  block->parent = this;
   block->evaluate();
+
+  if (!block->return_stmt && this->return_type != basic_type::VOID) {
+    std::string err = "missing return statement for function "
+      + this->name->id;
+    error_manager::error(err.c_str(), this->locations);
+  }
+
   symbol_table::delete_scope();
 }

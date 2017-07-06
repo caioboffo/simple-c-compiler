@@ -110,10 +110,8 @@ void symbol::evaluate() {
   if (si->type == basic_type::PROCEDURE ||
       si->type == basic_type::FUNCTION ) {
     this->type = si->return_type;
-    std::cout << "it was a subprogram " << to_string(si->return_type) <<"\n";
   } else {
     this->type = si->type;
-    std::cout << "it was a normal type " << to_string(si->type) << "\n";
   }
 
   // symbol is array size must evaluate the expression size
@@ -128,7 +126,6 @@ void symbol::evaluate() {
   // symbol is assigned to some value so evaluate its assignment
   if (initializer) {
     initializer->evaluate();
-    std::cout << to_string(initializer->type) << "\n\n";
     if (this->type != initializer->type) {
       std::string err
         = "assignment for variable " + this->id
