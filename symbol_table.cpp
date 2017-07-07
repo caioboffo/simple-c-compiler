@@ -1,6 +1,7 @@
 #include "symbol_table.hpp"
 #include "error_manager.hpp"
 #include "symbol.hpp"
+#include "symbol_declaration.hpp"
 
 int symbol_table::current_scope_num;
 symbol_table::symbol_table_t *symbol_table::_table;
@@ -81,7 +82,7 @@ void symbol_table::insert(std::string name,
   for (auto it = param_list->begin();
        it != param_list->end();
        it++) {
-    p->push_back(static_cast<symbol*>(*it)->type);
+    p->push_back(static_cast<symbol_declaration*>(*it)->type);
   }
   
   symbol_info *si = new symbol_info(type, return_type, p);

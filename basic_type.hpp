@@ -36,7 +36,7 @@ inline std::string to_string(basic_type t) {
     break;
   }
   default:
-    return "";
+    return "unkonw";
     break;
   }
 }

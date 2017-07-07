@@ -71,6 +71,5 @@ void symbol_declaration::evaluate() {
     (*it)->evaluate();
     
   }
-
 }
 

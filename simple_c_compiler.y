@@ -215,7 +215,7 @@ param
         {
           $$ = new symbol_declaration($1,
                                       new std::list<tree_node*>({
-                                          new symbol($2, new number(0, @$))}),
+                                          new symbol($2, new number(0), @$)}),
                                       @$);
         }
         ;

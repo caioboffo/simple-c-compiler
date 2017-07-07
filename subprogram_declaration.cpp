@@ -34,23 +34,7 @@ subprogram_declaration::subprogram_declaration
 }
 
 void subprogram_declaration::print() {
-  switch (return_type) {
-    case basic_type::INTEGER : {
-      std::cout << "int ";
-      break;
-    }
-    case basic_type::BOOLEAN : {
-      std::cout << "bool ";
-      break;
-    }
-    case basic_type::STRING : {
-      std::cout << "string ";
-      break;
-    }
-    default:
-      break;
-  }
-
+  std::cout << to_string(return_type) << " ";
   name->print();
   std::cout <<  "(";
   int i = 1;

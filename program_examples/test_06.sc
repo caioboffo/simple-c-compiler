@@ -6,6 +6,6 @@ soma(int a, int b, int c) {
 }
 
 int main() {
-  soma(2, 3);
+  soma(2, 3, false);
   return 0;
 }
