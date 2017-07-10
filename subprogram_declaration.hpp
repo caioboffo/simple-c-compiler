@@ -10,7 +10,6 @@
 
 class subprogram_declaration : public statement {
 protected:
-  basic_type             return_type;
   symbol                *name;
   std::list<tree_node*> *param_list;
   basic_block           *block;

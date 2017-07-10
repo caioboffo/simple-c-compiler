@@ -3,20 +3,18 @@
 
 #include "statement.hpp"
 
+class expression;
+class basic_block;
+
 class if_stmt : public statement {
 protected:
-  tree_node *exp;
-  tree_node *then_block, *else_block;
+  expression *exp;
+  basic_block *then_block, *else_block;
 public:
   if_stmt(tree_node *exp,
           tree_node *then_block,
           YYLTYPE loc,
-          tree_node *else_block = NULL) {
-    this->exp = exp;
-    this->then_block = then_block;
-    this->else_block = else_block;
-    this->locations = loc;
-  }
+          tree_node *else_block = NULL);
     
   void print();
   void evaluate();

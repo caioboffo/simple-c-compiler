@@ -14,6 +14,8 @@ subprogram_declaration::subprogram_declaration
   this->name   = new symbol(id);
   this->param_list = parameters;
   this->block = static_cast<basic_block*>(compound_statement);
+  this->block->return_type = this->return_type;
+  this->block->parent = this;
   this->locations = loc;
 
 }
@@ -28,9 +30,10 @@ subprogram_declaration::subprogram_declaration
   this->name   = new symbol(id);
   this->param_list = parameters;
   this->block = static_cast<basic_block*>(compound_statement);
+  this->block->return_type = this->return_type;
+  this->block->parent = this;
   this->locations = loc;
-                         
-  
+
 }
 
 void subprogram_declaration::print() {
@@ -57,6 +60,10 @@ void subprogram_declaration::evaluate() {
   std::cout << "evaluating subprogram declaration\n";
   #endif
 
+  #ifdef RETURN_STATUS
+  std::cout << "subprogram returns " << to_string(this->return_type) << "\n";
+  #endif
+  
   if (this->return_type == basic_type::VOID) { 
     symbol_table::insert(this->name->id,
                          basic_type::PROCEDURE,
@@ -84,8 +91,6 @@ void subprogram_declaration::evaluate() {
   }
 
   // evaluate the subprogram block
-  block->return_type = this->return_type;
-  block->parent = this;
   block->evaluate();
 
   if (!block->return_stmt && this->return_type != basic_type::VOID) {

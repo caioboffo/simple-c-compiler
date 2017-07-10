@@ -1,6 +1,4 @@
 #include <iostream>
-#include <typeinfo>
-
 #include "basic_block.hpp"
 
 basic_block::basic_block(YYLTYPE loc) {
@@ -47,6 +45,10 @@ void basic_block::print() {
 void basic_block::evaluate() {
   #ifdef STATUS_OUTPUT
   std::cout << "evaluating a block\n";
+  #endif
+
+  #ifdef RETURN_STATUS
+  std::cout << "block returns " << to_string(this->return_type) << "\n";
   #endif
   
   if (statement_list->size() > 0) 

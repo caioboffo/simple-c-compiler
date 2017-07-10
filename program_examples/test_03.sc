@@ -1,7 +1,7 @@
 
 int n[10];
 
-print_array(int p[], int size) {
+int print_array(int p[], int size) {
   int i;
   int k;
   for (i = 0; i < size; i += 1) {
@@ -9,6 +9,7 @@ print_array(int p[], int size) {
     if (i < size) {
       int aix;
       write ", ";
+      return 0;   
     }
   }
 }
