@@ -1,11 +1,14 @@
 
-int do_something(int a) {
+int v[10];
 
-  while ( a > 0 ) {
-    if (a == 1) {
+int do_something(int a) {
+  int i;
+  for (i = 0; i < 10; i +=1 ) {
+    if (i == 1) {
       write "do something";
       return 1;
     } else {
+      read v[i];
       return 2;
     }
   }

@@ -24,6 +24,10 @@ void while_stmt::evaluate() {
 
   this->return_type 
     = static_cast<basic_block*>(this->parent)->return_type;
+  
+  #ifdef RETURN_STATUS
+  std::cout << "while stmt returns " << to_string(this->return_type) << "\n";
+  #endif
 
   if (block) {
     block->return_type = this->return_type;
