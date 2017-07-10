@@ -1,10 +1,14 @@
 
 int do_something(int a) {
 
-  if (a > 0) {
-    write "do something";
-    return 1;
-  } 
+  while ( a > 0 ) {
+    if (a == 1) {
+      write "do something";
+      return 1;
+    } else {
+      return 2;
+    }
+  }
 
   return 0;
   

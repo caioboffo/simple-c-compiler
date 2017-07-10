@@ -1,5 +1,8 @@
 #include <iostream>
 #include "while_stmt.hpp"
+#include "error_manager.hpp"
+#include "expression.hpp"
+#include "basic_block.hpp"
 
 void while_stmt::print() {
   std::cout << "while ";
@@ -13,10 +16,19 @@ void while_stmt::evaluate() {
   std::cout << "evaluating a while statement\n";
   #endif
   
-  if (exp)
-    this->exp->evaluate();
+  exp->evaluate();
+  
+  if (exp->type != basic_type::BOOLEAN)
+    error_manager::error("while expression should be a logic expression",
+                         this->locations);
 
-  if (block)
+  this->return_type 
+    = static_cast<basic_block*>(this->parent)->return_type;
+
+  if (block) {
+    block->return_type = this->return_type;
     block->evaluate();
-
+    static_cast<basic_block*>(this->parent)->return_stmt
+      = block->return_stmt;
+  }
 }

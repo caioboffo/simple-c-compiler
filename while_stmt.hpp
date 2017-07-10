@@ -2,18 +2,19 @@
 #define WHILE_STMT_H
 
 #include "statement.hpp"
-
-class tree_node;
+#include "expression.hpp"
+#include "basic_block.hpp"
 
 class while_stmt : public statement {
 protected:
-  tree_node *exp, *block;
+  expression *exp;
+  basic_block *block;
 public:
   while_stmt(tree_node* expr,
              tree_node *block,
              YYLTYPE loc) {
-    this->exp = expr;
-    this->block = block;
+    this->exp = static_cast<expression*>(expr);
+    this->block = static_cast<basic_block*>(block);
     this->locations = loc;
   }
   void print();
