@@ -17,8 +17,10 @@ void equal_operation::evaluate() {
   this->left->evaluate();
   this->right->evaluate();
 
-  if (this->left->type  == this->right->type)
+  if (this->left->type  == this->right->type) {
     this->type = basic_type::BOOLEAN;
+    this->value = this->left->value == this->right->value;
+  }
   else
     error_manager::error("incompatible types", this->locations);  
 

@@ -14,8 +14,10 @@ void unary_not_operation::evaluate() {
 
   exp->evaluate();
 
-  if (exp->type == basic_type::BOOLEAN)
+  if (exp->type == basic_type::BOOLEAN) {
     this->type = exp->type;
+    this->value = !this->value;
+  }
   else
     error_manager::error("incompatible types", this->locations);  
 

@@ -139,6 +139,8 @@ void symbol::evaluate() {
         + " should be of type " + to_string(this->type);
       error_manager::error(err.c_str(), initializer->locations);
     }
+    this->value = initializer->value;
+    this->string_value = initializer->string_value;
   }
   // symbol is an array and this is the list of values assigned to it
   // so evaluate each symbol (literal)

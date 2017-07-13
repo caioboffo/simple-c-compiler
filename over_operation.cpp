@@ -17,12 +17,16 @@ void over_operation::evaluate() {
   this->left->evaluate();
   this->right->evaluate();
 
+  if (this->right->value == 0)
+    error_manager::error("division by zero", this->right->locations);
+  
   if (this->left->type  == basic_type::INTEGER &&
-      this->right->type == basic_type::INTEGER)
+      this->right->type == basic_type::INTEGER) {
     this->type = basic_type::INTEGER;
+    this->value = this->left->value / this->right->value;
+  }
   else
     error_manager::error("incompatible types", this->locations);
   
-  if (this->right->value == 0)
-    error_manager::error("division by zero", this->right->locations);
+
 }

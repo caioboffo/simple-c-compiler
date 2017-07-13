@@ -27,4 +27,6 @@ void assignment::evaluate() {
       error_manager::error(err.c_str(), this->locations);
     }
   }
+  this->value = rhs->value;
+  this->string_value = rhs->string_value;
 }

@@ -18,10 +18,11 @@ void and_operation::evaluate() {
   this->right->evaluate();
 
   if (this->left->type  == basic_type::BOOLEAN &&
-      this->right->type == basic_type::BOOLEAN)
+      this->right->type == basic_type::BOOLEAN) {
     this->type = basic_type::BOOLEAN;
+    this->value = this->left->value && this->right->value;
+  }
   else
     error_manager::error("incompatible types", this->locations);  
-
   
 }
