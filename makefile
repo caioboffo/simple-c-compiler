@@ -57,7 +57,7 @@ scanner.cpp: simple_c_compiler.l parser.hpp
 	@flex -o $@ $^
 
 %.o: %.cpp
-	@$(CC) -c $(CPPFLAGS) -o $@ $<
+	@$(CC) -c $(CPPFLAGS) -o $@ $< -g
 
 cmm: $(OBJS)
 	@$(CC) -o $@ $(OBJS) $(LLVMFLAGS)

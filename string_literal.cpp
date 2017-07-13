@@ -1,13 +1,14 @@
+#include <llvm/IR/Constants.h>
 #include "string_literal.hpp"
 #include "basic_type.hpp"
 
 string_literal::string_literal(std::string str) {
-  this->string_value = str;
+  this->string_value = str.substr(1, str.size()-2);
   set_type(basic_type::STRING);
 }
 
 string_literal::string_literal(std::string str, YYLTYPE loc) {
-  this->string_value = str;
+  this->string_value = str.substr(1, str.size()-2);
   set_type(basic_type::STRING);
   this->locations = loc;
 }
@@ -25,7 +26,7 @@ void string_literal::evaluate() {
 }
 
 llvm::Value *string_literal::emit_ir_code() {
-  //  return llvm::PointerType::get(
-  //         llvm::IntegerType::get(llvm::getGlobalContext(), 8), 0);
-
+  return llvm::ConstantDataArray::getString(llvm::getGlobalContext(),
+                                            this->string_value,
+                                            true);
 }

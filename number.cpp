@@ -19,7 +19,7 @@ void number::evaluate() {
 }
 
 llvm::Value *number::emit_ir_code() {
-  return llvm::ConstantInt::get(this->module->getContext(),
+  return llvm::ConstantInt::get(llvm::getGlobalContext(),
                                 llvm::APInt(32,
                                             llvm::StringRef(std::to_string(this->value)),
                                             10));
