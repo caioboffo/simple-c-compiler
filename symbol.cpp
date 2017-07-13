@@ -1,10 +1,17 @@
+#include <llvm/IR/GlobalVariable.h>
+#include <llvm/IR/Type.h>
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Constant.h>
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/GlobalValue.h>
+#include <llvm/ADT/Twine.h>
+
 #include "symbol.hpp"
 #include "error_manager.hpp"
 #include "string_literal.hpp"
 #include "boolean.hpp"
 #include "number.hpp"
 #include "symbol_table.hpp"
-//#include "basic_type.hpp"
 
 symbol::symbol(std::string id, YYLTYPE loc) {
   this->id = id;
@@ -152,3 +159,49 @@ void symbol::evaluate() {
   }
 }
 
+llvm::Value *symbol::emit_ir_code() {
+
+  symbol_table::symbol_info *si = symbol_table::lookup(this->id,
+                                                       this->locations);
+  if (symbol_table::current_scope_num == 0) {
+    llvm::GlobalVariable *var;
+    if (si->type == basic_type::STRING) {
+      var =
+        new llvm::GlobalVariable(
+          *this->module,
+          llvm::PointerType::get(
+            llvm::IntegerType::get(llvm::getGlobalContext(), 8), 0),
+          false,
+          llvm::GlobalValue::ExternalLinkage,
+          0,
+          llvm::Twine(this->id));
+
+      if (this->initializer)
+        var->setInitializer(
+          static_cast<llvm::Constant*>(this->initializer->emit_ir_code()));
+
+      var->setAlignment(8);
+      return var;
+      
+    } else {
+      var = new llvm::GlobalVariable(
+        *this->module,
+        llvm::IntegerType::get(llvm::getGlobalContext(), 32),
+        false,
+        llvm::GlobalValue::ExternalLinkage,
+        0,
+        llvm::Twine(this->id));
+      
+      if (this->initializer)
+        var->setInitializer(
+          static_cast<llvm::Constant*>(this->initializer->emit_ir_code()));
+
+      var->setAlignment(4);
+      return var;
+      
+    }
+  } else {}
+
+  return NULL;
+  
+}

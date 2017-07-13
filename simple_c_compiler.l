@@ -14,7 +14,7 @@
 #include "parser.hpp"
 #include "symbol_table.hpp"
 
-extern void yyevaluate();
+extern abstract_syntax_tree *syntax_tree;
 extern void yyerror(char const *, ...);
 extern FILE *yyin;
 
@@ -122,6 +122,10 @@ write    { return WRITE;            }
 
 %%
 
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/IR/IRPrintingPasses.h>
+#include <llvm/Support/raw_ostream.h>
+
 int main(int argc, char* argv[]) {
   FILE *fh;
   
@@ -146,10 +150,21 @@ int main(int argc, char* argv[]) {
   yyparse();
 
   if (!error_manager::had_error()) {
-    yyevaluate();
+    syntax_tree->evaluate();
 
     if (!symbol_table::lookup("main")) 
       error_manager::error("undefined reference to main", yylloc);
+
+    symbol_table::delete_symbol_table();
+    
+    if (!error_manager::had_error()) {
+      symbol_table::create_symbol_table();
+      syntax_tree->emit_ir_code();
+      // print llvm ir to standard output
+      llvm::legacy::PassManager PM;
+      PM.add(llvm::createPrintModulePass(llvm::outs()));
+      PM.run(*(syntax_tree->module));
+    }
   }
 
   fclose(fh);

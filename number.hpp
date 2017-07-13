@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "expression.hpp"
-//#include "basic_type.hpp"
 
 class number : public expression {
 public:
@@ -11,6 +10,7 @@ public:
   number(int v, YYLTYPE loc);
   void print();
   void evaluate();
+  llvm::Value *emit_ir_code();
 };
 
 #endif /* NUMBER_H */

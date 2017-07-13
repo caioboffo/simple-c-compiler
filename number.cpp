@@ -1,3 +1,5 @@
+#include <string>
+#include <llvm/IR/Constants.h>
 #include "number.hpp"
 
 number::number(int v, YYLTYPE loc) {
@@ -14,4 +16,11 @@ void number::evaluate() {
   #ifdef STATUS_OUTPUT
   std::cout << "evaluating number " << value << "\n";
   #endif
+}
+
+llvm::Value *number::emit_ir_code() {
+  return llvm::ConstantInt::get(this->module->getContext(),
+                                llvm::APInt(32,
+                                            llvm::StringRef(std::to_string(this->value)),
+                                            10));
 }

@@ -11,6 +11,7 @@ public:
   string_literal(std::string str, YYLTYPE loc);
   void print();
   void evaluate();
+  llvm::Value *emit_ir_code();
 };
 
 #endif /* STRING_LITERAL_H */

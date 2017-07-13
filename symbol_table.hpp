@@ -71,7 +71,7 @@ public:
                      YYLTYPE                locations);
 
   static bool lookup(std::string name);
-  static symbol_info* lookup(std::string name, YYLTYPE locations);
+  static symbol_info *lookup(std::string name, YYLTYPE locations);
   static void create_scope();
   static void delete_scope();
 };

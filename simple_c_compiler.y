@@ -28,7 +28,7 @@ extern int           yylex(void);
 extern int           yylineno;
 extern void yyerror(char const *, ...); 
 
-abstract_syntax_tree *root;
+abstract_syntax_tree *syntax_tree;
 
 }
 
@@ -121,7 +121,7 @@ abstract_syntax_tree *root;
 program : declaration_stmt_list
         {
           $$ = new abstract_syntax_tree($1);
-          root = $$;
+          syntax_tree = $$;
         };
 
 declaration_stmt_list
@@ -423,5 +423,5 @@ void yyerror(char const *s, ...) {
 }
 
 void yyevaluate() {
-  root->evaluate();
+  syntax_tree->evaluate();
 }

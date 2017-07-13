@@ -73,3 +73,25 @@ void symbol_declaration::evaluate() {
   }
 }
 
+llvm::Value *symbol_declaration::emit_ir_code() {
+  llvm::Value *last = NULL;
+  for (auto it = this->id_list->begin(); it != this->id_list->end();
+       it++) {
+
+    if ((*it)->type == basic_type::STRING)
+      symbol_table::insert((*it)->id,
+                           (*it)->type,
+                           (*it)->string_value,
+                           this->locations);
+    else
+      symbol_table::insert((*it)->id,
+                           (*it)->type,
+                           (*it)->value,
+                           this->locations);
+
+    last = (*it)->emit_ir_code();
+    
+  }
+  return last;
+}
+

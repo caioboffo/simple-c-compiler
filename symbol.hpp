@@ -36,6 +36,7 @@ public:
   void set_type(basic_type t);
   void print();
   void evaluate();
+  llvm::Value *emit_ir_code();
 };
 
 

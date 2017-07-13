@@ -11,7 +11,9 @@ void symbol_table::create_symbol_table() {
   current_scope_num = 0;
 }
 
-void symbol_table::delete_symbol_table() {}
+void symbol_table::delete_symbol_table() {
+  delete(_table);
+}
 
 // Add symbol to name table
 void symbol_table::insert(std::string id) {

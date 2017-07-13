@@ -41,9 +41,9 @@ OBJS = abstract_syntax_tree.o               \
        write_stmt.o                         \
        while_stmt.o                         \
 
-
-LDFLAGS  = -lm
-CPPFLAGS = -g -std=c++11 ${DEFINE}
+LLVMCONFIG = llvm-config
+CPPFLAGS = `$(LLVMCONFIG) --cppflags` -std=c++11 ${DEFINE}
+LLVMFLAGS = `$(LLVMCONFIG) --ldflags --libs --system-libs`
 
 clean:
 	@$(RM) -rf parser.cpp parser.hpp cmm scanner.cpp parser.output $(OBJS)
@@ -60,6 +60,6 @@ scanner.cpp: simple_c_compiler.l parser.hpp
 	@$(CC) -c $(CPPFLAGS) -o $@ $<
 
 cmm: $(OBJS)
-	@$(CC) -o $@ $(OBJS) $(LDFLAGS)
+	@$(CC) -o $@ $(OBJS) $(LLVMFLAGS)
 
 

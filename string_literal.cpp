@@ -23,3 +23,9 @@ void string_literal::evaluate() {
   std::cout << "evaluating a string literal " << this->string_value << "\n";
   #endif
 }
+
+llvm::Value *string_literal::emit_ir_code() {
+  //  return llvm::PointerType::get(
+  //         llvm::IntegerType::get(llvm::getGlobalContext(), 8), 0);
+
+}
