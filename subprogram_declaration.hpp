@@ -5,14 +5,15 @@
 #include <list>
 #include "basic_block.hpp"
 #include "symbol.hpp"
+#include "symbol_declaration.hpp"
 #include "tree_node.hpp"
 #include "statement.hpp"
 
 class subprogram_declaration : public statement {
 protected:
-  symbol                *name;
-  std::list<tree_node*> *param_list;
-  basic_block           *block;
+  symbol                         *name;
+  std::list<symbol_declaration*> *param_list;
+  basic_block                    *block;
   
 public:
   subprogram_declaration(std::string            id,
@@ -28,6 +29,7 @@ public:
 
   void print();
   void evaluate();
+  llvm::Value *emit_ir_code();
 };
 
 #endif /* SUBPROGRAM_DECLARATION_H */

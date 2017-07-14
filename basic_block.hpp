@@ -20,6 +20,7 @@ public:
 
   void print();
   void evaluate();
+  llvm::Value *emit_ir_code();
 };
 
 #endif /* BASIC_BLOCK_H */

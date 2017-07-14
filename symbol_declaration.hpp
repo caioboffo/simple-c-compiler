@@ -10,9 +10,9 @@ class expression;
 class symbol;
 
 class symbol_declaration : public statement {
-  std::list<symbol*> *id_list;
 public:
   basic_type type;
+  std::list<symbol*> *id_list;
   symbol_declaration(basic_type type,
                      std::list<tree_node*> *id_list,
                      YYLTYPE loc);

@@ -73,10 +73,10 @@ void symbol_table::insert(std::string name,
   insert(name, type, si, locations);
 }
 
-void symbol_table::insert(std::string name,
-                          basic_type type,
-                          basic_type return_type,
-                          std::list<tree_node*> *param_list,
+void symbol_table::insert(std::string                     name,
+                          basic_type                      type,
+                          basic_type                      return_type,
+                          std::list<symbol_declaration*> *param_list,
                           YYLTYPE locations) {
   
   std::list<basic_type> *p = new std::list<basic_type>();
@@ -84,7 +84,7 @@ void symbol_table::insert(std::string name,
   for (auto it = param_list->begin();
        it != param_list->end();
        it++) {
-    p->push_back(static_cast<symbol_declaration*>(*it)->type);
+    p->push_back((*it)->type);
   }
   
   symbol_info *si = new symbol_info(type, return_type, p);

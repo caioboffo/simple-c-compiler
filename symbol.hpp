@@ -9,13 +9,13 @@
 
 class symbol : public expression {
 
-  bool                   is_array_type;
+
   expression            *size,
                          *initializer;
   std::list<tree_node*> *initializer_list;
 
 public:
-
+  bool        is_array_type;
   std::string id;
   symbol(std::string id) : id(id),
                            size(NULL),

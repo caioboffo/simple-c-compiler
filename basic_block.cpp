@@ -59,3 +59,7 @@ void basic_block::evaluate() {
       (*stmt)->evaluate();
     }
 }
+
+llvm::Value *basic_block::emit_ir_code() {
+
+}

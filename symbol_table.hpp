@@ -7,6 +7,7 @@
 #include "locations.hpp"
 #include "tree_node.hpp"
 #include "basic_type.hpp"
+#include "symbol_declaration.hpp"
 
 class symbol_table {
 private:
@@ -64,11 +65,11 @@ public:
                      basic_type             type,
                      std::string            string_value,
                      YYLTYPE                locations);
-  static void insert(std::string            name,
-                     basic_type             type,
-                     basic_type             return_type,
-                     std::list<tree_node*> *param_list,
-                     YYLTYPE                locations);
+  static void insert(std::string                     name,
+                     basic_type                      type,
+                     basic_type                      return_type,
+                     std::list<symbol_declaration*> *param_list,
+                     YYLTYPE                         locations);
 
   static bool lookup(std::string name);
   static symbol_info *lookup(std::string name, YYLTYPE locations);
