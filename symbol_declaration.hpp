@@ -18,7 +18,7 @@ public:
                      YYLTYPE loc);
   void print();
   void evaluate();
-  llvm::Value *emit_ir_code();
+  llvm::Value *emit_ir_code(codegen_context *context);
 };
 
 

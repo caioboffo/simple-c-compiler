@@ -60,6 +60,6 @@ void basic_block::evaluate() {
     }
 }
 
-llvm::Value *basic_block::emit_ir_code() {
+llvm::Value *basic_block::emit_ir_code(codegen_context *context) {
 
 }

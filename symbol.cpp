@@ -161,76 +161,76 @@ void symbol::evaluate() {
   }
 }
 
-llvm::Value *symbol::emit_ir_code() {
+Value *symbol::emit_ir_code(codegen_context *context) {
 
   symbol_table::symbol_info *si = symbol_table::lookup(this->id,
                                                        this->locations);
   if (symbol_table::current_scope_num == 0) {
-    llvm::GlobalVariable *var;
+    GlobalVariable *var;
     if (si->type == basic_type::STRING) {
       if (this->initializer) {
-        llvm::ArrayType* _array
-          = llvm::ArrayType::get(
-                  llvm::IntegerType::get(llvm::getGlobalContext(), 8),
+        ArrayType* _array
+          = ArrayType::get(
+                  IntegerType::get(getGlobalContext(), 8),
                   this->initializer->string_value.size()+1);
         var
-          = new llvm::GlobalVariable(
-                *this->module,
+          = new GlobalVariable(
+                *context->module,
                 _array,
                 false,
-                llvm::GlobalValue::CommonLinkage,
+                GlobalValue::CommonLinkage,
                 0,
-                llvm::Twine(this->id));
+                Twine(this->id));
 
         var->setAlignment(1);
         
-        var->setInitializer(static_cast<llvm::Constant*>(this->initializer->emit_ir_code()));
+        var->setInitializer(static_cast<Constant*>(this->initializer->emit_ir_code(context)));
         
       } else  {
         var =
-          new llvm::GlobalVariable(
-                *this->module,
-                llvm::PointerType::get(llvm::IntegerType::get(
-                                         llvm::getGlobalContext(), 8), 0),
+          new GlobalVariable(
+                *context->module,
+                PointerType::get(IntegerType::get(
+                                         getGlobalContext(), 8), 0),
                 false,
-                llvm::GlobalValue::CommonLinkage,
+                GlobalValue::CommonLinkage,
                 0,
-                llvm::Twine(this->id));
+                Twine(this->id));
         var->setAlignment(8);
         
       }
     } else { // is not a string
       if (is_array_type) {
-        llvm::ArrayType* _array
-          = llvm::ArrayType::get(
-              llvm::IntegerType::get(llvm::getGlobalContext(), 32),
+        ArrayType* _array
+          = ArrayType::get(
+              IntegerType::get(getGlobalContext(), 32),
               this->size->value);
-        var = new llvm::GlobalVariable(
-                *this->module,
+        var = new GlobalVariable(
+                *context->module,
                 _array,
                 false,
-                llvm::GlobalValue::CommonLinkage,
+                GlobalValue::CommonLinkage,
                 0,
-                llvm::Twine(this->id));
+                Twine(this->id));
 
         if (initializer_list) {
           var->setAlignment(4);
-          std::vector<llvm::Constant*> const_array_elems;
+          std::vector<Constant*> const_array_elems;
           for (auto item = initializer_list->begin();
                item != initializer_list->end();
                item++) {
 
-            const_array_elems.push_back(llvm::ConstantInt::get(
-                  llvm::getGlobalContext(),
-                  llvm::APInt(32,
-                              llvm::StringRef(std::to_string(
+            const_array_elems.push_back(ConstantInt::get(
+                  getGlobalContext(),
+                  APInt(32,
+                              StringRef(std::to_string(
                                 static_cast<expression*>(*item)->value
                                                              )),
                               10)));
           }
 
-          llvm::Constant* const_array
-            = llvm::ConstantArray::get(_array,
+          Constant* const_array
+            = ConstantArray::get(_array,
                                        const_array_elems);
 
           var->setInitializer(const_array);
@@ -243,17 +243,17 @@ llvm::Value *symbol::emit_ir_code() {
         
       } else {
         
-        var = new llvm::GlobalVariable(
-          *this->module,
-          llvm::IntegerType::get(llvm::getGlobalContext(), 32),
+        var = new GlobalVariable(
+          *context->module,
+          IntegerType::get(getGlobalContext(), 32),
           false,
-          llvm::GlobalValue::CommonLinkage,
+          GlobalValue::CommonLinkage,
           0,
-          llvm::Twine(this->id));
+          Twine(this->id));
       
         if (this->initializer)
           var->setInitializer(
-            static_cast<llvm::Constant*>(this->initializer->emit_ir_code()));
+            static_cast<Constant*>(this->initializer->emit_ir_code(context)));
         
         var->setAlignment(4);
 

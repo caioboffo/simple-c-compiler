@@ -4,13 +4,16 @@
 #include <llvm/IR/GlobalVariable.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/Constants.h>
+#include "llvm/IR/CallingConv.h"
 #include <llvm/IR/Constant.h>
+#include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/GlobalValue.h>
 #include <llvm/ADT/Twine.h>
 
 #include "symbol_declaration.hpp"
 #include "subprogram_declaration.hpp"
+#include "codegen_context.hpp"
 #include "symbol_table.hpp"
 #include "error_manager.hpp"
 
@@ -124,7 +127,7 @@ void subprogram_declaration::evaluate() {
   symbol_table::delete_scope();
 }
 
-llvm::Value *subprogram_declaration::emit_ir_code() {
+Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   
   if (this->return_type == basic_type::VOID) { 
     symbol_table::insert(this->name->id,
@@ -141,26 +144,26 @@ llvm::Value *subprogram_declaration::emit_ir_code() {
 
   }
 
-  std::vector<llvm::Type*> func_args;
-  llvm::FunctionType* func_type;
-  llvm::Type* pointer;
+  std::vector<Type*> func_args;
+  FunctionType* func_type;
+  Type* pointer;
   switch (this->return_type) {
     case basic_type::INTEGER:
     case basic_type::BOOLEAN: {
-      pointer = llvm::PointerType::get(
-                  llvm::IntegerType::get(llvm::getGlobalContext(), 32),
+      pointer = PointerType::get(
+                  IntegerType::get(getGlobalContext(), 32),
                   0);
       break;
     } 
     case basic_type::STRING: {
-      pointer = llvm::PointerType::get(
-                  llvm::IntegerType::get(llvm::getGlobalContext(), 8),
+      pointer = PointerType::get(
+                  IntegerType::get(getGlobalContext(), 8),
                   0);
 
       break;
     }
     case basic_type::VOID: {
-      pointer = llvm::Type::getVoidTy(llvm::getGlobalContext());
+      pointer = Type::getVoidTy(getGlobalContext());
       break;
     }
   }
@@ -169,22 +172,22 @@ llvm::Value *subprogram_declaration::emit_ir_code() {
        param != this->param_list->end();
        param++) {
 
-    llvm::Type *t;
+    Type *t;
     switch ((*param)->type) {
       case basic_type::INTEGER:
       case basic_type::BOOLEAN: {
         if ((*param)->id_list->back()->is_array_type) {
-          t = llvm::PointerType::get(llvm::IntegerType::get(
-                llvm::getGlobalContext(),
+          t = PointerType::get(IntegerType::get(
+                getGlobalContext(),
                 32), 0);
 
         } else 
-          t = llvm::IntegerType::get(llvm::getGlobalContext(), 32);
+          t = IntegerType::get(getGlobalContext(), 32);
         break;
       } 
       case basic_type::STRING: {
-        t = llvm::PointerType::get(llvm::IntegerType::get(
-              llvm::getGlobalContext(),
+        t = PointerType::get(IntegerType::get(
+              getGlobalContext(),
               8), 0);
         break;
       }
@@ -193,20 +196,20 @@ llvm::Value *subprogram_declaration::emit_ir_code() {
     
   }
 
-  func_type = llvm::FunctionType::get(
+  func_type = FunctionType::get(
                 pointer,
                 func_args,
                 false);
 
   
-  llvm::Function* func = this->module->getFunction(this->name->id);
+  Function* func = context->module->getFunction(this->name->id);
   if (!func) {
-    func = llvm::Function::Create(
+    func = Function::Create(
                             func_type,
-                            llvm::GlobalValue::ExternalLinkage,
+                            GlobalValue::ExternalLinkage,
                             this->name->id,
-                            this->module); 
-    func->setCallingConv(llvm::CallingConv::C);
+                            context->module); 
+    func->setCallingConv(CallingConv::C);
   }
 
   auto param = param_list->begin();

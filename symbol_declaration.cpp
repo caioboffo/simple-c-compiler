@@ -73,8 +73,8 @@ void symbol_declaration::evaluate() {
   }
 }
 
-llvm::Value *symbol_declaration::emit_ir_code() {
-  llvm::Value *last = NULL;
+Value *symbol_declaration::emit_ir_code(codegen_context *context) {
+  Value *last = NULL;
   for (auto it = this->id_list->begin(); it != this->id_list->end();
        it++) {
 
@@ -89,7 +89,7 @@ llvm::Value *symbol_declaration::emit_ir_code() {
                            (*it)->value,
                            this->locations);
 
-    last = (*it)->emit_ir_code();
+    last = (*it)->emit_ir_code(context);
     
   }
   return last;

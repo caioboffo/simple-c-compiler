@@ -159,11 +159,11 @@ int main(int argc, char* argv[]) {
     
     if (!error_manager::had_error()) {
       symbol_table::create_symbol_table();
-      syntax_tree->emit_ir_code();
+      syntax_tree->emit_ir_code(NULL);
       // print llvm ir to standard output
       llvm::legacy::PassManager PM;
       PM.add(llvm::createPrintModulePass(llvm::outs()));
-      PM.run(*(syntax_tree->module));
+      PM.run(*(syntax_tree->get_module()));
     }
   }
 

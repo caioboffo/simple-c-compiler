@@ -9,6 +9,8 @@
 #include "tree_node.hpp"
 #include "statement.hpp"
 
+using namespace llvm;
+
 class subprogram_declaration : public statement {
 protected:
   symbol                         *name;
@@ -29,7 +31,7 @@ public:
 
   void print();
   void evaluate();
-  llvm::Value *emit_ir_code();
+  Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* SUBPROGRAM_DECLARATION_H */

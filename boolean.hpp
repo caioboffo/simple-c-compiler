@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include "expression.hpp"
-//#include "basic_type.hpp"
+
+using namespace llvm;
 
 class boolean : public expression {
 public:
@@ -11,7 +12,7 @@ public:
   boolean(int v, YYLTYPE loc);
   void print();
   void evaluate();
-  llvm::Value *emit_ir_code();
+  llvm::Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* BOOLEAN_H */

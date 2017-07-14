@@ -5,7 +5,10 @@
 #include <string>
 #include <list>
 #include "tree_node.hpp"
+#include "codegen_context.hpp"
 #include "expression.hpp"
+
+using namespace llvm;
 
 class symbol : public expression {
 
@@ -36,7 +39,7 @@ public:
   void set_type(basic_type t);
   void print();
   void evaluate();
-  llvm::Value *emit_ir_code();
+  Value *emit_ir_code(codegen_context *context);
 };
 
 

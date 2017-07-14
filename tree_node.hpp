@@ -4,17 +4,19 @@
 #include <iostream>
 #include <string>
 #include <llvm/IR/Value.h>
-#include <llvm/IR/Module.h>
 #include "locations.hpp"
+
+using namespace llvm;
+
+class codegen_context;
 
 class tree_node {
 public:
-  static llvm::Module *module;
   tree_node *parent;
   YYLTYPE locations;
   virtual void print() {}
   virtual void evaluate() {}
-  virtual llvm::Value *emit_ir_code() {}
+  virtual Value *emit_ir_code(codegen_context *context) {}
   tree_node() {}
   tree_node(YYLTYPE loc) : locations(loc) {}
 };

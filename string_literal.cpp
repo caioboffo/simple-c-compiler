@@ -1,4 +1,5 @@
 #include <llvm/IR/Constants.h>
+#include <llvm/IR/LLVMContext.h>
 #include "string_literal.hpp"
 #include "basic_type.hpp"
 
@@ -25,8 +26,8 @@ void string_literal::evaluate() {
   #endif
 }
 
-llvm::Value *string_literal::emit_ir_code() {
-  return llvm::ConstantDataArray::getString(llvm::getGlobalContext(),
+Value *string_literal::emit_ir_code(codegen_context *context) {
+  return ConstantDataArray::getString(getGlobalContext(),
                                             this->string_value,
                                             true);
 }

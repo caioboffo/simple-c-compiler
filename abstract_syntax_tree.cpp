@@ -3,19 +3,14 @@
 #include "abstract_syntax_tree.hpp"
 #include "error_manager.hpp"
 
-llvm::Module *tree_node::module;
-
-std::string base_name(std::string const & path)
-{
-  return path.substr(path.find_last_of("/\\") + 1);
-}
-
 abstract_syntax_tree::abstract_syntax_tree(std::list<tree_node*> *nodelist)
 {
   nodes = nodelist;
-  tree_node::module = new llvm::Module(
-                                base_name(error_manager::filename) + ".bc",
-                                llvm::getGlobalContext());
+  context = new codegen_context();
+}
+
+Module *abstract_syntax_tree::get_module() {
+  return context->module;
 }
 
 void abstract_syntax_tree::evaluate() {
@@ -31,11 +26,13 @@ void abstract_syntax_tree::evaluate() {
   }
 }
 
-llvm::Value *abstract_syntax_tree::emit_ir_code() {
+Value *abstract_syntax_tree::emit_ir_code(codegen_context *context) {
   std::list<tree_node*>::iterator nodelist_iterator;
+  Value *last;
   for (nodelist_iterator = nodes->begin();
        nodelist_iterator != nodes->end();
        nodelist_iterator++) {
-    (*nodelist_iterator)->emit_ir_code();
+    last = (*nodelist_iterator)->emit_ir_code(this->context);
   }
+  return last;
 }

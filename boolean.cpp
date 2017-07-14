@@ -1,4 +1,5 @@
 #include <llvm/IR/Constants.h>
+#include <llvm/IR/LLVMContext.h>
 #include "boolean.hpp"
 
 boolean::boolean(int v, YYLTYPE loc) {
@@ -20,9 +21,9 @@ void boolean::evaluate() {
   #endif
 }
 
-llvm::Value *boolean::emit_ir_code() {
-  return llvm::ConstantInt::get(llvm::getGlobalContext(),
-                                llvm::APInt(32,
-                                            llvm::StringRef(std::to_string(this->value)),
-                                            10));
+Value *boolean::emit_ir_code(codegen_context *context) {
+  return ConstantInt::get(getGlobalContext(),
+                          APInt(32,
+                                StringRef(std::to_string(this->value)),
+                                10));
 }

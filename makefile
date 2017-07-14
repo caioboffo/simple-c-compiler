@@ -8,6 +8,7 @@ OBJS = abstract_syntax_tree.o               \
        basic_block.o                        \
        boolean.o                            \
        break_stmt.o                         \
+       codegen_context.o                    \
        equal_operation.o                    \
        expression.o                         \
        error_manager.o                      \
