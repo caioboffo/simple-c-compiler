@@ -60,6 +60,8 @@ scanner.cpp: simple_c_compiler.l parser.hpp
 %.o: %.cpp
 	@$(CC) -c $(CPPFLAGS) -o $@ $< -g
 
+%.o: %.hpp
+
 cmm: $(OBJS)
 	@$(CC) -o $@ $(OBJS) $(LLVMFLAGS)
 

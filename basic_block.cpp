@@ -61,5 +61,11 @@ void basic_block::evaluate() {
 }
 
 llvm::Value *basic_block::emit_ir_code(codegen_context *context) {
-
+  if (statement_list->size() > 0) 
+    for (auto stmt = statement_list->begin();
+         stmt != statement_list->end();
+         stmt++) {
+      (*stmt)->parent = this;
+      (*stmt)->emit_ir_code(context);
+    }
 }

@@ -1,5 +1,7 @@
 #include "times_operation.hpp"
 #include "error_manager.hpp"
+#include <llvm/IR/Instruction.h>
+#include <llvm/IR/InstrTypes.h>
 
 void times_operation::print() {
   std::cout << "(";
@@ -24,4 +26,14 @@ void times_operation::evaluate() {
   }
   else
     error_manager::error("incompatible types", this->locations);
+}
+
+Value *times_operation::emit_ir_code(codegen_context *context) {
+  return BinaryOperator::Create(Instruction::Mul,
+                                left->emit_ir_code(context),
+                                right->emit_ir_code(context),
+                                "",
+                                context->current_block());
+                                
+
 }

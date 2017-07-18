@@ -1,17 +1,10 @@
-#include <llvm/IR/GlobalVariable.h>
-#include <llvm/IR/Type.h>
-#include <llvm/IR/Constants.h>
-#include <llvm/IR/Constant.h>
-#include <llvm/IR/DerivedTypes.h>
-#include <llvm/IR/GlobalValue.h>
-#include <llvm/ADT/Twine.h>
-
 #include "symbol.hpp"
 #include "error_manager.hpp"
 #include "string_literal.hpp"
 #include "boolean.hpp"
 #include "number.hpp"
 #include "symbol_table.hpp"
+#include <llvm/IR/Instructions.h>
 
 symbol::symbol(std::string id, YYLTYPE loc) {
   this->id = id;
@@ -132,6 +125,12 @@ void symbol::evaluate() {
   
   // symbol is assigned to some value so evaluate its assignment
   if (initializer) {
+    if (is_array_type) {
+      std::string err
+        = "assignment for variable " + this->id
+        + " should be of type initializer list";
+      error_manager::error(err.c_str(), initializer->locations);
+    }
     initializer->evaluate();
     if (this->type != initializer->type) {
       std::string err
@@ -161,109 +160,8 @@ void symbol::evaluate() {
   }
 }
 
-Value *symbol::emit_ir_code(codegen_context *context) {
+Value *symbol::emit_ir_code(codegen_context* context) {
 
-  symbol_table::symbol_info *si = symbol_table::lookup(this->id,
-                                                       this->locations);
-  if (symbol_table::current_scope_num == 0) {
-    GlobalVariable *var;
-    if (si->type == basic_type::STRING) {
-      if (this->initializer) {
-        ArrayType* _array
-          = ArrayType::get(
-                  IntegerType::get(getGlobalContext(), 8),
-                  this->initializer->string_value.size()+1);
-        var
-          = new GlobalVariable(
-                *context->module,
-                _array,
-                false,
-                GlobalValue::CommonLinkage,
-                0,
-                Twine(this->id));
-
-        var->setAlignment(1);
-        
-        var->setInitializer(static_cast<Constant*>(this->initializer->emit_ir_code(context)));
-        
-      } else  {
-        var =
-          new GlobalVariable(
-                *context->module,
-                PointerType::get(IntegerType::get(
-                                         getGlobalContext(), 8), 0),
-                false,
-                GlobalValue::CommonLinkage,
-                0,
-                Twine(this->id));
-        var->setAlignment(8);
-        
-      }
-    } else { // is not a string
-      if (is_array_type) {
-        ArrayType* _array
-          = ArrayType::get(
-              IntegerType::get(getGlobalContext(), 32),
-              this->size->value);
-        var = new GlobalVariable(
-                *context->module,
-                _array,
-                false,
-                GlobalValue::CommonLinkage,
-                0,
-                Twine(this->id));
-
-        if (initializer_list) {
-          var->setAlignment(4);
-          std::vector<Constant*> const_array_elems;
-          for (auto item = initializer_list->begin();
-               item != initializer_list->end();
-               item++) {
-
-            const_array_elems.push_back(ConstantInt::get(
-                  getGlobalContext(),
-                  APInt(32,
-                              StringRef(std::to_string(
-                                static_cast<expression*>(*item)->value
-                                                             )),
-                              10)));
-          }
-
-          Constant* const_array
-            = ConstantArray::get(_array,
-                                       const_array_elems);
-
-          var->setInitializer(const_array);
-          
-
-        }
-        else  {
-          var->setAlignment(16);
-        }
-        
-      } else {
-        
-        var = new GlobalVariable(
-          *context->module,
-          IntegerType::get(getGlobalContext(), 32),
-          false,
-          GlobalValue::CommonLinkage,
-          0,
-          Twine(this->id));
-      
-        if (this->initializer)
-          var->setInitializer(
-            static_cast<Constant*>(this->initializer->emit_ir_code(context)));
-        
-        var->setAlignment(4);
-
-      }
-      
-      return var;
-      
-    }
-  } else {}
-
-  return NULL;
+  return new LoadInst(context->find(id), "", false, context->current_block());
   
 }

@@ -129,21 +129,6 @@ void subprogram_declaration::evaluate() {
 
 Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   
-  if (this->return_type == basic_type::VOID) { 
-    symbol_table::insert(this->name->id,
-                         basic_type::PROCEDURE,
-                         basic_type::VOID,
-                         this->param_list,
-                         this->locations);
-  } else {
-    symbol_table::insert(this->name->id,
-                         basic_type::FUNCTION,
-                         this->return_type,
-                         this->param_list,
-                         this->locations);
-
-  }
-
   std::vector<Type*> func_args;
   FunctionType* func_type;
   Type* pointer;
@@ -220,10 +205,12 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   }
 
   symbol_table::create_scope();
-  // analisar se a geração do bloco e alocação de temporários
-  // para os parametros fica dentro ou fora da emição de código do block
-  // passagem do bloco para dentro da emição de código de nó basic_block.
-  // block->emit_ir_code()
+
+  BasicBlock *basic_block = BasicBlock::Create(getGlobalContext(), "",func, 0);
+
+  context->push_block(basic_block);
+  
+  block->emit_ir_code(context);
   
   symbol_table::delete_scope();
 

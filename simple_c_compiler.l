@@ -125,6 +125,13 @@ write    { return WRITE;            }
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/IR/IRPrintingPasses.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Bitcode/ReaderWriter.h>
+#include <llvm/Support/FileSystem.h>
+
+std::string path_name(std::string const & path)
+{
+  return path.substr(0, path.find_last_of("/\\") + 1);
+}
 
 int main(int argc, char* argv[]) {
   FILE *fh;
@@ -164,6 +171,13 @@ int main(int argc, char* argv[]) {
       llvm::legacy::PassManager PM;
       PM.add(llvm::createPrintModulePass(llvm::outs()));
       PM.run(*(syntax_tree->get_module()));
+      // write llvm ir to file
+      std::error_code EC;
+      llvm::raw_fd_ostream OS(path_name(error_manager::filename) +
+                              syntax_tree->get_module()->getModuleIdentifier(),
+                              EC, llvm::sys::fs::F_None);
+      llvm::WriteBitcodeToFile(syntax_tree->get_module(), OS);
+      OS.flush();
     }
   }
 

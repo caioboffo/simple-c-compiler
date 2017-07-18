@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include "operation.hpp"
+#include "codegen_context.hpp"
+
+using namespace llvm;
 
 class over_operation : public operation {
 public:
@@ -10,6 +13,7 @@ public:
     : operation(l, r, loc) {} 
   void print();
   void evaluate();
+  Value* emit_ir_code(codegen_context *context);
 };
 
 #endif /* OVER_OPERATION_H */

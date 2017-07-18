@@ -1,5 +1,7 @@
 #include "not_equal_operation.hpp"
 #include "error_manager.hpp"
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/InstrTypes.h>
 
 void not_equal_operation::print() {
   std::cout << "(";
@@ -24,4 +26,11 @@ void not_equal_operation::evaluate() {
   else
     error_manager::error("incompatible types", this->locations);  
 
+}
+
+Value *not_equal_operation::emit_ir_code(codegen_context *context) {
+  return new ICmpInst(*context->current_block(),
+                      ICmpInst::ICMP_NE,
+                      left->emit_ir_code(context),
+                      right->emit_ir_code(context));
 }

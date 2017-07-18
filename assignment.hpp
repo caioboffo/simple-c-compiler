@@ -21,6 +21,7 @@ public:
   }
   void print();
   void evaluate();
+  Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* ASSIGMENT_H */

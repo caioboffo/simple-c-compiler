@@ -1,3 +1,12 @@
+#include <llvm/IR/GlobalVariable.h>
+#include <llvm/IR/Type.h>
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Constant.h>
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/GlobalValue.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/ADT/Twine.h>
+
 #include "symbol_declaration.hpp"
 #include "tree_node.hpp"
 #include "symbol.hpp"
@@ -74,24 +83,175 @@ void symbol_declaration::evaluate() {
 }
 
 Value *symbol_declaration::emit_ir_code(codegen_context *context) {
-  Value *last = NULL;
-  for (auto it = this->id_list->begin(); it != this->id_list->end();
+
+  Value *var;
+
+  for (auto it = this->id_list->begin();
+       it != this->id_list->end();
        it++) {
+    GlobalVariable *g_var;
+    if (symbol_table::current_scope_num == 0) {
 
-    if ((*it)->type == basic_type::STRING)
-      symbol_table::insert((*it)->id,
-                           (*it)->type,
-                           (*it)->string_value,
-                           this->locations);
-    else
-      symbol_table::insert((*it)->id,
-                           (*it)->type,
-                           (*it)->value,
-                           this->locations);
+      if ((*it)->type == basic_type::STRING) {
+        if ((*it)->initializer) {
+          ArrayType* _array
+            = ArrayType::get(
+                             IntegerType::get(getGlobalContext(), 8),
+                             (*it)->initializer->string_value.size()+1);
+          g_var
+            = new GlobalVariable(
+                                 *context->module,
+                                 _array,
+                                 false,
+                                 GlobalValue::CommonLinkage,
+                                 0,
+                                 Twine((*it)->id));
 
-    last = (*it)->emit_ir_code(context);
-    
+          g_var->setInitializer(static_cast<Constant*>(
+                 (*it)->initializer->emit_ir_code(context)));
+        
+        } else  {
+          g_var =
+            new GlobalVariable(
+                               *context->module,
+                               PointerType::get(IntegerType::get(
+                                 getGlobalContext(), 8), 0),
+                               false,
+                               GlobalValue::CommonLinkage,
+                               0,
+                               Twine((*it)->id));
+        
+        }
+      } else { // is not a string
+        if ((*it)->is_array_type) {
+          ArrayType* _array
+            = ArrayType::get(
+                             IntegerType::get(getGlobalContext(), 32),
+                             (*it)->size->value);
+          g_var = new GlobalVariable(
+                                   *context->module,
+                                   _array,
+                                   false,
+                                   GlobalValue::CommonLinkage,
+                                   0,
+                                   Twine((*it)->id));
+
+          if ((*it)->initializer_list) {
+
+            std::vector<Constant*> const_array_elems;
+            for (auto item = (*it)->initializer_list->begin();
+                 item != (*it)->initializer_list->end();
+                 item++) {
+
+              const_array_elems.push_back(ConstantInt::get(
+                         getGlobalContext(),
+                         APInt(32,
+                               StringRef(std::to_string(
+                                static_cast<expression*>(*item)->value)),
+                               10)));
+            }
+
+            Constant* const_array
+              = ConstantArray::get(_array,
+                                   const_array_elems);
+
+            g_var->setInitializer(const_array);
+          
+
+          }
+          else  {
+            Constant* const_array_zero
+              = ConstantAggregateZero::get(_array);
+            g_var->setInitializer(const_array_zero);
+
+          }
+        
+        } else {        
+          g_var = new GlobalVariable(
+                                   *context->module,
+                                   IntegerType::get(getGlobalContext(), 32),
+                                   false,
+                                   GlobalValue::CommonLinkage,
+                                   0,
+                                   Twine((*it)->id));
+      
+          if ((*it)->initializer)
+            g_var->setInitializer(
+              static_cast<Constant*>((*it)->
+                                     initializer->
+                                     emit_ir_code(context)));
+        
+
+        }
+      }
+      context->globals[(*it)->id] = g_var;
+      var = g_var;
+    } else { // inner scopes g_var dec
+      //////-----------------------------------------------------
+      Type *type;
+      AllocaInst *alloc;
+      if ((*it)->type == basic_type::STRING) {
+        if ((*it)->initializer) {
+         
+        
+        } else  {
+        
+        }
+      } else { // is not a string
+        if ((*it)->is_array_type) {
+          type = ArrayType::get(IntegerType::get(getGlobalContext(), 32),
+                                (*it)->size->value);
+
+          alloc = new AllocaInst(type,
+                                 (*it)->id.c_str(),
+                                 context->current_block());
+
+
+          if ((*it)->initializer_list) {
+            std::vector<Constant*> const_array_elems;
+            for (auto item = (*it)->initializer_list->begin();
+                 item != (*it)->initializer_list->end();
+                 item++) {
+
+              const_array_elems.push_back(ConstantInt::get(
+                         getGlobalContext(),
+                         APInt(32,
+                               StringRef(std::to_string(
+                                static_cast<expression*>(*item)->value)),
+                               10)));
+            }
+
+            alloc = new AllocaInst(type,
+                                   (*it)->id.c_str(),
+                                   context->current_block());
+
+          }
+          else  {
+
+          }
+        
+        } else {        
+          type = Type::getInt32Ty(getGlobalContext());
+
+          alloc = new AllocaInst(type,
+                                 (*it)->id.c_str(),
+                                 context->current_block());
+          
+          if ((*it)->initializer) {
+            StoreInst *store
+              = new StoreInst((*it)->initializer->emit_ir_code(context),
+                              alloc,
+                              false,
+                              context->current_block());
+          }
+        }
+        context->locals()[(*it)->id] = alloc;
+        var = alloc;
+      }
+    }
   }
-  return last;
+  return var;
+
 }
+
 
