@@ -223,7 +223,6 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   symbol_table::delete_scope();
   if (this->return_type == basic_type::VOID && !block->return_stmt)
     ReturnInst::Create(getGlobalContext(), basic_block);
-
   
   return func;
 }

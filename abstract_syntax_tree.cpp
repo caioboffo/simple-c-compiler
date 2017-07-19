@@ -2,6 +2,7 @@
 #include <llvm/IR/LLVMContext.h>
 #include "abstract_syntax_tree.hpp"
 #include "error_manager.hpp"
+#include "core_functions.hpp"
 
 abstract_syntax_tree::abstract_syntax_tree(std::list<tree_node*> *nodelist)
 {
@@ -27,6 +28,7 @@ void abstract_syntax_tree::evaluate() {
 }
 
 Value *abstract_syntax_tree::emit_ir_code(codegen_context *context) {
+  
   std::list<tree_node*>::iterator nodelist_iterator;
   Value *last;
   for (nodelist_iterator = nodes->begin();
@@ -34,5 +36,7 @@ Value *abstract_syntax_tree::emit_ir_code(codegen_context *context) {
        nodelist_iterator++) {
     last = (*nodelist_iterator)->emit_ir_code(this->context);
   }
+
+  create_core_functions(this->context);
   return last;
 }
