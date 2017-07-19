@@ -1,4 +1,10 @@
-int a = 3;
+int a;
+
+nada(int t) {
+  t = 3;
+  return;
+
+}
 
 int main() {
   int a = 9;

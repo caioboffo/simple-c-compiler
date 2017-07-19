@@ -4,6 +4,7 @@
 #include "basic_block.hpp"
 #include "error_manager.hpp"
 #include "subprogram_declaration.hpp"
+#include <llvm/IR/Instructions.h>
 
 void return_stmt::print() {
   std::cout << "return ";
@@ -37,4 +38,12 @@ void return_stmt::evaluate() {
       + to_string(static_cast<basic_block*>(this->parent)->return_type);
     error_manager::error(err.c_str(), this->locations);
   }
+}
+
+Value *return_stmt::emit_ir_code(codegen_context *context) {
+  return ReturnInst::Create(getGlobalContext(),
+                            ((return_expression) ?
+                            return_expression->emit_ir_code(context) :
+                             nullptr),
+                            context->current_block());
 }

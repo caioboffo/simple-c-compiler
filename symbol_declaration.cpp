@@ -103,7 +103,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                                  *context->module,
                                  _array,
                                  false,
-                                 GlobalValue::CommonLinkage,
+                                 GlobalValue::ExternalLinkage,
                                  0,
                                  Twine((*it)->id));
 
@@ -117,9 +117,11 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                                PointerType::get(IntegerType::get(
                                  getGlobalContext(), 8), 0),
                                false,
-                               GlobalValue::CommonLinkage,
+                               GlobalValue::ExternalLinkage,
                                0,
                                Twine((*it)->id));
+          g_var->setInitializer(ConstantInt::get(getGlobalContext(),
+                                                 APInt(32, 0)));
         
         }
       } else { // is not a string
@@ -132,7 +134,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                                    *context->module,
                                    _array,
                                    false,
-                                   GlobalValue::CommonLinkage,
+                                   GlobalValue::ExternalLinkage,
                                    0,
                                    Twine((*it)->id));
 
@@ -171,16 +173,19 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                                    *context->module,
                                    IntegerType::get(getGlobalContext(), 32),
                                    false,
-                                   GlobalValue::CommonLinkage,
+                                   GlobalValue::ExternalLinkage,
                                    0,
                                    Twine((*it)->id));
       
-          if ((*it)->initializer)
+          if ((*it)->initializer) {
             g_var->setInitializer(
               static_cast<Constant*>((*it)->
                                      initializer->
                                      emit_ir_code(context)));
-        
+          } else {
+            g_var->setInitializer(ConstantInt::get(getGlobalContext(),
+                                                 APInt(32, 0)));
+          }
 
         }
       }

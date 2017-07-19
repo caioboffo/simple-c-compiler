@@ -8,6 +8,7 @@
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/Instructions.h>
 #include <llvm/IR/GlobalValue.h>
 #include <llvm/ADT/Twine.h>
 
@@ -131,24 +132,24 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   
   std::vector<Type*> func_args;
   FunctionType* func_type;
-  Type* pointer;
+  Type* type;
   switch (this->return_type) {
     case basic_type::INTEGER:
     case basic_type::BOOLEAN: {
-      pointer = PointerType::get(
+      type = PointerType::get(
                   IntegerType::get(getGlobalContext(), 32),
                   0);
       break;
     } 
     case basic_type::STRING: {
-      pointer = PointerType::get(
+      type = PointerType::get(
                   IntegerType::get(getGlobalContext(), 8),
                   0);
 
       break;
     }
     case basic_type::VOID: {
-      pointer = Type::getVoidTy(getGlobalContext());
+      type = Type::getVoidTy(getGlobalContext());
       break;
     }
   }
@@ -182,7 +183,7 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   }
 
   func_type = FunctionType::get(
-                pointer,
+                type,
                 func_args,
                 false);
 
@@ -203,16 +204,24 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
        args++, param++) {
     args->setName((*param)->id_list->back()->id);
   }
-
-  symbol_table::create_scope();
-
-  BasicBlock *basic_block = BasicBlock::Create(getGlobalContext(), "",func, 0);
-
-  context->push_block(basic_block);
   
+  BasicBlock *basic_block = BasicBlock::Create(getGlobalContext(), "",func, 0);
+  context->push_block(basic_block);
+  symbol_table::create_scope();
+  
+  param = param_list->begin();
+  for (auto args = func->arg_begin();
+       args != func->arg_end();
+       args++, param++) {
+    context->locals()[(*param)->id_list->back()->id] = &(*args);
+  }
+
   block->emit_ir_code(context);
   
   symbol_table::delete_scope();
+  if (this->return_type == basic_type::VOID && !block->return_stmt)
+    ReturnInst::Create(getGlobalContext(), basic_block);
 
+  
   return func;
 }

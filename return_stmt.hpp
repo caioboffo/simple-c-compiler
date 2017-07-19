@@ -2,8 +2,11 @@
 #define RETURN_STMT_H
 
 #include "statement.hpp"
+#include "codegen_context.hpp"
 
 class tree_node;
+
+using namespace llvm;
 
 class return_stmt : public statement {
 protected:
@@ -19,6 +22,7 @@ public:
     
   void print();
   void evaluate();
+  Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* RETURN_STMT_H */
