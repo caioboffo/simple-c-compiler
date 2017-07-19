@@ -1,9 +1,9 @@
-int a;
+int soma(int a, int b) {
+  return a + b;
+}
 
-nada(int t) {
-  t = 3;
-  return;
-
+nada(int k) {
+  k = 10;
 }
 
 int main() {

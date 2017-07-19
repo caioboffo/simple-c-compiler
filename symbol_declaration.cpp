@@ -90,6 +90,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
        it != this->id_list->end();
        it++) {
     GlobalVariable *g_var;
+    AllocaInst *alloc;
     if (symbol_table::current_scope_num == 0) {
 
       if ((*it)->type == basic_type::STRING) {
@@ -194,7 +195,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
     } else { // inner scopes g_var dec
       //////-----------------------------------------------------
       Type *type;
-      AllocaInst *alloc;
+
       if ((*it)->type == basic_type::STRING) {
         if ((*it)->initializer) {
          
@@ -250,9 +251,9 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                               context->current_block());
           }
         }
-        context->locals()[(*it)->id] = alloc;
-        var = alloc;
       }
+      context->locals()[(*it)->id] = alloc;
+      var = alloc;
     }
   }
   return var;

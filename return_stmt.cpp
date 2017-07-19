@@ -41,9 +41,12 @@ void return_stmt::evaluate() {
 }
 
 Value *return_stmt::emit_ir_code(codegen_context *context) {
+
+  Value *return_val = nullptr;
+  if (return_expression) 
+    return_val = return_expression->emit_ir_code(context);
+
   return ReturnInst::Create(getGlobalContext(),
-                            ((return_expression) ?
-                            return_expression->emit_ir_code(context) :
-                             nullptr),
+                            return_val,
                             context->current_block());
 }

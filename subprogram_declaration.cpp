@@ -130,7 +130,7 @@ void subprogram_declaration::evaluate() {
 
 Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   
-  std::vector<Type*> func_args;
+  std::vector<Type*> func_args_type;
   FunctionType* func_type;
   Type* type;
   switch (this->return_type) {
@@ -178,20 +178,19 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
         break;
       }
     }
-    func_args.push_back(t);
+    func_args_type.push_back(t);
     
   }
 
   func_type = FunctionType::get(
                 type,
-                func_args,
+                func_args_type,
                 false);
 
   
   Function* func = context->module->getFunction(this->name->id);
   if (!func) {
-    func = Function::Create(
-                            func_type,
+    func = Function::Create(func_type,
                             GlobalValue::ExternalLinkage,
                             this->name->id,
                             context->module); 
@@ -210,10 +209,13 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   symbol_table::create_scope();
   
   param = param_list->begin();
+  auto ty = func_args_type.begin();
   for (auto args = func->arg_begin();
        args != func->arg_end();
-       args++, param++) {
-    context->locals()[(*param)->id_list->back()->id] = &(*args);
+       args++, param++, ty++) {
+    AllocaInst *ptr = new AllocaInst((*ty), "", context->current_block());
+    StoreInst *str = new StoreInst(&(*args), ptr, false, context->current_block());
+    context->locals()[(*param)->id_list->back()->id] = ptr;
   }
 
   block->emit_ir_code(context);

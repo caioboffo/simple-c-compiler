@@ -161,7 +161,5 @@ void symbol::evaluate() {
 }
 
 Value *symbol::emit_ir_code(codegen_context* context) {
-
-  return new LoadInst(context->find(id), "", false, context->current_block());
-  
+  return new LoadInst(context->find(id), "", false, context->current_block()); 
 }
