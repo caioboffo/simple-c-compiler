@@ -134,24 +134,22 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   FunctionType* func_type;
   Type* type;
   switch (this->return_type) {
-    case basic_type::INTEGER:
-    case basic_type::BOOLEAN: {
-      type = PointerType::get(
-                  IntegerType::get(getGlobalContext(), 32),
-                  0);
-      break;
-    } 
-    case basic_type::STRING: {
-      type = PointerType::get(
-                  IntegerType::get(getGlobalContext(), 8),
-                  0);
+  case basic_type::INTEGER:
+  case basic_type::BOOLEAN: {
+    type = IntegerType::get(getGlobalContext(), 32);
+    break;
+  } 
+  case basic_type::STRING: {
+    type = PointerType::get(
+      IntegerType::get(getGlobalContext(), 8),
+      0);
 
-      break;
-    }
-    case basic_type::VOID: {
-      type = Type::getVoidTy(getGlobalContext());
-      break;
-    }
+    break;
+  }
+  case basic_type::VOID: {
+    type = Type::getVoidTy(getGlobalContext());
+    break;
+  }
   }
 
   for (auto param = this->param_list->begin();

@@ -5,6 +5,7 @@
 #include <deque>
 #include <map>
 #include <llvm/IR/Module.h>
+#include <llvm/IR/Function.h>
 #include <llvm/IR/Value.h>
 #include <llvm/IR/BasicBlock.h>
 
@@ -22,6 +23,9 @@ class codegen_context {
   std::deque<codegen_block*> *blocks;
 
  public:
+  Function *write_function;
+  Function *read_function;
+
   std::map<std::string, Value*> globals;  
   Module *module;
   codegen_context();

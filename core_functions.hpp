@@ -20,7 +20,7 @@ void create_printf_function(codegen_context *context) {
   std::vector<Type*>funct_ty_args;
   funct_ty_args.push_back(ptr);
   FunctionType* func_ty = FunctionType::get(
-    /*Result=*/IntegerType::get(context->module->getContext(), 32),
+    /*Result=*/IntegerType::get(getGlobalContext(), 32),
     /*Params=*/funct_ty_args,
     /*isVarArg=*/true);
 
@@ -33,6 +33,7 @@ void create_printf_function(codegen_context *context) {
     func_printf->setCallingConv(CallingConv::C);
     }
 
+    context->write_function = func_printf;
 }
 
 void create_read_function(codegen_context *context) {

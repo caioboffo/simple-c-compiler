@@ -28,7 +28,7 @@ void abstract_syntax_tree::evaluate() {
 }
 
 Value *abstract_syntax_tree::emit_ir_code(codegen_context *context) {
-  
+  create_core_functions(this->context);  
   std::list<tree_node*>::iterator nodelist_iterator;
   Value *last;
   for (nodelist_iterator = nodes->begin();
@@ -36,7 +36,5 @@ Value *abstract_syntax_tree::emit_ir_code(codegen_context *context) {
        nodelist_iterator++) {
     last = (*nodelist_iterator)->emit_ir_code(this->context);
   }
-
-  create_core_functions(this->context);
   return last;
 }
