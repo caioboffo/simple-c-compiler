@@ -112,6 +112,9 @@ void symbol::evaluate() {
     this->type = si->return_type;
   } else {
     this->type = si->type;
+    this->string_value = si->value.s_val;
+    this->value = si->value.i_val;
+
   }
 
   // symbol is array size must evaluate the expression size
@@ -140,6 +143,8 @@ void symbol::evaluate() {
     }
     this->value = initializer->value;
     this->string_value = initializer->string_value;
+    symbol_table::update_symbol_value(id,
+                                      this->value, this->string_value);
   }
   // symbol is an array and this is the list of values assigned to it
   // so evaluate each symbol (literal)

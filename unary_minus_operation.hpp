@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include "operation.hpp"
+#include "codegen_context.hpp"
 
 class expression;
+
+using namespace llvm;
 
 class unary_minus_operation : public operation {
 protected:
@@ -16,7 +19,7 @@ public:
   }
   void print();
   void evaluate();
-  
+  Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* UNARY_MINUS_OPERATION_H */

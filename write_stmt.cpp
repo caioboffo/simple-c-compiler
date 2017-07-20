@@ -28,6 +28,11 @@ void write_stmt::evaluate() {
   #ifdef STATUS_OUTPUT
   std::cout << "evaluating write statement\n";
   #endif
+  for (auto e = expressions->begin();
+       e != expressions->end();
+       e++)
+    (*e)->evaluate();
+  
 }
 
 Value *write_stmt::emit_ir_code(codegen_context* context) {
@@ -41,7 +46,15 @@ Value *write_stmt::emit_ir_code(codegen_context* context) {
       if ((*e)->type == basic_type::STRING)
         constant_string << (*e)->string_value;
       else
-        constant_string << digit_format;
+        if ((*e)->type == basic_type::INTEGER)
+          constant_string << digit_format;
+        else {
+          if ((*e)->value == 0)
+            constant_string << "false";
+          else
+            constant_string << "true";
+        }
+        
     }
   }
   constant_string << std::endl;
@@ -80,7 +93,7 @@ Value *write_stmt::emit_ir_code(codegen_context* context) {
     for (auto e = expressions->begin();
          e != expressions->end();
          e++) {
-      if ((*e)->type != basic_type::STRING)
+      if ((*e)->type == basic_type::INTEGER)
         params.push_back((*e)->emit_ir_code(context));
     }
   }

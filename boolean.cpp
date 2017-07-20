@@ -19,11 +19,12 @@ void boolean::evaluate() {
   #ifdef STATUS_OUTPUT
   std::cout << "evaluating a boolean type ...\n";
   #endif
+
 }
 
 Value *boolean::emit_ir_code(codegen_context *context) {
   return ConstantInt::get(getGlobalContext(),
-                          APInt(32,
+                          APInt(1,
                                 StringRef(std::to_string(this->value)),
                                 10));
 }

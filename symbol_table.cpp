@@ -122,6 +122,20 @@ symbol_table::symbol_info* symbol_table::lookup(std::string name,
   return si;
 }
 
+void symbol_table::update_symbol_value(std::string name,
+                                       int i_val,
+                                       std::string s_val) {
+  auto sym = _table->find(name);
+  
+  if (sym != _table->end()) {
+    if ((*sym).second->size() > 0) {
+      (*sym).second->back()->info->value.i_val = i_val;
+      (*sym).second->back()->info->value.s_val = s_val;
+    }
+  }
+
+}
+
 void symbol_table::create_scope() {
   current_scope_num++;
 }

@@ -38,6 +38,8 @@ void assignment::evaluate() {
   }
   this->value = rhs->value;
   this->string_value = rhs->string_value;
+  symbol_table::update_symbol_value(id->id,
+                                    this->value, this->string_value);
 }
 
 Value *assignment::emit_ir_code(codegen_context *context) {

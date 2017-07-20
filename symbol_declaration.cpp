@@ -66,6 +66,7 @@ void symbol_declaration::evaluate() {
   for (auto it = this->id_list->begin(); it != this->id_list->end();
        it++) {
 
+
     if ((*it)->type == basic_type::STRING)
       symbol_table::insert((*it)->id,
                            (*it)->type,
@@ -76,7 +77,6 @@ void symbol_declaration::evaluate() {
                            (*it)->type,
                            (*it)->value,
                            this->locations);
-
     (*it)->evaluate();
     
   }
@@ -236,8 +236,10 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
 
           }
         
-        } else {        
-          type = Type::getInt32Ty(getGlobalContext());
+        } else {
+          type = Type::getInt1Ty(getGlobalContext());
+          if ((*it)->type == basic_type::INTEGER)
+            type = Type::getInt32Ty(getGlobalContext());
 
           alloc = new AllocaInst(type,
                                  (*it)->id.c_str(),

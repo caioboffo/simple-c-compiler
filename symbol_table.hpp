@@ -73,6 +73,9 @@ public:
 
   static bool lookup(std::string name);
   static symbol_info *lookup(std::string name, YYLTYPE locations);
+  static void update_symbol_value(std::string name,
+                                  int i_val,
+                                  std::string s_val);
   static void create_scope();
   static void delete_scope();
 };
