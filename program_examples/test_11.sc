@@ -1,6 +1,6 @@
 
 int main() {
- bool i = 2 < 3 && 2 < 3;
+ bool i = !(3 > 2);
  write i;
- return 0;
+ return 1;
 }
