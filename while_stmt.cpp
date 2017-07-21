@@ -3,6 +3,7 @@
 #include "error_manager.hpp"
 #include "expression.hpp"
 #include "basic_block.hpp"
+#include "symbol_table.hpp"
 
 void while_stmt::print() {
   std::cout << "while ";
@@ -29,10 +30,13 @@ void while_stmt::evaluate() {
   std::cout << "while stmt returns " << to_string(this->return_type) << "\n";
   #endif
 
-  if (block) {
-    block->return_type = this->return_type;
-    block->evaluate();
-    static_cast<basic_block*>(this->parent)->return_stmt
-      = block->return_stmt;
-  }
+  block->return_type = this->return_type;
+  
+  symbol_table::create_scope();
+  block->evaluate();
+  symbol_table::delete_scope();
+  
+  static_cast<basic_block*>(this->parent)->return_stmt
+    = block->return_stmt;
+
 }

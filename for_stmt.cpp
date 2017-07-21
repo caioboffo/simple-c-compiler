@@ -3,6 +3,7 @@
 #include "expression.hpp"
 #include "basic_block.hpp"
 #include "error_manager.hpp"
+#include "symbol_table.hpp"
 
 void for_stmt::print() {
   std::cout << "for (";
@@ -36,11 +37,15 @@ void for_stmt::evaluate() {
   
   second_assign->evaluate();
 
-  if (block) {
-    static_cast<basic_block*>(block)->return_type = this->return_type;
-    block->evaluate();
-    static_cast<basic_block*>(this->parent)->return_stmt
-      = static_cast<basic_block*>(block)->return_stmt;
-  }
+
+  static_cast<basic_block*>(block)->return_type = this->return_type;
+
+  symbol_table::create_scope();
+  block->evaluate();
+  symbol_table::delete_scope();
+  
+  static_cast<basic_block*>(this->parent)->return_stmt
+    = static_cast<basic_block*>(block)->return_stmt;
+
   
 }

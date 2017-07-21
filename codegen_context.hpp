@@ -17,7 +17,6 @@ class codegen_context {
   public:
     BasicBlock *block;
     Value      *return_value;
-    Function   *parent;
     std::map<std::string, Value*> locals;
   };
 
@@ -34,8 +33,6 @@ class codegen_context {
   std::map<std::string, Value*>& locals() { return blocks->front()->locals; }
   Value*      find(std::string name);
   void        push_block(BasicBlock *block);
-  Function*   get_parent();
-  void        set_parent(Function *v);
   void        pop_block();
   void        set_current_return_value(Value *value);
   Value*      get_current_return_value();

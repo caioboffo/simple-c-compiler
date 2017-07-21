@@ -3,6 +3,7 @@
 #include "error_manager.hpp"
 #include "expression.hpp"
 #include "basic_block.hpp"
+#include "symbol_table.hpp"
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/Instruction.h>
@@ -50,11 +51,15 @@ void if_stmt::evaluate() {
   #endif
 
   this->then_block->return_type = this->return_type;
+  symbol_table::create_scope();
   then_block->evaluate();
+  symbol_table::delete_scope();
 
   if (else_block) {
     this->else_block->return_type = this->return_type;
+    symbol_table::create_scope();
     else_block->evaluate();
+    symbol_table::delete_scope();
 
     if ((then_block->return_stmt && else_block->return_stmt) 
         && (then_block->return_type == else_block->return_type)) {
@@ -65,21 +70,23 @@ void if_stmt::evaluate() {
 }
 
 Value *if_stmt::emit_ir_code(codegen_context* context) {
+  Function *parent = context->current_block()->getParent();
+  
   BasicBlock *exit_block = BasicBlock::Create(getGlobalContext(),
                                               "",
-                                              context->get_parent(),
+                                              parent,
                                               0);
 
   BasicBlock *t_block = BasicBlock::Create(getGlobalContext(),
                                            "",
-                                           context->get_parent(),
+                                           parent,
                                            0);
   BasicBlock *f_block;
   
   if (else_block) {
      f_block = BasicBlock::Create(getGlobalContext(),
                                   "",
-                                  context->get_parent(),
+                                  parent,
                                   0);    
     BranchInst::Create(t_block,
                        f_block,
@@ -93,7 +100,7 @@ Value *if_stmt::emit_ir_code(codegen_context* context) {
                        context->current_block());
 
   }
-  
+
   context->push_block(t_block);
   then_block->emit_ir_code(context);
   BranchInst::Create(exit_block, context->current_block());

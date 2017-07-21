@@ -207,7 +207,6 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
                                                func,
                                                0);
   context->push_block(basic_block);
-  context->set_parent(func);
   
   symbol_table::create_scope();
   
