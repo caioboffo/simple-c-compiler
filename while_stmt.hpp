@@ -4,6 +4,9 @@
 #include "statement.hpp"
 #include "expression.hpp"
 #include "basic_block.hpp"
+#include "codegen_context.hpp"
+
+using namespace llvm;
 
 class while_stmt : public statement {
 protected:
@@ -19,6 +22,7 @@ public:
   }
   void print();
   void evaluate();
+  Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* WHILE_STMT_H */

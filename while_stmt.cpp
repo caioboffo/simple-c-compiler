@@ -4,6 +4,11 @@
 #include "expression.hpp"
 #include "basic_block.hpp"
 #include "symbol_table.hpp"
+#include <llvm/IR/Constant.h>
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Instruction.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/InstrTypes.h>
 
 void while_stmt::print() {
   std::cout << "while ";
@@ -38,5 +43,42 @@ void while_stmt::evaluate() {
   
   static_cast<basic_block*>(this->parent)->return_stmt
     = block->return_stmt;
+
+}
+
+Value *while_stmt::emit_ir_code(codegen_context *context) {
+  Function *parent = context->current_block()->getParent();
+
+  BasicBlock *exp_block = BasicBlock::Create(getGlobalContext(),
+                                             "",
+                                             parent,
+                                             0);
+  BasicBlock *t_block = BasicBlock::Create(getGlobalContext(),
+                                           "",
+                                           parent,
+                                           0);
+  BasicBlock *exit_block = BasicBlock::Create(getGlobalContext(),
+                                           "",
+                                           parent,
+                                           0);
+
+  
+  BranchInst::Create(exp_block, context->current_block());
+  
+  context->push_block(exp_block);
+  BranchInst::Create(t_block,
+                     exit_block,
+                     exp->emit_ir_code(context),
+                     context->current_block());
+  context->pop_block();
+
+  context->push_block(t_block);
+  block->emit_ir_code(context);
+  BranchInst::Create(exp_block, context->current_block());
+  context->pop_block();
+  
+
+  // add new block
+  context->push_block(exit_block);
 
 }

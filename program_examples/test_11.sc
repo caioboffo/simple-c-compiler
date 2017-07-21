@@ -21,7 +21,7 @@ int main() {
        result -= k;
        write "this result is awesome ", result; 
     }
-    write k;
+
   }
   
   return 0;
