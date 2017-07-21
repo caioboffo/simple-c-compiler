@@ -10,6 +10,7 @@ codegen_context::codegen_context() {
   blocks = new std::deque<codegen_block*>();
   module = new Module(base_name(error_manager::filename) + ".bc",
                       getGlobalContext());
+  inner_break = false;
 }
 
 Value* codegen_context::find(std::string name) {
@@ -25,6 +26,18 @@ Value* codegen_context::find(std::string name) {
 
   return NULL;
 
+}
+
+void codegen_context::push_exit_block(BasicBlock* block) {
+  exit_blocks.push_front(block);
+}
+
+void codegen_context::pop_exit_block() {
+  exit_blocks.pop_front();
+}
+
+BasicBlock *codegen_context::current_exit_block() {
+  return exit_blocks.front();
 }
 
 BasicBlock *codegen_context::current_block() {

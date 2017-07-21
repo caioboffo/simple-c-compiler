@@ -15,7 +15,7 @@ public:
   bool        is_array_type;
   std::string id;
   expression            *size,
-                         *initializer;
+                        *initializer;
   std::list<tree_node*> *initializer_list;
 
   symbol(std::string id) : id(id),

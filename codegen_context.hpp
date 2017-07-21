@@ -26,13 +26,19 @@ class codegen_context {
   Function *write_function;
   Function *read_function;
 
-  std::map<std::string, Value*> globals;  
+  bool inner_break;
+  std::map<std::string, Value*> globals;
+  std::deque<BasicBlock*> exit_blocks;
+  
   Module *module;
   codegen_context();
   BasicBlock *current_block();
   std::map<std::string, Value*>& locals() { return blocks->front()->locals; }
   Value*      find(std::string name);
   void        push_block(BasicBlock *block);
+  void        push_exit_block(BasicBlock *block);
+  BasicBlock *current_exit_block();
+  void        pop_exit_block();
   void        pop_block();
   void        set_current_return_value(Value *value);
   Value*      get_current_return_value();

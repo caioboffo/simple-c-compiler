@@ -5,10 +5,25 @@
 
 int symbol_table::current_scope_num;
 symbol_table::symbol_table_t *symbol_table::_table;
+std::deque<int> symbol_table::_break_info;
 
 void symbol_table::create_symbol_table() {
   _table            = new symbol_table_t();
   current_scope_num = 0;
+}
+
+bool symbol_table::accept_break() {
+  if (_break_info.size() == 0)
+    return false;
+  return true;
+}
+
+void symbol_table::push_accept_break() {
+  _break_info.push_front(1);
+}
+
+void symbol_table::pop_accept_break() {
+  _break_info.pop_front();
 }
 
 void symbol_table::delete_symbol_table() {

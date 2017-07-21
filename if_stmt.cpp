@@ -103,17 +103,23 @@ Value *if_stmt::emit_ir_code(codegen_context* context) {
 
   context->push_block(t_block);
   then_block->emit_ir_code(context);
-  BranchInst::Create(exit_block, context->current_block());
+  if (!context->inner_break) {
+    BranchInst::Create(exit_block, context->current_block());
+  }
+  context->inner_break = false;
   context->pop_block();
 
   if (else_block) {
     context->push_block(f_block);
     else_block->emit_ir_code(context);
-    BranchInst::Create(exit_block, context->current_block());
+    if (!context->inner_break) {
+      BranchInst::Create(exit_block, context->current_block());
+    }
+    context->inner_break = false;
     context->pop_block();
   }
 
   // add new block
   context->push_block(exit_block);
-                            
+
 }

@@ -21,6 +21,7 @@ void while_stmt::evaluate() {
   #ifdef STATUS_OUTPUT
   std::cout << "evaluating a while statement\n";
   #endif
+  symbol_table::push_accept_break();
   
   exp->evaluate();
   
@@ -44,6 +45,8 @@ void while_stmt::evaluate() {
   static_cast<basic_block*>(this->parent)->return_stmt
     = block->return_stmt;
 
+  symbol_table::pop_accept_break();
+
 }
 
 Value *while_stmt::emit_ir_code(codegen_context *context) {
@@ -62,6 +65,7 @@ Value *while_stmt::emit_ir_code(codegen_context *context) {
                                            parent,
                                            0);
 
+  context->push_exit_block(exit_block);
   
   BranchInst::Create(exp_block, context->current_block());
   
@@ -76,9 +80,10 @@ Value *while_stmt::emit_ir_code(codegen_context *context) {
   block->emit_ir_code(context);
   BranchInst::Create(exp_block, context->current_block());
   context->pop_block();
-  
 
   // add new block
   context->push_block(exit_block);
-
+ 
+  context->pop_exit_block();
+  context->inner_break = false;
 }

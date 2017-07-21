@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include <deque>
 #include "locations.hpp"
 #include "tree_node.hpp"
 #include "basic_type.hpp"
@@ -43,6 +44,7 @@ private:
   typedef std::map<std::string, std::list<scope*>* > symbol_table_t;
   typedef std::pair<std::string, std::list<scope*>*> sym_table_item;
 
+  static std::deque<int> _break_info;
   static void insert(std::string name,
                      basic_type type,
                      symbol_info *si,
@@ -53,9 +55,16 @@ public:
 
   static symbol_table_t *_table;
   static int             current_scope_num;
+  // manage symbol table
   static void create_symbol_table();
   static void delete_symbol_table();
 
+  // manage break stmts
+  static bool accept_break();
+  static void push_accept_break();
+  static void pop_accept_break();
+  
+  // manage symbols 
   static void insert(std::string name);
   static void insert(std::string            name,
                      basic_type             type,
@@ -76,6 +85,7 @@ public:
   static void update_symbol_value(std::string name,
                                   int i_val,
                                   std::string s_val);
+  // manage scopes
   static void create_scope();
   static void delete_scope();
 };
