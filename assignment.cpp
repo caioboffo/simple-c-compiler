@@ -44,6 +44,6 @@ void assignment::evaluate() {
 
 Value *assignment::emit_ir_code(codegen_context *context) {
   return new StoreInst(rhs->emit_ir_code(context),
-                       context->locals()[id->id], false,
+                       context->find(id->id), false,
                        context->current_block());
 }

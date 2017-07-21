@@ -202,8 +202,13 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
     args->setName((*param)->id_list->back()->id);
   }
   
-  BasicBlock *basic_block = BasicBlock::Create(getGlobalContext(), "",func, 0);
+  BasicBlock *basic_block = BasicBlock::Create(getGlobalContext(),
+                                               "",
+                                               func,
+                                               0);
   context->push_block(basic_block);
+  context->set_parent(func);
+  
   symbol_table::create_scope();
   
   param = param_list->begin();
@@ -211,8 +216,12 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   for (auto args = func->arg_begin();
        args != func->arg_end();
        args++, param++, ty++) {
-    AllocaInst *ptr = new AllocaInst((*ty), "", context->current_block());
-    StoreInst *str = new StoreInst(&(*args), ptr, false, context->current_block());
+    AllocaInst *ptr = new AllocaInst((*ty), "",
+                                     context->current_block());
+    StoreInst *str = new StoreInst(&(*args),
+                                   ptr,
+                                   false,
+                                   context->current_block());
     context->locals()[(*param)->id_list->back()->id] = ptr;
   }
 
@@ -221,6 +230,13 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   symbol_table::delete_scope();
   if (this->return_type == basic_type::VOID && !block->return_stmt)
     ReturnInst::Create(getGlobalContext(), basic_block);
+
+  // neste ponto remover todos os blocos empilhados
+  // acima de basic_block; ou seja
+  // remover todas as variáveis armazenadas nos escopos
+  // criados a partir deste.
   
+  //context->pop_block();
+
   return func;
 }

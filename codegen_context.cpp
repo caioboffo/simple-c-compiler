@@ -31,6 +31,14 @@ BasicBlock *codegen_context::current_block() {
   return blocks->front()->block;
 }
 
+void codegen_context::set_parent(Function *v) {
+  blocks->front()->parent = v;
+}
+
+Function *codegen_context::get_parent() {
+  return blocks->front()->parent;
+}
+
 void codegen_context::push_block(BasicBlock *block) {
   blocks->push_front(new codegen_block());
   blocks->front()->return_value = NULL;

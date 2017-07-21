@@ -1,0 +1,11 @@
+
+manipulate:
+  - vectors
+  - strings
+
+emit ir code for:
+  - for command
+  - break command
+  - while command
+  - function call
+  - function return into variable

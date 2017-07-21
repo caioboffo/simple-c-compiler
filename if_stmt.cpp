@@ -3,6 +3,12 @@
 #include "error_manager.hpp"
 #include "expression.hpp"
 #include "basic_block.hpp"
+#include <llvm/IR/Constant.h>
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Instruction.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/InstrTypes.h>
+
 
 if_stmt::if_stmt(tree_node *exp,
                  tree_node *then_block,
@@ -58,3 +64,49 @@ void if_stmt::evaluate() {
   }
 }
 
+Value *if_stmt::emit_ir_code(codegen_context* context) {
+  BasicBlock *exit_block = BasicBlock::Create(getGlobalContext(),
+                                              "",
+                                              context->get_parent(),
+                                              0);
+
+  BasicBlock *t_block = BasicBlock::Create(getGlobalContext(),
+                                           "",
+                                           context->get_parent(),
+                                           0);
+  BasicBlock *f_block;
+  
+  if (else_block) {
+     f_block = BasicBlock::Create(getGlobalContext(),
+                                  "",
+                                  context->get_parent(),
+                                  0);    
+    BranchInst::Create(t_block,
+                       f_block,
+                       exp->emit_ir_code(context),
+                       context->current_block());
+
+  } else {
+    BranchInst::Create(t_block,
+                       exit_block,
+                       exp->emit_ir_code(context),
+                       context->current_block());
+
+  }
+  
+  context->push_block(t_block);
+  then_block->emit_ir_code(context);
+  BranchInst::Create(exit_block, context->current_block());
+  context->pop_block();
+
+  if (else_block) {
+    context->push_block(f_block);
+    else_block->emit_ir_code(context);
+    BranchInst::Create(exit_block, context->current_block());
+    context->pop_block();
+  }
+
+  // add new block
+  context->push_block(exit_block);
+                            
+}
