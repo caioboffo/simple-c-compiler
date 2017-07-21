@@ -2,27 +2,29 @@
 #define FOR_STMT_H
 
 #include "statement.hpp"
+#include "codegen_context.hpp"
+#include "assignment.hpp"
+#include "expression.hpp"
+#include "basic_block.hpp"
 
 class tree_node;
 
+using namespace llvm;
 class for_stmt : public statement {
 protected:
-  tree_node *first_assign, *exp, *second_assign, *block;
+  assignment  *first_assign, *second_assign;
+  expression  *exp;
+  basic_block *block;
 public:
   for_stmt(tree_node *fa,
            tree_node *exp,
            tree_node *sa,
            tree_node *block,
-           YYLTYPE loc) {
-    this->first_assign = fa;
-    this->exp = exp;
-    this->second_assign = sa;
-    this->block = block;
-    this->locations = loc;
-  }
+           YYLTYPE loc);
       
   void print();
   void evaluate();
+  Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* FOR_STMT_H */

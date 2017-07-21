@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string>
 #include "statement.hpp"
+#include "expression.hpp"
 
-class expression;
 class symbol;
 class tree_node;
 
@@ -14,6 +14,7 @@ protected:
   symbol *id;
   expression *rhs;
 public:
+  assignment() {}
   assignment(symbol *var, tree_node *exp, YYLTYPE loc) {
     this->id = var;
     this->rhs = static_cast<expression*>(exp);
