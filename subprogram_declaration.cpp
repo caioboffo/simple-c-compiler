@@ -134,9 +134,12 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   FunctionType* func_type;
   Type* type;
   switch (this->return_type) {
-  case basic_type::INTEGER:
-  case basic_type::BOOLEAN: {
+  case basic_type::INTEGER: {
     type = IntegerType::get(getGlobalContext(), 32);
+    break;
+  }
+  case basic_type::BOOLEAN: {
+    type = IntegerType::get(getGlobalContext(), 1);
     break;
   } 
   case basic_type::STRING: {
@@ -158,23 +161,33 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
 
     Type *t;
     switch ((*param)->type) {
-      case basic_type::INTEGER:
-      case basic_type::BOOLEAN: {
-        if ((*param)->id_list->back()->is_array_type) {
-          t = PointerType::get(IntegerType::get(
-                getGlobalContext(),
-                32), 0);
-
-        } else 
-          t = IntegerType::get(getGlobalContext(), 32);
-        break;
-      } 
-      case basic_type::STRING: {
+    case basic_type::INTEGER: {
+      if ((*param)->id_list->back()->is_array_type) {
         t = PointerType::get(IntegerType::get(
-              getGlobalContext(),
-              8), 0);
-        break;
-      }
+                                              getGlobalContext(),
+                                              32), 0);
+
+      } else 
+        t = IntegerType::get(getGlobalContext(), 32);
+      break;
+
+    }
+    case basic_type::BOOLEAN: {
+      if ((*param)->id_list->back()->is_array_type) {
+        t = PointerType::get(IntegerType::get(
+                                              getGlobalContext(),
+                                              1), 0);
+
+      } else 
+        t = IntegerType::get(getGlobalContext(), 1);
+      break;
+    } 
+    case basic_type::STRING: {
+      t = PointerType::get(IntegerType::get(
+                                            getGlobalContext(),
+                                            8), 0);
+      break;
+    }
     }
     func_args_type.push_back(t);
     
@@ -193,6 +206,12 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
                             this->name->id,
                             context->module); 
     func->setCallingConv(CallingConv::C);
+  }
+
+  if (symbol_table::current_scope_num == 0) {
+    context->globals[name->id] = func;
+  } else {
+    context->locals()[name->id] = func;
   }
 
   auto param = param_list->begin();

@@ -183,7 +183,7 @@ var_spec
 
 initializer
         : exp
-        | assign
+        | assign 
         ;
       
 param_list

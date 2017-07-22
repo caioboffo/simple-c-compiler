@@ -1,9 +1,15 @@
 #include <iostream>
 #include <sstream>
+#include <vector>
 #include "subprogram_call.hpp"
 #include "symbol.hpp"
 #include "symbol_table.hpp"
 #include "error_manager.hpp"
+#include <llvm/IR/Constant.h>
+#include <llvm/IR/Constants.h>
+#include <llvm/IR/Instruction.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/InstrTypes.h>
 
 subprogram_call::subprogram_call(std::string id,
                                  std::list<tree_node*> *param,
@@ -35,7 +41,7 @@ void subprogram_call::evaluate() {
   #endif
 
   symbol_table::symbol_info *si
-    = symbol_table::lookup(static_cast<symbol*>(this->identifier)->id,
+    = symbol_table::lookup(this->identifier->id,
                            this->locations);
 
   this->type = si->return_type;
@@ -53,7 +59,7 @@ void subprogram_call::evaluate() {
   if (total_declared_param != total_informed_param) {
     std::ostringstream err;
     err << "Missing parameters at "
-        << static_cast<symbol*>(this->identifier)->id
+        << this->identifier->id
         << " declared "
         << total_declared_param
         << " informed " 
@@ -64,10 +70,10 @@ void subprogram_call::evaluate() {
     for (auto informed = this->parameters->begin();
          informed != this->parameters->end();
          declared++, informed++) {
-      if ((*declared) != static_cast<symbol*>((*informed))->type) {
+      if ((*declared) != static_cast<expression*>((*informed))->type) {
         std::ostringstream err;
         err << "wrong type of parameter: informed "
-            << to_string(static_cast<symbol*>((*informed))->type)
+            << to_string(static_cast<expression*>((*informed))->type)
             << " should be of type "
             << to_string((*declared)); 
         error_manager::error(err.str().c_str(), this->locations);
@@ -75,7 +81,20 @@ void subprogram_call::evaluate() {
       
     }
   }
-  // validar se a quantidade de paramentros informados
-  // corresponde ao tipo e quantidade de parametros declarados
   
+}
+
+Value *subprogram_call::emit_ir_code(codegen_context *context) {
+  std::vector<Value*> params;
+
+  for (auto e = parameters->begin();
+       e != parameters->end();
+       e++) {
+      params.push_back(static_cast<expression*>(*e)->emit_ir_code(context));
+  }
+  
+  return CallInst::Create(context->find(identifier->id),
+                          params,
+                          "",
+                          context->current_block());
 }

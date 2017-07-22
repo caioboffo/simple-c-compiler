@@ -5,10 +5,14 @@
 #include <string>
 #include "expression.hpp"
 #include "tree_node.hpp"
+#include "codegen_context.hpp"
 
+class symbol;
+
+using namespace llvm;
 class subprogram_call : public expression {
 protected:
-  tree_node *identifier;
+  symbol *identifier;
   std::list<tree_node*> *parameters;
   expression *return_value;
 public:
@@ -17,6 +21,7 @@ public:
                   YYLTYPE loc);
   void print();
   void evaluate();
+  Value *emit_ir_code(codegen_context *context);
 };
 
 #endif /* SUBPROGRAM_CALL_H */

@@ -1,9 +1,11 @@
 
-manipulate:
+manipulate: declare, pass as parameter, use as func return
   - vectors
   - strings
 
 emit ir code for:
-  - for command
   - function call
   - function return into variable
+  - read function
+  - ternary statement
+
