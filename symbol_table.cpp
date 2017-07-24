@@ -74,6 +74,8 @@ void symbol_table::insert(std::string name,
   else if (type == basic_type::BOOLEAN)
     sv.b_val = value;
 
+  sv.sz = -1;
+  
   symbol_info *si =  new symbol_info(type, sv);
   insert(name, type, si, locations);
 }
@@ -84,6 +86,7 @@ void symbol_table::insert(std::string name,
                           YYLTYPE locations) {
   symbol_value sv;
   sv.s_val = value;
+  sv.sz = -1;
   symbol_info *si =  new symbol_info(type, sv);
   insert(name, type, si, locations);
 }

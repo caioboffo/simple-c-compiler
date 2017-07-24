@@ -1,10 +1,10 @@
 #include <llvm/IR/GlobalVariable.h>
 #include <llvm/IR/Type.h>
+#include <llvm/IR/Instructions.h>
 #include <llvm/IR/Constants.h>
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/GlobalValue.h>
-#include <llvm/IR/Instructions.h>
 #include <llvm/ADT/Twine.h>
 
 #include "symbol_declaration.hpp"
@@ -215,14 +215,14 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
             init = ConstantArray::get((ArrayType*) type, const_array);
           
           
-          global = new GlobalVariable(*context->module,
-                                      type,
-                                      false,
-                                      GlobalValue::PrivateLinkage,
-                                      0,
-                                      Twine("." + (*it)->id));
+            global = new GlobalVariable(*context->module,
+                                        type,
+                                        false,
+                                        GlobalValue::PrivateLinkage,
+                                        0,
+                                        Twine("." + (*it)->id));
 
-          global->setInitializer(init);
+            global->setInitializer(init);
           }
         }
         break;
@@ -293,10 +293,15 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                               false,
                               context->current_block());
       }
-
-
-      context->locals()[(*it)->id] = local;
-      var = local;
+      
+      if ((*it)->initializer_list) {
+        context->locals()[(*it)->id] = global;
+        var = global;
+      } else {
+        context->locals()[(*it)->id] = local;
+        var = local;
+      }
+      
     }
   } 
   return var;

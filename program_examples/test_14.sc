@@ -1,8 +1,17 @@
 
 
 int main() {
-  int i[5] = {0, 1, 2, 3, 4};
-  int k = i[2];
-  //write i[3];
+  int i[5];
+  int k;
+  i[0] = 0;
+  i[1] = 1;
+  i[2] = 2;
+  i[3] = 3;
+  i[4] = 4;
+
+  for (k = 0; k < 5; k += 1) {
+    write i[k];
+  }
+
   return 1;
 }

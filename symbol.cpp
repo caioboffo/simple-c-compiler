@@ -4,8 +4,11 @@
 #include "boolean.hpp"
 #include "number.hpp"
 #include "symbol_table.hpp"
-#include <llvm/IR/Instructions.h>
+#include <llvm/IR/Constant.h>
 #include <llvm/IR/Constants.h>
+#include <llvm/IR/Instruction.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/IR/InstrTypes.h>
 
 symbol::symbol(std::string id, YYLTYPE loc) {
   this->id = id;
@@ -125,12 +128,16 @@ void symbol::evaluate() {
     if (size->type != basic_type::INTEGER)
       error_manager::error("array size must be a numeric expression",
                            this->locations);
+
+    if (array_size > 0 && size->value > array_size -1)
+      error_manager::error("array indice out of bounds", this->locations);
+    
     if (array_size < 0) {
       symbol_table::update_symbol_value(id,
                                         this->size->value,
                                         this->value,
                                         this->string_value);
-    }
+      }
   }
   
   // symbol is assigned to some value so evaluate its assignment
@@ -176,20 +183,27 @@ void symbol::evaluate() {
 
 Value *symbol::emit_ir_code(codegen_context* context) {
   if (this->size) {
-    int i = (this->type == basic_type::INTEGER) ? 32 :
-      (this->type == basic_type::BOOLEAN) ? 1 : 8 ;
-    return new LoadInst(GetElementPtrInst::Create(
-       PointerType::get(IntegerType::get(getGlobalContext(), i), this->array_size),
-       context->find(id),
-       {
-         ConstantInt::get(getGlobalContext(), APInt(64, StringRef("0"), 10)),
-         ConstantInt::get(getGlobalContext(), APInt(64,
-                                                   StringRef(std::to_string(
-                                                   this->size->value)),
-                                                   10))
-       },
-       "",
-       context->current_block()));
+
+    GetElementPtrInst *array_elem
+      = GetElementPtrInst::Create(
+          NULL,
+          context->find(id),
+          {
+            ConstantInt::get(getGlobalContext(),
+                           APInt(64, StringRef("0"), 10)),
+            new SExtInst(this->size->emit_ir_code(context),
+                     IntegerType::get(getGlobalContext(), 64),
+                     "",
+                     context->current_block())
+            
+          },
+          Twine(""),
+          context->current_block());
+    
+    return new LoadInst(array_elem,
+                        "",
+                        false,
+                        context->current_block());
   }
   return new LoadInst(context->find(id), "", false, context->current_block()); 
 }

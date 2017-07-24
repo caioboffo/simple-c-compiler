@@ -4,7 +4,9 @@
 #include <llvm/IR/Constant.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/GlobalValue.h>
+#include <llvm/IR/Instruction.h>
 #include <llvm/IR/Instructions.h>
+#include <llvm/IR/InstrTypes.h>
 #include <llvm/ADT/Twine.h>
 
 #include "expression.hpp"
@@ -40,11 +42,33 @@ void assignment::evaluate() {
   this->value = rhs->value;
   this->string_value = rhs->string_value;
   symbol_table::update_symbol_value(id->id,
-                                    -1,
+                                    id->array_size,
                                     this->value, this->string_value);
 }
 
 Value *assignment::emit_ir_code(codegen_context *context) {
+  if (id->size) {
+    std::vector<Value*> indices;
+    indices.push_back(ConstantInt::get(getGlobalContext(),
+                                       APInt(64, StringRef("0"), 10)));
+    indices.push_back(ConstantInt::get(getGlobalContext(),
+                                       APInt(64,
+                                             StringRef(std::to_string(
+                                                   id->size->value)),
+                                                   10)));
+
+    GetElementPtrInst *array_elem
+      = GetElementPtrInst::Create(NULL,
+                                  (Constant*) context->find(id->id),
+                                  indices,
+                                  Twine(""),
+                                  context->current_block());
+
+    return new StoreInst(rhs->emit_ir_code(context),
+                         array_elem,
+                         false,
+                         context->current_block());
+  }
   return new StoreInst(rhs->emit_ir_code(context),
                        context->find(id->id), false,
                        context->current_block());
