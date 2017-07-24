@@ -47,15 +47,7 @@ Value *write_stmt::emit_ir_code(codegen_context* context) {
       if ((*e)->type == basic_type::STRING)
         constant_string << string_format;
       else
-        if ((*e)->type == basic_type::INTEGER)
           constant_string << digit_format;
-        else {
-          if ((*e)->value == 0)
-            constant_string << "false";
-          else
-            constant_string << "true";
-        }
-        
     }
   }
   constant_string << std::endl;
@@ -94,7 +86,6 @@ Value *write_stmt::emit_ir_code(codegen_context* context) {
     for (auto e = expressions->begin();
          e != expressions->end();
          e++) {
-      if ((*e)->type != basic_type::BOOLEAN)
         params.push_back((*e)->emit_ir_code(context));
     }
   }
