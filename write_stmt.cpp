@@ -39,12 +39,13 @@ Value *write_stmt::emit_ir_code(codegen_context* context) {
   std::ostringstream constant_string;
 
   std::string digit_format = "%d";
+  std::string string_format = "%s";
   if (expressions->size() > 0) {
     for (auto e = expressions->begin();
          e != expressions->end();
          e++) {
       if ((*e)->type == basic_type::STRING)
-        constant_string << (*e)->string_value;
+        constant_string << string_format;
       else
         if ((*e)->type == basic_type::INTEGER)
           constant_string << digit_format;
@@ -93,7 +94,7 @@ Value *write_stmt::emit_ir_code(codegen_context* context) {
     for (auto e = expressions->begin();
          e != expressions->end();
          e++) {
-      if ((*e)->type == basic_type::INTEGER)
+      if ((*e)->type != basic_type::BOOLEAN)
         params.push_back((*e)->emit_ir_code(context));
     }
   }

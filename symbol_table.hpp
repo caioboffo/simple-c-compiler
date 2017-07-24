@@ -15,6 +15,7 @@ private:
   typedef struct symbol_value {
     int         i_val;
     int         b_val;
+    int         sz;
     std::string s_val;
   } symbol_value;
 
@@ -79,10 +80,11 @@ public:
                      basic_type                      return_type,
                      std::list<symbol_declaration*> *param_list,
                      YYLTYPE                         locations);
-
+  
   static bool lookup(std::string name);
   static symbol_info *lookup(std::string name, YYLTYPE locations);
   static void update_symbol_value(std::string name,
+                                  int size,
                                   int i_val,
                                   std::string s_val);
   // manage scopes

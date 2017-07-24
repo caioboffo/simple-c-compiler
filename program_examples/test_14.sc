@@ -1,19 +1,8 @@
 
-int soma(int a, int b) {
-    return a + b;
-}
-
-int multiplica(int a, int b) {
-    return a * b;
-}
-
-escreve(bool a, int b) {
-    if (a) {
-       write b;
-    }
-}
 
 int main() {
-    escreve(true, 100);
-    return 1;
+  int i[5] = {0, 1, 2, 3, 4};
+  int k = i[2];
+  //write i[3];
+  return 1;
 }

@@ -1,7 +1,15 @@
+#include <llvm/IR/GlobalVariable.h>
+#include <llvm/IR/Type.h>
 #include <llvm/IR/Constants.h>
-#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Constant.h>
+#include <llvm/IR/DerivedTypes.h>
+#include <llvm/IR/GlobalValue.h>
+#include <llvm/IR/Instructions.h>
+#include <llvm/ADT/Twine.h>
+
 #include "string_literal.hpp"
 #include "basic_type.hpp"
+#include "codegen_context.hpp"
 
 string_literal::string_literal(std::string str) {
   this->string_value = str.substr(1, str.size()-2);
@@ -27,7 +35,22 @@ void string_literal::evaluate() {
 }
 
 Value *string_literal::emit_ir_code(codegen_context *context) {
-  return ConstantDataArray::getString(getGlobalContext(),
-                                            this->string_value,
-                                            true);
+  ArrayType *array_ty
+    = ArrayType::get(IntegerType::get(getGlobalContext(), 8),
+                     string_value.size() + 1);
+                         
+  GlobalVariable *gvar_array_str
+    = new GlobalVariable(*context->module,
+                         array_ty,
+                         true,
+                         GlobalValue::PrivateLinkage,
+                         0, ".str");
+                         
+  Constant *const_array = ConstantDataArray::getString(getGlobalContext(),
+                                                       string_value,
+                                                       true);
+                                                       
+  gvar_array_str->setInitializer(const_array);
+
+  return gvar_array_str;
 }

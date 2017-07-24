@@ -5,6 +5,7 @@
 #include "number.hpp"
 #include "symbol_table.hpp"
 #include <llvm/IR/Instructions.h>
+#include <llvm/IR/Constants.h>
 
 symbol::symbol(std::string id, YYLTYPE loc) {
   this->id = id;
@@ -114,7 +115,7 @@ void symbol::evaluate() {
     this->type = si->type;
     this->string_value = si->value.s_val;
     this->value = si->value.i_val;
-
+    this->array_size = si->value.sz;
   }
 
   // symbol is array size must evaluate the expression size
@@ -124,6 +125,12 @@ void symbol::evaluate() {
     if (size->type != basic_type::INTEGER)
       error_manager::error("array size must be a numeric expression",
                            this->locations);
+    if (array_size < 0) {
+      symbol_table::update_symbol_value(id,
+                                        this->size->value,
+                                        this->value,
+                                        this->string_value);
+    }
   }
   
   // symbol is assigned to some value so evaluate its assignment
@@ -144,7 +151,9 @@ void symbol::evaluate() {
     this->value = initializer->value;
     this->string_value = initializer->string_value;
     symbol_table::update_symbol_value(id,
-                                      this->value, this->string_value);
+                                      this->array_size,
+                                      this->value,
+                                      this->string_value);
   }
   // symbol is an array and this is the list of values assigned to it
   // so evaluate each symbol (literal)
@@ -166,5 +175,21 @@ void symbol::evaluate() {
 }
 
 Value *symbol::emit_ir_code(codegen_context* context) {
+  if (this->size) {
+    int i = (this->type == basic_type::INTEGER) ? 32 :
+      (this->type == basic_type::BOOLEAN) ? 1 : 8 ;
+    return new LoadInst(GetElementPtrInst::Create(
+       PointerType::get(IntegerType::get(getGlobalContext(), i), this->array_size),
+       context->find(id),
+       {
+         ConstantInt::get(getGlobalContext(), APInt(64, StringRef("0"), 10)),
+         ConstantInt::get(getGlobalContext(), APInt(64,
+                                                   StringRef(std::to_string(
+                                                   this->size->value)),
+                                                   10))
+       },
+       "",
+       context->current_block()));
+  }
   return new LoadInst(context->find(id), "", false, context->current_block()); 
 }

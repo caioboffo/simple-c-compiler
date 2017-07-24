@@ -36,9 +36,11 @@ void assignment::evaluate() {
       error_manager::error(err.c_str(), this->locations);
     }
   }
+  this->type = id->type;
   this->value = rhs->value;
   this->string_value = rhs->string_value;
   symbol_table::update_symbol_value(id->id,
+                                    -1,
                                     this->value, this->string_value);
 }
 

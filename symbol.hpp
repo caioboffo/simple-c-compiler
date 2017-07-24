@@ -13,6 +13,7 @@ using namespace llvm;
 class symbol : public expression {
 public:
   bool        is_array_type;
+  int         array_size;
   std::string id;
   expression            *size,
                         *initializer;
