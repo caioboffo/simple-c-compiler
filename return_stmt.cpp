@@ -41,7 +41,7 @@ void return_stmt::evaluate() {
 }
 
 Value *return_stmt::emit_ir_code(codegen_context *context) {
-
+  context->inner_break = true;
   Value *return_val = nullptr;
   if (return_expression) 
     return_val = return_expression->emit_ir_code(context);

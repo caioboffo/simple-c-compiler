@@ -4,8 +4,6 @@ manipulate: declare, pass as parameter, use as func return
   - strings
 
 emit ir code for:
-  - function call
-  - function return into variable
   - read function
   - ternary statement
 

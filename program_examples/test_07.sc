@@ -8,7 +8,6 @@ int do_something(int a) {
       write "do something";
       return 1;
     } else {
-      read v[i];
       return 2;
     }
   }

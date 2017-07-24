@@ -111,8 +111,8 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
         init = ConstantInt::get(getGlobalContext(), APInt(32, 0));
 
         if ((*it)->is_array_type) {
-          type = ArrayType::get(IntegerType::get(getGlobalContext(), 32),
-                                (*it)->size->value);
+          type = PointerType::get(IntegerType::get(getGlobalContext(), 32),
+                                  (*it)->size->value);
           init = ConstantAggregateZero::get(type);
 
           if ((*it)->initializer_list) {
@@ -144,7 +144,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
         init = ConstantInt::get(getGlobalContext(), APInt(1, 0));
 
         if ((*it)->is_array_type) {
-          type = ArrayType::get(IntegerType::get(getGlobalContext(),
+          type = PointerType::get(IntegerType::get(getGlobalContext(),
                                                  1),
                                 (*it)->size->value);
           init = ConstantAggregateZero::get(type);
@@ -196,8 +196,8 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
       case basic_type::INTEGER: {
         type = Type::getInt32Ty(getGlobalContext());
         if ((*it)->is_array_type) {
-          type = ArrayType::get(IntegerType::get(getGlobalContext(), 32),
-                                (*it)->size->value);
+          type = PointerType::get(IntegerType::get(getGlobalContext(), 32),
+                                  (*it)->size->value);
           init = ConstantAggregateZero::get(type);
           if ((*it)->initializer_list) {
             std::vector<Constant*> const_array;
@@ -231,7 +231,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
       case basic_type::BOOLEAN: {
         type = Type::getInt1Ty(getGlobalContext());
         if ((*it)->is_array_type) {
-          type = ArrayType::get(IntegerType::get(getGlobalContext(),
+          type = PointerType::get(IntegerType::get(getGlobalContext(),
                                                  1),
                                 (*it)->size->value);
           init = ConstantAggregateZero::get(type);

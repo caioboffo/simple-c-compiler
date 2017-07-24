@@ -183,20 +183,19 @@ void symbol::evaluate() {
 
 Value *symbol::emit_ir_code(codegen_context* context) {
   if (this->size) {
-
+    std::vector<Value*> indices;
+    indices.push_back(ConstantInt::get(getGlobalContext(),
+                                       APInt(64, StringRef("0"), 10)));
+    indices.push_back(new SExtInst(this->size->emit_ir_code(context),
+                                   IntegerType::get(getGlobalContext(), 64),
+                                   "",
+                                   context->current_block()));
+    
     GetElementPtrInst *array_elem
       = GetElementPtrInst::Create(
           NULL,
           context->find(id),
-          {
-            ConstantInt::get(getGlobalContext(),
-                           APInt(64, StringRef("0"), 10)),
-            new SExtInst(this->size->emit_ir_code(context),
-                     IntegerType::get(getGlobalContext(), 64),
-                     "",
-                     context->current_block())
-            
-          },
+          indices,
           Twine(""),
           context->current_block());
     

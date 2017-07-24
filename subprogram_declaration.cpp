@@ -249,12 +249,5 @@ Value *subprogram_declaration::emit_ir_code(codegen_context *context) {
   if (this->return_type == basic_type::VOID && !block->return_stmt)
     ReturnInst::Create(getGlobalContext(), basic_block);
 
-  // neste ponto remover todos os blocos empilhados
-  // acima de basic_block; ou seja
-  // remover todas as variáveis armazenadas nos escopos
-  // criados a partir deste.
-  
-  //context->pop_block();
-
   return func;
 }
