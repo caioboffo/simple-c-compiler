@@ -115,6 +115,5 @@ Value *for_stmt::emit_ir_code(codegen_context* context) {
   // add new block
   context->push_block(exit_block); 
   context->pop_exit_block();
-  context->inner_break = false;
 
 }

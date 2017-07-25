@@ -52,12 +52,13 @@ Value *write_stmt::emit_ir_code(codegen_context* context) {
   }
   constant_string << std::endl;
 
-  ArrayType *array_ty = ArrayType::get(IntegerType::get(getGlobalContext(), 8),
-                                       constant_string.str().size() + 1);
+  ArrayType *array
+    = ArrayType::get(IntegerType::get(getGlobalContext(), 8),
+                     constant_string.str().size() + 1);
                          
   GlobalVariable *gvar_array_str
     = new GlobalVariable(*context->module,
-                         array_ty,
+                         array,
                          true,
                          GlobalValue::PrivateLinkage,
                          0, ".str");

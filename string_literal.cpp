@@ -35,8 +35,8 @@ void string_literal::evaluate() {
 }
 
 Value *string_literal::emit_ir_code(codegen_context *context) {
-  ArrayType *array_ty
-    = ArrayType::get(IntegerType::get(getGlobalContext(), 8),
+  PointerType *array_ty
+    = PointerType::get(IntegerType::get(getGlobalContext(), 8),
                      string_value.size() + 1);
                          
   GlobalVariable *gvar_array_str

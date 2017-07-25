@@ -53,7 +53,7 @@ symbol::symbol(tree_node *var,
 void symbol::set_type(basic_type t) {
   this->type = t;
 
-  #ifdef SOURCE_OUTPUT
+#ifdef SOURCE_OUTPUT
   // use this code only when debug_output is enabled
   if (initializer == NULL) {
     switch (type) {
@@ -73,7 +73,7 @@ void symbol::set_type(basic_type t) {
       break;
     }
   }
-  #endif
+#endif
 }
 
 void symbol::print() {
@@ -105,9 +105,9 @@ void symbol::print() {
 }
 
 void symbol::evaluate() {
-  #ifdef STATUS_OUTPUT
+#ifdef STATUS_OUTPUT
   std::cout << "evaluating symbol " << id << "\n" ;
-  #endif
+#endif
 
   symbol_table::symbol_info *si = symbol_table::lookup(this->id,
                                                        this->locations);
@@ -119,6 +119,10 @@ void symbol::evaluate() {
     this->string_value = si->value.s_val;
     this->value = si->value.i_val;
     this->array_size = si->value.sz;
+
+    if (this->array_size > 0)
+      is_array_type = true;
+        
   }
 
   // symbol is array size must evaluate the expression size
@@ -132,12 +136,15 @@ void symbol::evaluate() {
     if (array_size > 0 && size->value > array_size -1)
       error_manager::error("array indice out of bounds", this->locations);
     
+    if (size->value < 0)
+      error_manager::error("array size must be positive", this->locations);
+    
     if (array_size < 0) {
       symbol_table::update_symbol_value(id,
                                         this->size->value,
                                         this->value,
                                         this->string_value);
-      }
+    }
   }
   
   // symbol is assigned to some value so evaluate its assignment
@@ -172,7 +179,7 @@ void symbol::evaluate() {
       (*it)->evaluate();
       if (this->type != static_cast<expression*>(*it)->type) {
         std::string err
-        = "assignment for variable " + this->id
+          = "assignment for variable " + this->id
           + " should be of type " + to_string(this->type);
         error_manager::error(err.c_str(),
                              static_cast<expression*>(*it)->locations);
@@ -182,7 +189,22 @@ void symbol::evaluate() {
 }
 
 Value *symbol::emit_ir_code(codegen_context* context) {
-  if (this->size) {
+
+  if (is_parameter && is_array_type) {
+    std::vector<Constant*> idx;
+    idx.push_back(ConstantInt::get(getGlobalContext(),
+                                   APInt(32, StringRef("0"), 10)));
+    idx.push_back(ConstantInt::get(getGlobalContext(),
+                                   APInt(32, StringRef("0"), 10)));
+          
+    return ConstantExpr::getGetElementPtr(
+               ArrayType::get(IntegerType::get(getGlobalContext(), 8), 
+                              array_size),
+               (Constant*) context->find(id),
+               idx);
+    
+  } else if (size) {
+
     std::vector<Value*> indices;
     indices.push_back(ConstantInt::get(getGlobalContext(),
                                        APInt(64, StringRef("0"), 10)));
@@ -190,19 +212,24 @@ Value *symbol::emit_ir_code(codegen_context* context) {
                                    IntegerType::get(getGlobalContext(), 64),
                                    "",
                                    context->current_block()));
-    
+
     GetElementPtrInst *array_elem
       = GetElementPtrInst::Create(
-          NULL,
-          context->find(id),
-          indices,
-          Twine(""),
-          context->current_block());
+                                  nullptr,
+                                  context->find(id),
+                                  indices,
+                                  Twine(""),
+                                  context->current_block());
     
     return new LoadInst(array_elem,
                         "",
                         false,
                         context->current_block());
+  } else {
+    return new LoadInst(context->find(id),
+                        "",
+                        false,
+                        context->current_block());
   }
-  return new LoadInst(context->find(id), "", false, context->current_block()); 
 }
+

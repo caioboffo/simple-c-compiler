@@ -34,7 +34,6 @@ public:
   symbol(tree_node *var,
          std::list<tree_node*> *init_list,
          YYLTYPE loc);
-
   void set_type(basic_type t);
   void print();
   void evaluate();
@@ -43,3 +42,13 @@ public:
 
 
 #endif /* SYMBOL_H */
+
+
+
+
+
+
+
+
+
+

@@ -111,7 +111,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
         init = ConstantInt::get(getGlobalContext(), APInt(32, 0));
 
         if ((*it)->is_array_type) {
-          type = PointerType::get(IntegerType::get(getGlobalContext(), 32),
+          type = ArrayType::get(IntegerType::get(getGlobalContext(), 32),
                                   (*it)->size->value);
           init = ConstantAggregateZero::get(type);
 
@@ -144,7 +144,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
         init = ConstantInt::get(getGlobalContext(), APInt(1, 0));
 
         if ((*it)->is_array_type) {
-          type = PointerType::get(IntegerType::get(getGlobalContext(),
+          type = ArrayType::get(IntegerType::get(getGlobalContext(),
                                                  1),
                                 (*it)->size->value);
           init = ConstantAggregateZero::get(type);
@@ -196,7 +196,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
       case basic_type::INTEGER: {
         type = Type::getInt32Ty(getGlobalContext());
         if ((*it)->is_array_type) {
-          type = PointerType::get(IntegerType::get(getGlobalContext(), 32),
+          type = ArrayType::get(IntegerType::get(getGlobalContext(), 32),
                                   (*it)->size->value);
           init = ConstantAggregateZero::get(type);
           if ((*it)->initializer_list) {
@@ -213,15 +213,12 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                                          10)));
             }
             init = ConstantArray::get((ArrayType*) type, const_array);
-          
-          
             global = new GlobalVariable(*context->module,
                                         type,
                                         false,
                                         GlobalValue::PrivateLinkage,
                                         0,
                                         Twine("." + (*it)->id));
-
             global->setInitializer(init);
           }
         }
@@ -279,7 +276,7 @@ Value *symbol_declaration::emit_ir_code(codegen_context *context) {
                                          APInt(32, StringRef("0"), 10)));
           idx.push_back(ConstantInt::get(getGlobalContext(),
                                          APInt(32, StringRef("0"), 10)));
-
+          
           init = ConstantExpr::getGetElementPtr(
                    ArrayType::get(IntegerType::get(getGlobalContext(),8), 
                                   (*it)->

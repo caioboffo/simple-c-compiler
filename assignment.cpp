@@ -57,8 +57,8 @@ Value *assignment::emit_ir_code(codegen_context *context) {
                                    context->current_block()));
 
     GetElementPtrInst *array_elem
-      = GetElementPtrInst::Create(NULL,
-                                  (Constant*) context->find(id->id),
+      = GetElementPtrInst::Create(nullptr,
+                                  context->find(id->id),
                                   indices,
                                   Twine(""),
                                   context->current_block());

@@ -8,6 +8,7 @@
 class expression : public tree_node {
 public:
   int value;
+  bool is_parameter;
   std::string string_value;
   basic_type type;
   expression() {}

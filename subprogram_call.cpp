@@ -16,6 +16,12 @@ subprogram_call::subprogram_call(std::string id,
                                  YYLTYPE loc) {
   identifier = new symbol(id, loc);
   parameters = param;
+  for (auto p = parameters->begin();
+       p != parameters->end();
+       p++) {
+    static_cast<expression*>(*p)->is_parameter = true;
+  }
+  
   this->locations = loc;
 }
 
@@ -90,7 +96,9 @@ Value *subprogram_call::emit_ir_code(codegen_context *context) {
   for (auto e = parameters->begin();
        e != parameters->end();
        e++) {
+
       params.push_back(static_cast<expression*>(*e)->emit_ir_code(context));
+
   }
   
   return CallInst::Create(context->find(identifier->id),

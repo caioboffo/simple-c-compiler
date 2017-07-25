@@ -1,20 +1,13 @@
+int  t[5] = {0, 1, 2, 3, 4};
 
-
-int soma(int a, int b) {
-  return a + b;
+func_one(int v[], int pos) {
+  v[pos] = 0;
 }
 
-imprime(int v[], int size) {
-  int i = 0;
-  for (i = 0; i < size; i += 1) {
-    write v[i];
-  }
-}
-
-int  t[5] = {0, 1, 2, 3, 4}; 
 int main() {
 
-  imprime(t, 5);
+  func_one(t, 3);
+  write t[3];
   
   return 1;
 }
