@@ -1,3 +1,8 @@
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+program_examples/*.bc
 *.o
 cmm
 parser.hpp

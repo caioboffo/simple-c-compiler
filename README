@@ -1,0 +1,24 @@
+Compilador para a linguagem CMM (Mais ou Menos parecida com C).
+* Análise Léxica e Sintática realizada com auxílio das ferramentas Flex e Bison.
+* Criação de representação intermediária utilizando LLVM 3.8 C++ API.
+* Acompanha um arquivo Makefile. Para compilar digite make dentro do diretório
+  contendo o arquivo Makefile.
+* Como as versões do LLVM variam muito, não há a garantia de compatibilidade de
+  versão 3.8 para versões mais recentes, portanto, para uma correta execução
+  utilize suite LLVM na versão especificada.
+* Trabalho desenvolvido pelo acadêmico Caio Boffo Silva <caioboffo@gmail.com>
+  R.A.: 49038 como terceira avaliação da disciplina de implementação de
+  linguagens de programação 2017. Prof. Lucas Pupulin Nanni.
+* Trabalho realizado de acordo com as especificações faltando apenas a emissão
+  de código IR equivalente a:
+    - Passagens de vetor como parametro, retorno de função;
+    - Passagens de string como parametro, retorno de função;
+    - Comando READ;
+    - Comando IF Ternário;
+* O compilador emite a ir correspondente na saída padrão e grava o módulo LLVM
+  como arquivo binário próprio da linguagem com extenção .bc
+* Acompanha uma pasta com exemplos de arquivos válidos e arquivos com alguns 
+  erros.
+  
+* Caso deseje obter a versão com os registros de alteração feitos pelo git 
+  solicitar no e-mail acima.
